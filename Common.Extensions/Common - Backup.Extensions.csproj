@@ -5,8 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageId>MitherPack.Common.Extensions</PackageId>
-    <Authors>Renato Mitherhofer</Authors>
+    <PackageId>MitherPack.Api.Common.Extensions</PackageId>
   </PropertyGroup>
 
   <ItemGroup>

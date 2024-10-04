@@ -4,20 +4,20 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <PackageId>MitherPack.Api.Service.Framework</PackageId>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Authors>Renato Mitherhofer</Authors>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="FluentValidation" Version="11.10.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Api.Requests\Api.Requests.csproj" />
-    <ProjectReference Include="..\Api.Responses\Api.Responses.csproj" />
-    <ProjectReference Include="..\Api.Swagger\Api.Swagger.csproj" />
-    <ProjectReference Include="..\Common.Exceptions\Common.Exceptions.csproj" />
-    <ProjectReference Include="..\Common.Extensions\Common.Extensions.csproj" />
-    <ProjectReference Include="..\Common.Notifications\Common.Notifications.csproj" />
+    <PackageReference Include="MitherPack.Api.Requests" Version="1.0.0" />
+    <PackageReference Include="MitherPack.Api.Responses" Version="1.0.0" />
+    <PackageReference Include="MitherPack.Api.Swagger" Version="1.0.0" />
+    <PackageReference Include="MitherPack.Common.Exceptions" Version="1.0.0" />
+    <PackageReference Include="MitherPack.Common.Extensions" Version="1.0.0" />
+    <PackageReference Include="MitherPack.Common.Notifications" Version="1.0.0" />
   </ItemGroup>
 
 </Project>
