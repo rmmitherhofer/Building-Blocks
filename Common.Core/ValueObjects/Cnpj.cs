@@ -2,7 +2,7 @@
 
 namespace Core.ValueObjects;
 
-public abstract class CadastroNacional{
+public abstract class NationalRegistry{
     protected static bool IsValid(string number)
     {
         var invalidNumbers = new List<string>();
@@ -21,12 +21,12 @@ public abstract class CadastroNacional{
         => new string(input.Where(char.IsDigit).ToArray());
 }
 
-public class Cnpj : CadastroNacional
+public class Cnpj : NationalRegistry
 {
     public const int CnpjMaxLength = 14;
     public string Number { get; private set; }
-    public string Inscricao { get; private set; }
-    public string? Filial { get; private set; }
+    public string Registration { get; private set; }
+    public string? Branch { get; private set; }
     public string Digit { get; private set; }
 
     public Cnpj(string number)
@@ -34,22 +34,22 @@ public class Cnpj : CadastroNacional
         number = number.Replace(".", "").Replace("-", "").Replace("/", "");
 
         if (!Validate(number))
-            throw new DomainException("CNPJ inválido.");
+            throw new DomainException("Invalid CNPJ.");
 
         Number = number.PadLeft(14, '0');
 
-        Inscricao = Number[..8];
-        Filial = Number.Substring(8, 4);
+        Registration = Number[..8];
+        Branch = Number.Substring(8, 4);
         Digit = Number.Substring(12, 2);
     }
 
     public static bool Validate(string cnpj)
     {
-        int[] multiplicador1 = new int[12] { 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
-        int[] multiplicador2 = new int[13] { 6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2 };
-        int soma;
-        int resto;
-        string digito;
+        int[] multiplier1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+        int[] multiplier2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+        int sum;
+        int rest;
+        string digit;
         string tempCnpj;
         cnpj = cnpj.Trim();
         cnpj = cnpj.Replace(".", "").Replace("-", "").Replace("/", "");
@@ -60,58 +60,58 @@ public class Cnpj : CadastroNacional
 
         if (IsValid(cnpj)) return false;
 
-        tempCnpj = cnpj.Substring(0, 12);
-        soma = 0;
+        tempCnpj = cnpj[..12];
+        sum = 0;
         for (int i = 0; i < 12; i++)
-            soma += int.Parse(tempCnpj[i].ToString()) * multiplicador1[i];
-        resto = soma % 11;
-        if (resto < 2)
-            resto = 0;
+            sum += int.Parse(tempCnpj[i].ToString()) * multiplier1[i];
+        rest = sum % 11;
+        if (rest < 2)
+            rest = 0;
         else
-            resto = 11 - resto;
-        digito = resto.ToString();
-        tempCnpj = tempCnpj + digito;
-        soma = 0;
+            rest = 11 - rest;
+        digit = rest.ToString();
+        tempCnpj += digit;
+        sum = 0;
         for (int i = 0; i < 13; i++)
-            soma += int.Parse(tempCnpj[i].ToString()) * multiplicador2[i];
-        resto = soma % 11;
-        if (resto < 2)
-            resto = 0;
+            sum += int.Parse(tempCnpj[i].ToString()) * multiplier2[i];
+        rest = sum % 11;
+        if (rest < 2)
+            rest = 0;
         else
-            resto = 11 - resto;
-        digito = digito + resto.ToString();
-        return cnpj.EndsWith(digito);
+            rest = 11 - rest;
+        digit += rest.ToString();
+        return cnpj.EndsWith(digit);
     }
 }
 
-public class Cpf : CadastroNacional
+public class Cpf : NationalRegistry
 {
     public const int CpfMaxLength = 11;
     public string Number { get; private set; }
-    public string Inscricao { get; private set; }
+    public string Registration { get; private set; }
     public string Digit { get; private set; }
 
-    public Cpf(string numero)
+    public Cpf(string number)
     {
-        numero = numero.Replace(".", "").Replace("-", "");
+        number = number.Replace(".", "").Replace("-", "");
 
-        if (!Validar(numero))
-            throw new DomainException("CPF inválido.");
+        if (!Validar(number))
+            throw new DomainException("Invalid CPF.");
 
-        Number = numero.PadLeft(11, '0');
+        Number = number.PadLeft(11, '0');
 
-        Inscricao = Number[..9];
+        Registration = Number[..9];
         Digit = Number.Substring(9, 2);
     }
 
     public static bool Validar(string cpf)
     {
-        int[] multiplicador1 = new int[9] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
-        int[] multiplicador2 = new int[10] { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };
+        int[] multiplier1 = [10, 9, 8, 7, 6, 5, 4, 3, 2];
+        int[] multiplier2 = [11, 10, 9, 8, 7, 6, 5, 4, 3, 2];
         string tempCpf;
-        string digito;
-        int soma;
-        int resto;
+        string digit;
+        int sum;
+        int rest;
         cpf = cpf.Trim();
         cpf = cpf.Replace(".", "").Replace("-", "");
 
@@ -120,27 +120,27 @@ public class Cpf : CadastroNacional
         if (IsValid(cpf)) return false;
 
         cpf = cpf.PadLeft(11, '0');
-        tempCpf = cpf.Substring(0, 9);
-        soma = 0;
+        tempCpf = cpf[..9];
+        sum = 0;
 
         for (int i = 0; i < 9; i++)
-            soma += int.Parse(tempCpf[i].ToString()) * multiplicador1[i];
-        resto = soma % 11;
-        if (resto < 2)
-            resto = 0;
+            sum += int.Parse(tempCpf[i].ToString()) * multiplier1[i];
+        rest = sum % 11;
+        if (rest < 2)
+            rest = 0;
         else
-            resto = 11 - resto;
-        digito = resto.ToString();
-        tempCpf = tempCpf + digito;
-        soma = 0;
+            rest = 11 - rest;
+        digit = rest.ToString();
+        tempCpf += digit;
+        sum = 0;
         for (int i = 0; i < 10; i++)
-            soma += int.Parse(tempCpf[i].ToString()) * multiplicador2[i];
-        resto = soma % 11;
-        if (resto < 2)
-            resto = 0;
+            sum += int.Parse(tempCpf[i].ToString()) * multiplier2[i];
+        rest = sum % 11;
+        if (rest < 2)
+            rest = 0;
         else
-            resto = 11 - resto;
-        digito = digito + resto.ToString();
-        return cpf.EndsWith(digito);
+            rest = 11 - rest;
+        digit += rest.ToString();
+        return cpf.EndsWith(digit);
     }
 }

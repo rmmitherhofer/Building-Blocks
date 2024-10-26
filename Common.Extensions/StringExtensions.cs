@@ -62,18 +62,19 @@ public static class StringExtensions
         return cpfCnpj.Replace(".", "").Replace("-", "").Replace("/", "").Trim();
     }
 
-    public static string MascaraInscricaoCpfCnpj(this string inscricao)
+    public static string MaskRegistrationCpfCnpj(this string registration)
     {
-        if (inscricao.Length == 8)
-            return string.Format(@"{0:00\.000\.000}", double.Parse(inscricao));
+        if (registration.Length == 8)
+            return string.Format(@"{0:00\.000\.000}", double.Parse(registration));
 
-        return string.Format(@"{0:000\.000\.000}", double.Parse(inscricao));
+        return string.Format(@"{0:000\.000\.000}", double.Parse(registration));
     }
 
     public static string TelephoneMask(this string telephone)
     {
         telephone = telephone.Trim();
         telephone = telephone.Replace(" ", "").Replace("(", "").Replace(")", "");
+
         if (telephone.Length == 11)
         {
             telephone = telephone.Insert(7, "-");

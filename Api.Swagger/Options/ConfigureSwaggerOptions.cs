@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
+﻿using Extensoes;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
@@ -9,9 +11,14 @@ namespace Swagger.Options;
 
 public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
 {
-    readonly IApiVersionDescriptionProvider _provider;
+    private readonly IConfiguration _configuration;
+    private readonly IApiVersionDescriptionProvider _provider;
 
-    public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider) => _provider = provider;
+    public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider, IConfiguration configuration)
+    {
+        _provider = provider;
+        _configuration = configuration;
+    }
 
     public void Configure(SwaggerGenOptions options)
     {
@@ -21,17 +28,23 @@ public class ConfigureSwaggerOptions : IConfigureOptions<SwaggerGenOptions>
             options.EnableAnnotations();
         }
     }
-    private OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription description)
+    private OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription apiVersionDescription)
     {
+        const string SECTION = "SwaggerSettings";
+
+        var title = _configuration.Get("Title", SECTION, true) ?? Assembly.GetEntryAssembly().GetName().Name;
+        var version = _configuration.Get("Version", SECTION, true) ?? apiVersionDescription.ApiVersion.ToString();
+        var description = _configuration.Get("Description", SECTION, true) ?? "";
+
         OpenApiInfo info = new()
         {
-            Title = Assembly.GetEntryAssembly().GetName().Name,
-            Version = description.ApiVersion.ToString(),
-            Description = "Minha descrição"
+            Title = title,
+            Version = version,
+            Description = description
         };
 
-        if (description.IsDeprecated) 
-            info.Description += " Versão esta obsoleta";
+        if (apiVersionDescription.IsDeprecated) 
+            info.Description += " is deprecated";
         
         return info;
     }

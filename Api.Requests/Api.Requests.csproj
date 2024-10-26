@@ -7,6 +7,7 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>MitherPack.Api.Requests</PackageId>
     <Authors>Renato Mitherhofer</Authors>
+    <Version>1.0.1</Version>
   </PropertyGroup>
 
 </Project>

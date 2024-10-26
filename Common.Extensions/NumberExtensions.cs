@@ -7,47 +7,47 @@ public static class NumberExtensions
     public static string PtBR(this decimal? value)
     {
         if (value == null) return "0";
-        return FormatarNumeroParaPtBR(value);
+        return FormatNumberToPtBR(value);
     }
 
-    public static string PtBR(this decimal value) => FormatarNumeroParaPtBR(value);
+    public static string PtBR(this decimal value) => FormatNumberToPtBR(value);
 
-    private static string FormatarNumeroParaPtBR(object value, int quantidadeDecimais = 2)
+    private static string FormatNumberToPtBR(object value, int decimalQuantity = 2)
     {
         if (string.IsNullOrWhiteSpace(value?.ToString())) throw new ArgumentNullException(nameof(value));
 
-        return string.Format(new CultureInfo("pt-BR"), $"{{0:N{quantidadeDecimais}}}", value);
+        return string.Format(new CultureInfo("pt-BR"), $"{{0:N{decimalQuantity}}}", value);
     }
 
-    public static decimal? ReverterMascaraParaDecimal(this string? value, CultureInfo? culture = null)
+    public static decimal? RevertMaskToDecimal(this string? value, CultureInfo? culture = null)
     {
         if (string.IsNullOrEmpty(value)) return null;
 
-        bool converteu = decimal.TryParse(ReverterMascara(value, culture), out decimal result);
+        bool converted = decimal.TryParse(RevertMask(value, culture), out decimal result);
 
-        return converteu ? result : throw new FormatException($"Falha ao formatar valor {value}");
+        return converted ? result : throw new FormatException($"Falha ao formatar valor {value}");
     }
 
-    private static string ReverterMascara(string value, CultureInfo? culture = null)
+    private static string RevertMask(string value, CultureInfo? culture = null)
     {
         if (string.IsNullOrWhiteSpace(value)) throw new ArgumentNullException(nameof(value));
 
-        string valorConvertido = value.RemoverMascaraReais().Replace(" ", "").Trim();
+        string convertedValue = value.RemoveMaskReal().Replace(" ", "").Trim();
 
         culture ??= CultureInfo.CurrentCulture;
 
-        if (!valorConvertido.Contains(','))
-            return valorConvertido.Replace(".", "");
+        if (!convertedValue.Contains(','))
+            return convertedValue.Replace(".", "");
 
         string newValue = string.Empty;
 
-        var num = valorConvertido.Replace(",", ".").Split(".");
+        var num = convertedValue.Replace(",", ".").Split(".");
 
         for (int i = 0; i < num.Length; i++)
         {
-            bool ehUltimoValor = num.Length - 1 == i;
+            bool isLastValue = num.Length - 1 == i;
 
-            if (ehUltimoValor)
+            if (isLastValue)
             {
                 newValue += culture.Name switch
                 {

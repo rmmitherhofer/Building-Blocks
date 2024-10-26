@@ -16,7 +16,7 @@ public class ValidationResponse
     /// <summary>
     /// Construtor
     /// </summary>
-    /// <param name="messages"></param>
+    /// <param name="notifications"></param>
     public ValidationResponse(IEnumerable<Notification> notifications)
     {
         Validations = notifications;

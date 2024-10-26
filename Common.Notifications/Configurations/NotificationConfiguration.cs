@@ -12,7 +12,7 @@ public static class NotificationConfiguration
     /// </summary>
     /// <param name="services">IServiceCollection</param>
     /// <returns>IServiceCollection</returns>
-    public static IServiceCollection AddNotificaticaoConfiguration(this IServiceCollection services)
+    public static IServiceCollection AddNotificationConfig(this IServiceCollection services)
     {
         services.TryAddScoped<INotificationHandler, NotificationHandler>();
 

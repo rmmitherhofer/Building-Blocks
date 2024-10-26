@@ -1,17 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageId>MitherPack.Api.Core.Framework</PackageId>
-    <Title>Api Core</Title>
-    <Authors>Renato Mitherhofer</Authors>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<PackageId>MitherPack.Api.Core.Framework</PackageId>
+		<Title>Api Core</Title>
+		<Authors>Renato Mitherhofer</Authors>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+		<Version>1.0.1</Version>
+	</PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="MitherPack.Common.Core" Version="1.0.0" />
-  </ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="MitherPack.Common.Core" Version="1.0.1" />
+	</ItemGroup>
 
 </Project>

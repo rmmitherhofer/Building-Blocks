@@ -10,14 +10,14 @@ public interface INotificationHandler
     /// <summary>
     /// Armazena notificação no contexto
     /// </summary>
-    /// <param name="notificacao"></param>
-    void Notify(Notification notificacao);
+    /// <param name="notification"></param>
+    void Notify(Notification notification);
 
     /// <summary>
     /// Armazena lista de notificações no contexto
     /// </summary>
-    /// <param name="notificacoes"></param>
-    void Notificar(ICollection<Notification> notificacoes);
+    /// <param name="notifications"></param>
+    void Notificar(ICollection<Notification> notifications);
 
     /// <summary>
     /// Retorna lista de notificações

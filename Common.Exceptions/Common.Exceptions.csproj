@@ -7,6 +7,7 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageId>MitherPack.Common.Exceptions</PackageId>
     <Authors>Renato Mitherhofer</Authors>
+    <Version>1.0.2</Version>
   </PropertyGroup>
 
 </Project>

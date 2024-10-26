@@ -17,136 +17,136 @@ public class Notification : Message
     /// <summary>
     /// Nivel de alerta da notificação
     /// </summary>
-    public LogLevel Level { get; private set; }
+    public LogLevel LogLevel { get; private set; }
     /// <summary>
     /// Chave
     /// </summary>
-    public string? Chave { get; private set; }
+    public string? Key { get; private set; }
     /// <summary>
     /// Valor
     /// </summary>
-    public string Valor { get; private set; }
+    public string Value { get; private set; }
     /// <summary>
     /// Detalhe
     /// </summary>
-    public string Detalhe { get; private set; }
+    public string Detail { get; private set; }
 
     /// <summary>
     /// Construtor
     /// </summary>
-    /// <param name="tipo">Tipo</param>
-    /// <param name="chave">Chave</param>
-    /// <param name="valor">Valor</param>
-    public Notification(LogLevel nivel, string tipo, string chave, string valor, string detalhe) : base(tipo)
+    /// <param name="type">Tipo</param>
+    /// <param name="key">Chave</param>
+    /// <param name="value">Valor</param>
+    public Notification(LogLevel logLevel, string type, string key, string value, string detail) : base(type)
     {
         Id = Guid.NewGuid();
-        IdAgregacao = Id;
+        AgregationId = Id;
         Timestamp = DateTime.Now;
-        Level = nivel;
-        Chave = chave;
-        Valor = valor;
-        Detalhe = detalhe;
+        LogLevel = logLevel;
+        Key = key;
+        Value = value;
+        Detail = detail;
     }
     /// <summary>
     /// Construtor
     /// </summary>
-    /// <param name="tipo">Tipo</param>
-    /// <param name="chave">Chave</param>
-    /// <param name="valor">Valor</param>
-    public Notification(string tipo, string chave, string valor, string detalhe) : base(tipo)
+    /// <param name="type">Tipo</param>
+    /// <param name="key">Chave</param>
+    /// <param name="value">Valor</param>
+    public Notification(string type, string key, string value, string detail) : base(type)
     {
         Id = Guid.NewGuid();
-        IdAgregacao = Id;
+        AgregationId = Id;
         Timestamp = DateTime.Now;
-        Level = LogLevel.Information;
-        Chave = chave;
-        Valor = valor;
-        Detalhe = detalhe;
-    }
-
-    /// <summary>
-    /// Construtor
-    /// </summary>
-    /// <param name="tipo">Tipo</param>
-    /// <param name="chave">Chave</param>
-    /// <param name="valor">Valor</param>
-    public Notification(LogLevel nivel, string tipo, string chave, string valor) : base(tipo)
-    {
-        Id = Guid.NewGuid();
-        IdAgregacao = Id;
-        Timestamp = DateTime.Now;
-        Level = nivel;
-        Chave = chave;
-        Valor = valor;
-    }
-    /// <summary>
-    /// Construtor
-    /// </summary>
-    /// <param name="tipo">Tipo</param>
-    /// <param name="chave">Chave</param>
-    /// <param name="valor">Valor</param>
-    public Notification(string tipo, string chave, string valor) : base(tipo)
-    {
-        Id = Guid.NewGuid();
-        IdAgregacao = Id;
-        Timestamp = DateTime.Now;
-        Level = LogLevel.Information;
-        Chave = chave;
-        Valor = valor;
+        LogLevel = LogLevel.Information;
+        Key = key;
+        Value = value;
+        Detail = detail;
     }
 
     /// <summary>
     /// Construtor
     /// </summary>
-    /// <param name="chave">Chave</param>
-    /// <param name="valor">Valor</param>
-    public Notification(LogLevel nivel, string chave, string valor)
+    /// <param name="type">Tipo</param>
+    /// <param name="key">Chave</param>
+    /// <param name="value">Valor</param>
+    public Notification(LogLevel logLevel, string type, string key, string value) : base(type)
     {
         Id = Guid.NewGuid();
-        IdAgregacao = Id;
-        Level = nivel;
+        AgregationId = Id;
         Timestamp = DateTime.Now;
-        Chave = chave;
-        Valor = valor;
+        LogLevel = logLevel;
+        Key = key;
+        Value = value;
     }
     /// <summary>
     /// Construtor
     /// </summary>
-    /// <param name="chave">Chave</param>
-    /// <param name="valor">Valor</param>
-    public Notification(string chave, string valor)
+    /// <param name="type">Tipo</param>
+    /// <param name="key">Chave</param>
+    /// <param name="value">Valor</param>
+    public Notification(string type, string key, string value) : base(type)
+    {
+        Id = Guid.NewGuid();
+        AgregationId = Id;
+        Timestamp = DateTime.Now;
+        LogLevel = LogLevel.Information;
+        Key = key;
+        Value = value;
+    }
+
+    /// <summary>
+    /// Construtor
+    /// </summary>
+    /// <param name="key">Chave</param>
+    /// <param name="value">Valor</param>
+    public Notification(LogLevel logLevel, string key, string value)
+    {
+        Id = Guid.NewGuid();
+        AgregationId = Id;
+        LogLevel = logLevel;
+        Timestamp = DateTime.Now;
+        Key = key;
+        Value = value;
+    }
+    /// <summary>
+    /// Construtor
+    /// </summary>
+    /// <param name="key">Chave</param>
+    /// <param name="value">Valor</param>
+    public Notification(string key, string value)
     {
         Id = Guid.NewGuid();
 
-        IdAgregacao = Id;
-        Level = LogLevel.Information;
+        AgregationId = Id;
+        LogLevel = LogLevel.Information;
         Timestamp = DateTime.Now;
-        Chave = chave;
-        Valor = valor;
+        Key = key;
+        Value = value;
     }
 
     /// <summary>
     /// Construtor
     /// </summary>
-    /// <param name="valor">Valor</param>
-    public Notification(LogLevel nivel, string valor)
+    /// <param name="value">Valor</param>
+    public Notification(LogLevel logLevel, string value)
     {
         Id = Guid.NewGuid();
-        IdAgregacao = Id;
-        Level = nivel;
+        AgregationId = Id;
+        LogLevel = logLevel;
         Timestamp = DateTime.Now;
-        Valor = valor;
+        Value = value;
     }
     /// <summary>
     /// Construtor
     /// </summary>
-    /// <param name="valor">Valor</param>
-    public Notification(string valor)
+    /// <param name="value">Valor</param>
+    public Notification(string value)
     {
         Id = Guid.NewGuid();
-        IdAgregacao = Id;
+        AgregationId = Id;
         Timestamp = DateTime.Now;
-        Valor = valor;
+        Value = value;
     }
 }
 

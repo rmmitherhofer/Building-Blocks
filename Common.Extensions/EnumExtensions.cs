@@ -7,30 +7,30 @@ public static class EnumExtensions
 {
     public static string? Description<T>(this T e) where T : IConvertible
     {
-        string? descricao = null;
+        string? description = null;
 
         if (e is Enum)
         {
             Type type = e.GetType();
 
-            foreach (int valor in Enum.GetValues(type))
+            foreach (int value in Enum.GetValues(type))
             {
-                if (valor == e.ToInt32(CultureInfo.InvariantCulture))
+                if (value == e.ToInt32(CultureInfo.InvariantCulture))
                 {
-                    var memInfo = type.GetMember(type.GetEnumName(valor));
+                    var memInfo = type.GetMember(type.GetEnumName(value));
                     var descriptionAttribute = memInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
 
                     if (descriptionAttribute.Length > 0)
-                        descricao = ((DescriptionAttribute)descriptionAttribute[0]).Description;
+                        description = ((DescriptionAttribute)descriptionAttribute[0]).Description;
 
                     break;
                 }
             }
         }
-        return descricao;
+        return description;
     }
 
-    public static T EnumValue<T>(this string descricao)
+    public static T EnumValue<T>(this string description)
     {
         var type = typeof(T);
 
@@ -42,18 +42,18 @@ public static class EnumExtensions
 
             if (attribute != null)
             {
-                if (attribute.Description.ToUpper() == descricao.ToUpper())
+                if (attribute.Description.ToUpper() == description.ToUpper())
                     return (T)field.GetValue(null);
 
-                if (field.Name.ToUpper() == descricao.ToUpper())
+                if (field.Name.ToUpper() == description.ToUpper())
                     return (T)field.GetValue(null);
             }
             else
             {
-                if (field.Name.ToUpper() == descricao.ToUpper())
+                if (field.Name.ToUpper() == description.ToUpper())
                     return (T)field.GetValue(null);
             }
         }
-        throw new ArgumentException($"Nao foi localizado nenhuma descricao {descricao} no enum {typeof(T)}");
+        throw new ArgumentException($"description {description} not found in enum {typeof(T)}");
     }
 }

@@ -32,8 +32,8 @@ public abstract class MainController(INotificationHandler notification) : Contro
         if (IsValid())
             return Ok(result);
 
-        if (_notification.Get().Select(v => v.Level).Contains(LogLevel.Error))
-            return Problem(detail: JsonConvert.SerializeObject(new ErrorResponse(_notification.Get().Where(v => v.Level == LogLevel.Error))));
+        if (_notification.Get().Select(v => v.LogLevel).Contains(LogLevel.Error))
+            return Problem(detail: JsonConvert.SerializeObject(new ErrorResponse(_notification.Get().Where(v => v.LogLevel == LogLevel.Error))));
 
         return BadRequest(new ValidationResponse(_notification.Get()));
     }

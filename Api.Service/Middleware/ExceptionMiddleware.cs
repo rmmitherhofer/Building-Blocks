@@ -5,6 +5,7 @@ using Logs.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using SnapTrace.Applications;
 using System.Diagnostics;
 using System.Net;
 
@@ -14,18 +15,22 @@ public class ExceptionMiddleware
 {
     private readonly RequestDelegate _next;
     private readonly ILogger<ExceptionMiddleware> _logger;
-    private Stopwatch _diagnostico;
+    private readonly ISnapTraceApplication _snapTrace;
+    private Stopwatch _diagnostic;
 
-    public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
+    public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger , ISnapTraceApplication snapTrace)
     {
+        ArgumentNullException.ThrowIfNull(snapTrace, nameof(ISnapTraceApplication));
+
         _next = next;
         _logger = logger;
+        _snapTrace = snapTrace;
     }
 
     public async Task InvokeAsync(HttpContext context)
     {
-        _diagnostico = new();
-        _diagnostico.Start();
+        _diagnostic = new();
+        _diagnostic.Start();
 
         try
         {
@@ -47,39 +52,41 @@ public class ExceptionMiddleware
         {
             HandleRequestException(context, ex, HttpStatusCode.InternalServerError);
         }
-        finally { _diagnostico.Stop(); }
+        finally { _diagnostic.Stop(); }
     }
 
     private void HandleRequestException(HttpContext context, Exception exception, HttpStatusCode statusCode)
     {
-        LogLevel levelLog = LogLevel.Information;
+        LogLevel logLevel = LogLevel.Information;
         switch (statusCode)
         {
             case HttpStatusCode.Unauthorized:
             case HttpStatusCode.BadRequest:
-                levelLog = LogLevel.Warning;
-                _logger.LogWarn($"Descricao: {exception.Message} - detalhe: {exception.StackTrace}");
-                SendException(context, exception, statusCode, levelLog);
+                logLevel = LogLevel.Warning;
+                _logger.LogWarn($"Message: {exception.Message} - detail: {exception.StackTrace}", context);
+                SendException(context, exception, statusCode, logLevel);
                 return;
             case HttpStatusCode.BadGateway:
-                levelLog = LogLevel.Error;
-                _logger.LogFail($"Descricao: {exception.Message} - detalhe: {exception.StackTrace}");
+                logLevel = LogLevel.Error;
+                _logger.LogFail($"Message: {exception.Message} - detail: {exception.StackTrace}", context);
                 break;
             case HttpStatusCode.InternalServerError:
-                levelLog = LogLevel.Critical;
-                _logger.LogCrit($"Descricao: {exception.Message} - detalhe: {exception.StackTrace}");
+                logLevel = LogLevel.Critical;
+                _logger.LogCrit($"Message: {exception.Message} - detail: {exception.StackTrace}", context);
                 break;
         }
-        SendException(context, exception, statusCode, levelLog);
+        SendException(context, exception, statusCode, logLevel);
     }
-    private void SendException(HttpContext context, Exception exception, HttpStatusCode statusCode, LogLevel levelLog)
+    private void SendException(HttpContext context, Exception exception, HttpStatusCode statusCode, LogLevel logLevel)
     {
-        var notifications = new List<Notification> { new(levelLog, exception.GetType().Name, exception.GetType().Name, exception.Message, levelLog == LogLevel.Critical ? exception?.StackTrace! : null) };
+        _snapTrace.Notify(context, exception, logLevel, _diagnostic.ElapsedMilliseconds);
+
+        var notifications = new List<Notification> { new(logLevel, exception.GetType().Name, exception.GetType().Name, exception.Message, logLevel == LogLevel.Critical ? exception?.StackTrace! : null) };
 
         context.Response.StatusCode = (int)statusCode;
         context.Response.ContentType = "application/json";
 
-        switch (levelLog)
+        switch (logLevel)
         {
             case LogLevel.Warning:
                 context.Response.WriteAsync(JsonConvert.SerializeObject(new ValidationResponse(notifications)));

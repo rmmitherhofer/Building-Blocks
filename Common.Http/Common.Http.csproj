@@ -1,0 +1,26 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+		<NoWarn>$(NoWarn);1591</NoWarn>
+
+		<Version>1.0.0</Version>
+
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+
+		<Authors>Renato Mitherhofer</Authors>
+
+		<PackageId>MitherPack.Common.Http</PackageId>
+
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="MitherPack.Api.Responses" Version="1.0.1" />
+	  <PackageReference Include="MitherPack.Common.Exceptions" Version="1.0.2" />
+	  <PackageReference Include="MitherPack.Common.Logs" Version="1.0.1" />
+	</ItemGroup>
+
+</Project>
