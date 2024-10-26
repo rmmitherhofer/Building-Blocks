@@ -38,7 +38,7 @@ public static class ApiConfiguration
 
         services.AddSwaggerConfig();
 
-        services.AddLogMonitor(configuration, settings.LogMonitorSettings);
+        services.AddSnapTrace(configuration, settings.SnapTraceSettings);
 
         return services;
     }
@@ -46,7 +46,7 @@ public static class ApiConfiguration
     {
         ArgumentNullException.ThrowIfNull(app, nameof(WebApplication));
 
-        app.UseLogMonitor();
+        app.UseSnapTrace();
 
         app.UseMiddleware<LogMiddleware>();
 

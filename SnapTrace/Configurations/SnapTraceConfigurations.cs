@@ -12,9 +12,9 @@ using SnapTrace.Middleware;
 
 namespace SnapTrace.Configurations;
 
-public static class LogMonitorConfigurations
+public static class SnapTraceConfigurations
 {
-    public static IServiceCollection AddLogMonitor(this IServiceCollection services, IConfiguration configuration, LogMonitorSettings settings)
+    public static IServiceCollection AddSnapTrace(this IServiceCollection services, IConfiguration configuration, SnapTraceSettings settings)
     {
         services.AddNotificationConfig();
 
@@ -41,13 +41,13 @@ public static class LogMonitorConfigurations
         const string SECTION = "Apis";
 
         services.AddHttpClient<ILogHttpService, LogHttpService>(services =>
-            services.BaseAddress = new Uri(configuration.Get("Log-Monitor:BaseAddress", SECTION))
+            services.BaseAddress = new Uri(configuration.Get("SnapTrace:BaseAddress", SECTION))
         );
 
         return services;
     }
 
-    public static WebApplication UseLogMonitor(this WebApplication app)
+    public static WebApplication UseSnapTrace(this WebApplication app)
     {
         ArgumentNullException.ThrowIfNull(app, nameof(WebApplication));
 

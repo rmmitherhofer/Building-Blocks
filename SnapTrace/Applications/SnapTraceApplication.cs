@@ -17,12 +17,12 @@ public class SnapTraceApplication : ISnapTraceApplication
 {
     private readonly ILogHttpService _httpService;
     private readonly KeyValuePair<ProjectType, string> _project;
-    private readonly LogMonitorSettings _settings;
+    private readonly SnapTraceSettings _settings;
     private HttpContext _context;
 
     private const string USER_AGENT = "User-Agent";
 
-    public SnapTraceApplication(ILogHttpService httpService, LogMonitorSettings settings)
+    public SnapTraceApplication(ILogHttpService httpService, SnapTraceSettings settings)
     {
         _httpService = httpService;
 
