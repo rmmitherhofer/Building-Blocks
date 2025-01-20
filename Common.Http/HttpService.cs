@@ -230,6 +230,9 @@ public abstract class HttpService
     }
     protected void SetBearerToken(string token) 
         => _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+    protected void AddHeader(string key, string value) 
+        => _httpClient.DefaultRequestHeaders.Add(key, value);
     private void AddDefaultHeaders()
     {
         AddHeaderIpAddress();
