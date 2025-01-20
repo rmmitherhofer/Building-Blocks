@@ -7,7 +7,7 @@ public class Log
     public Project Project { get; set; }
     public string Path { get; set; }
     public string? RequisitionTime { get; set; }
-    public LogLevel LogLevel { get; set; }
+    public Microsoft.Extensions.Logging.LogLevel LogLevel { get; set; }
     public User User { get; set; }
     public Request Request { get; set; }
     public Response Response { get; set; }

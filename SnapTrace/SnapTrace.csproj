@@ -18,4 +18,16 @@
 		<PackageReference Include="MitherPack.Common.Http" Version="1.0.1" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Extensions\Aspnet.Mvc\" />
+	  <Folder Include="Extensions\Aspnet.WebApi\" />
+	  <Folder Include="Extensions\Aspnet.Web\Exceptions\" />
+	  <Folder Include="Extensions\AspNetCore\ExtensionMethods\" />
+	  <Folder Include="Extensions\SnapTraces\Listeners\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <!--<ProjectReference Include="..\Common.Http\Common.Http.csproj" />-->
+	</ItemGroup>
+
 </Project>

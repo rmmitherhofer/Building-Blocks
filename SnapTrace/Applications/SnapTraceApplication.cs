@@ -31,7 +31,7 @@ public class SnapTraceApplication : ISnapTraceApplication
         _project = new KeyValuePair<ProjectType, string>(_settings.ProjectType, settings.Name);
     }
 
-    public async Task Notify(HttpContext context, Exception exception, LogLevel logLevel, long elapsedMilliseconds)
+    public async Task Notify(HttpContext context, Exception exception, Microsoft.Extensions.Logging.LogLevel logLevel, long elapsedMilliseconds)
     {
         if (!_settings.TurnOnLog) return;
 
@@ -44,7 +44,7 @@ public class SnapTraceApplication : ISnapTraceApplication
         Task.Run(() => _httpService.Add(log));
     }
 
-    public async Task Notify(HttpContext context, IEnumerable<Notification> notifications, LogLevel logLevel, long elapsedMilliseconds)
+    public async Task Notify(HttpContext context, IEnumerable<Notification> notifications, Microsoft.Extensions.Logging.LogLevel logLevel, long elapsedMilliseconds)
     {
         if (!_settings.TurnOnLog) return;
 
@@ -57,7 +57,7 @@ public class SnapTraceApplication : ISnapTraceApplication
         Task.Run(() => _httpService.Add(log));
     }
 
-    private Log Create(LogLevel logLevel, long elapsedMilliseconds, string errorType)
+    private Log Create(Microsoft.Extensions.Logging.LogLevel logLevel, long elapsedMilliseconds, string errorType)
     {
         return new()
         {
