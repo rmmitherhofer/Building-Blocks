@@ -1,5 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
+using SnapTraceV2.Args;
+using SnapTraceV2.Extensions;
 using SnapTraceV2.Options;
+using SnapTraceV2.Services;
 
 namespace SnapTraceV2.Adapters;
 
@@ -10,53 +13,76 @@ public class LoggerAdapter : ILogger
 
     public LoggerAdapter(LoggerOptions options, string? category = null)
     {
-        _options = options ?? throw new ArgumentNullException(nameof(LoggerOptions), "Not null");
+        ArgumentNullException.ThrowIfNull(options, nameof(LoggerOptions));
+
+        _options = options;
         _category = category;
     }
 
     IDisposable? ILogger.BeginScope<TState>(TState state)
     {
-        return default(IDisposable);
+        var logger = GetLogger();
+
+        return new SnapTraceScope<TState>(state, logger, _options);
     }
 
-    bool ILogger.IsEnabled(LogLevel logLevel)
-    {
-        return true;
-    }
+    bool ILogger.IsEnabled(LogLevel logLevel) => true;
 
     void ILogger.Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
-        ///Armazenar esses logs em uma lista da sessao ativa
+        LoggerService logger = GetLogger();
+
         string message = formatter(state, exception);
+
+        if (_options.Formatter != null)
+        {
+            FormatterArgs formatterArgs = new(new FormatterArgs.CreateOptions
+            {
+                State = state,
+                Exception = exception,
+                DefaultValue = message,
+                Logger = logger
+            });
+
+            string custom = _options.Formatter.Invoke(formatterArgs);
+
+            message = string.IsNullOrEmpty(custom) ? message : custom;
+        }
 
         switch (logLevel)
         {
-            case Microsoft.Extensions.Logging.LogLevel.Debug:
-                Console.WriteLine(message);
-                break;
-
-            case Microsoft.Extensions.Logging.LogLevel.Information:
-                Console.WriteLine(message);
-                break;
-
-            case Microsoft.Extensions.Logging.LogLevel.Warning:
-                Console.WriteLine(message);
-                break;
-
-            case Microsoft.Extensions.Logging.LogLevel.Error:
-                Console.WriteLine(message);
-                break;
-
-            case Microsoft.Extensions.Logging.LogLevel.Critical:
-                Console.WriteLine(message);
-                break;
-
-            case Microsoft.Extensions.Logging.LogLevel.None:
-                break;
-
+            case LogLevel.Trace:
             default:
-                Console.WriteLine(message);
+                logger.Trace(message);
+                break;
+            case LogLevel.Debug:
+                logger.Debug(message);
+                break;
+
+            case LogLevel.Information:
+                logger.Info(message);
+                break;
+
+            case LogLevel.Warning:
+                logger.Warn(message);
+                break;
+
+            case LogLevel.Error:
+                logger.Error(message);
+                break;
+
+            case LogLevel.Critical:
+                logger.Critical(message);
+                break;
+
+            case LogLevel.None:
                 break;
         }
+    }
+
+    internal LoggerService GetLogger()
+    {
+        Factories.ILoggerFactory factory = _options.Factory ?? LoggerService.Factory;
+        return factory.Get(_category);
     }
 }

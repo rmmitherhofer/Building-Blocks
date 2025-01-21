@@ -16,4 +16,8 @@
     <ProjectReference Include="..\Common.Logs\Common.Logs.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Models\Container\" />
+  </ItemGroup>
+
 </Project>
