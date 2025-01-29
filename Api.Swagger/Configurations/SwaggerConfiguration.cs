@@ -1,4 +1,6 @@
-﻿using Logs.Extensions;
+﻿
+using Api.Swagger.Extensions;
+using Logs.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -30,9 +32,23 @@ public static class SwaggerConfiguration
 
         services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
-        services.AddSwaggerGen(a =>
+        services.AddSwaggerGen(c =>
         {
-            a.OperationFilter<SwaggerDefaultValues>();
+            c.OperationFilter<SwaggerDefaultValues>();
+
+            c.AddEnumsWithValuesFixFilters(options =>
+            {
+                options.ApplyParameterFilter = true;
+                options.ApplyDocumentFilter = true;
+                options.ApplySchemaFilter = true;
+                options.DescriptionSource = DescriptionSources.DescriptionAttributesThenXmlComments;
+                options.IncludeDescriptions = true;
+                options.IncludeXEnumRemarks = true;
+                options.XEnumNamesAlias = "Nomes enums";
+                options.XEnumDescriptionsAlias = "Descritivo enums";
+                //options.NewLine = "-";
+
+            });
 
             foreach (var xmlFile in xmlFiles)
             {
@@ -41,12 +57,12 @@ public static class SwaggerConfiguration
                     string xmlPath = xmlFile.Replace(".dll", ".xml");
                     try
                     {
-                        a.IncludeXmlComments(xmlPath);
+                        c.IncludeXmlComments(xmlPath);
                     }
                     catch
                     {
                         ConsoleLog.LogWarn($"{nameof(xmlPath)} não localizado em {xmlPath}, verifique se existe a tag <GenerateDocumentationFile>true</GenerateDocumentationFile> no .csproj do projeto");
-                    } 
+                    }
                 }
             }
         });
@@ -83,8 +99,8 @@ public static class SwaggerConfiguration
         app.UseSwaggerUI(options =>
         {
             string application = string.Empty;
-            
-            if(!Debugger.IsAttached)
+
+            if (!Debugger.IsAttached)
                 application = $"/{Assembly.GetEntryAssembly().GetName().Name.Replace(".Api", "").ToLower()}";
 
             foreach (var description in provider.ApiVersionDescriptions)
