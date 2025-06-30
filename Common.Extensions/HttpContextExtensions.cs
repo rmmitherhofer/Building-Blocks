@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Diagnostics;
-using System.Security.Claims;
 
 namespace Common.Extensions;
 
@@ -22,7 +21,7 @@ public static class HttpContextExtensions
 
     #region User
     public static string? GetUserId(this HttpContext context)
-        => context.User.GetId() ?? context.Request?.GetHeader(USER_ID) ?? string.Empty;
+        => context.User.GetId() ?? context.Request?.GetHeader(USER_ID);
     public static string? GetUserName(this HttpContext context) => context.User.GetName();
     public static string? GetUserLogin(this HttpContext context)
         => context.User.GetClaim(USER_LOGIN);
@@ -30,7 +29,7 @@ public static class HttpContextExtensions
         => context.User.GetClaim(USER_EMAIL);
     public static string GetIpAddress(this HttpContext context)
     {
-        string? ipAddress = context.User.GetClaim(FORWARDED) ?? context.Request?.GetHeader(FORWARDED) ?? string.Empty;
+        string? ipAddress = context.User.GetClaim(FORWARDED) ?? context.Request?.GetHeader(FORWARDED);
 
         if (Debugger.IsAttached || string.IsNullOrEmpty(ipAddress))
         {
@@ -101,13 +100,6 @@ public static class HttpContextExtensions
         context.Validate();
 
         context.User.AddClaim(key, value);
-    }
-
-    private static string? FindClaim(this HttpContext context, string type)
-    {
-        context.Validate();
-
-        return context.User.GetClaim(type);
     }
     public static HttpContext Validate(this HttpContext context)
     {

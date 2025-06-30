@@ -15,8 +15,8 @@ public static class HttpResponseExtensions
     public static void AddHeader(this HttpResponse response, string key, string value)
     {
         ArgumentNullException.ThrowIfNull(response, nameof(HttpResponse));
-        ArgumentNullException.ThrowIfNullOrEmpty(key, nameof(key));
-        ArgumentNullException.ThrowIfNullOrEmpty(value, nameof(value));
+        ArgumentException.ThrowIfNullOrEmpty(key, nameof(key));
+        ArgumentException.ThrowIfNullOrEmpty(value, nameof(value));
 
         if (response.Headers.ContainsKey(key))
             response.Headers.Remove(key);
@@ -26,7 +26,7 @@ public static class HttpResponseExtensions
     public static string GetHeader(this HttpResponse response, string key)
     {
         ArgumentNullException.ThrowIfNull(response, nameof(HttpResponse));
-        ArgumentNullException.ThrowIfNullOrEmpty(key, nameof(key));
+        ArgumentException.ThrowIfNullOrEmpty(key, nameof(key));
 
         if (response.Headers.TryGetValue(key, out var value))
             return value.ToString();
