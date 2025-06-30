@@ -8,17 +8,12 @@
 		<Authors>Renato Mitherhofer</Authors>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<NoWarn>$(NoWarn);1591</NoWarn>
-		<Version>1.0.2</Version>
+		<Version>9.0.0</Version>
 
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.6" />
-		<!--<PackageReference Include="MitherPack.Common.Extensions" Version="1.0.3" />-->
+		<PackageReference Include="MitherPack.Common.Extensions" Version="9.0.3" />
 	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\Common.Extensions\Common.Extensions.csproj" />
-	</ItemGroup>
-
 </Project>
