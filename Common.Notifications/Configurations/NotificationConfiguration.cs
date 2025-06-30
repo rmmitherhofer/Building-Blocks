@@ -1,4 +1,4 @@
-﻿using Common.Logs.Configurations;
+﻿using Common.Extensions.Configurations;
 using Common.Notifications.Handlers;
 using Common.Notifications.Interfaces;
 using Microsoft.AspNetCore.Builder;
@@ -16,7 +16,7 @@ public static class NotificationConfiguration
     /// <returns>IServiceCollection</returns>
     public static IServiceCollection AddNotificationConfig(this IServiceCollection services)
     {
-        services.AddLogConfig();
+        services.AddExtensionConfig();
 
         services.TryAddScoped<INotificationHandler, NotificationHandler>();
 
@@ -30,7 +30,7 @@ public static class NotificationConfiguration
     /// <returns>IServiceCollection</returns>
     public static IApplicationBuilder UseNotificationConfig(this IApplicationBuilder app)
     {
-        app.UseLogConfig();
+        app.UseExtensionConfig();
 
         return app;
     }
