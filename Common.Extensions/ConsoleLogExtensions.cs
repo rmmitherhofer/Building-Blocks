@@ -7,10 +7,7 @@ public static class ConsoleLogExtensions
 {
     private static IHttpContextAccessor? _accessor;
 
-    public static void Configure(IHttpContextAccessor accessor)
-    {
-        _accessor = accessor;
-    }
+    public static void Configure(IHttpContextAccessor accessor) => _accessor = accessor;
 
     #region Dbug
 
@@ -23,7 +20,7 @@ public static class ConsoleLogExtensions
         else
             logger.LogDebug($"{DateTime.Now:dd/MM/yyyy HH:mm:ss}|DBUG|{message}", args);
     }
-    public static void LogDbug(string message, params object?[] args) => CreateLog("DBUG", message);
+    public static void LogDbug(string message, params object?[] args) => CreateLog("DBUG", message, args);
 
     #endregion
 
@@ -37,7 +34,7 @@ public static class ConsoleLogExtensions
         else
             logger.LogTrace($"{DateTime.Now:dd/MM/yyyy HH:mm:ss}|TRCE|{message}", args);
     }
-    public static void LogTrce(string message, params object?[] args) => CreateLog("TRCE", message);
+    public static void LogTrce(string message, params object?[] args) => CreateLog("TRCE", message, args);
     #endregion
 
     #region Info
@@ -50,7 +47,7 @@ public static class ConsoleLogExtensions
         else
             logger.LogInformation($"{DateTime.Now:dd/MM/yyyy HH:mm:ss}|INFO|{message}", args);
     }
-    public static void LogInfo(string message, params object?[] args) => CreateLog("INFO", message);
+    public static void LogInfo(string message, params object?[] args) => CreateLog("INFO", message, args);
     #endregion
 
     #region Warn
@@ -63,7 +60,7 @@ public static class ConsoleLogExtensions
         else
             logger.LogWarning($"{DateTime.Now:dd/MM/yyyy HH:mm:ss}|WARN|{message}", args);
     }
-    public static void LogWarn(string message, params object?[] args) => CreateLog("WARN", message);
+    public static void LogWarn(string message, params object?[] args) => CreateLog("WARN", message, args);
     #endregion
 
     #region Fail
@@ -77,7 +74,7 @@ public static class ConsoleLogExtensions
             logger.LogError($"{DateTime.Now:dd/MM/yyyy HH:mm:ss}|FAIL|{message}", args);
     }
 
-    public static void LogFail(string message, params object?[] args) => CreateLog("FAIL", message);
+    public static void LogFail(string message, params object?[] args) => CreateLog("FAIL", message, args);
 
     #endregion
 
@@ -91,7 +88,7 @@ public static class ConsoleLogExtensions
         else
             logger.LogError($"{DateTime.Now:dd/MM/yyyy HH:mm:ss}|CRIT|{message}", args);
     }
-    public static void LogCrit(string message, params object?[] args) => CreateLog("CRIT", message);
+    public static void LogCrit(string message, params object?[] args) => CreateLog("CRIT", message, args);
     #endregion
     private static void CreateLog(string logLevel, string message, params object?[] args)
     {
@@ -141,4 +138,3 @@ public static class ConsoleLogExtensions
         Console.WriteLine();
     }
 }
-
