@@ -20,7 +20,7 @@ public class LogHttpService : HttpService, ILogHttpService
 {
     private readonly ILogger<LogHttpService> _logger;
 
-    public LogHttpService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, INotificationHandler notification, ILogger<LogHttpService> logger) : base(httpClient, httpContextAccessor, notification)
+    public LogHttpService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, INotificationHandler notification, ILogger<LogHttpService> logger) : base(httpClient, httpContextAccessor, notification, logger)
     {
         _logger = logger;
     }
@@ -51,13 +51,13 @@ public class LogHttpService : HttpService, ILogHttpService
                 {
                     _logger.LogWarn("StatusCode: " + validationsResult.Status.ToString());
                     foreach (var validation in validationsResult.Validations)
-                        _logger.LogWarn($"{validation.Timestamp:dd/MM/yyyy HH:mm:ss} - StatusCode: {validationsResult.Status} | Type: {validation.Type} | Message: {validation.Value}", _httpContextAccessor.HttpContext);
+                        _logger.LogWarn($"{validation.Timestamp:dd/MM/yyyy HH:mm:ss} - StatusCode: {validationsResult.Status} | Type: {validation.Type} | Message: {validation.Value}");
                 }
                 else
                 {
                     _logger.LogWarn("StatusCode: " + validationsResult.Status.ToString());
                     foreach (var notification in validationsResult.Notifications)
-                        _logger.LogWarn($"{notification.Timestamp:dd/MM/yyyy HH:mm:ss} - StatusCode: {validationsResult.Status} | Type: {notification.Type} | Message: {notification.Value}", _httpContextAccessor.HttpContext);
+                        _logger.LogWarn($"{notification.Timestamp:dd/MM/yyyy HH:mm:ss} - StatusCode: {validationsResult.Status} | Type: {notification.Type} | Message: {notification.Value}");
                 }
                 break;
 

@@ -12,6 +12,7 @@ public class Log
     public Request Request { get; set; }
     public Response Response { get; set; }
     public string ErrorType { get; set; }
+    public IEnumerable<LogEntry> Entries { get; set; }
     public IEnumerable<Error> Errors { get; set; }
 
 }

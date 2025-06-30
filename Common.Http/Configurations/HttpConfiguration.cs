@@ -8,8 +8,6 @@ public static class HttpConfiguration
     {
         ArgumentNullException.ThrowIfNull(services, nameof(services));
 
-        services.AddHttpContextAccessor();
-
         return services;
     }
 }

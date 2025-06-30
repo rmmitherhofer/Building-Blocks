@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net9.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<PackageId>MitherPack.Common.Core</PackageId>
@@ -12,10 +12,18 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="FluentValidation" Version="11.11.0" />
-		<PackageReference Include="MitherPack.Common.Exceptions" Version="1.0.2" />
+		<PackageReference Include="FluentValidation" Version="12.0.0" />
+		<!--<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />-->
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.6" />
+		<!--<PackageReference Include="MitherPack.Common.Exceptions" Version="1.0.2" />
 		<PackageReference Include="MitherPack.Common.Logs" Version="1.0.2" />
-		<PackageReference Include="MitherPack.Common.Notifications" Version="1.0.4" />
+		<PackageReference Include="MitherPack.Common.Notifications" Version="1.0.4" />-->
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Common.Exceptions\Common.Exceptions.csproj" />
+	  <ProjectReference Include="..\Common.Extensions\Common.Extensions.csproj" />
+	  <ProjectReference Include="..\Common.Notifications\Common.Notifications.csproj" />
 	</ItemGroup>
 
 </Project>
