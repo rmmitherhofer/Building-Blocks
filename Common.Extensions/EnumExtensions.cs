@@ -34,7 +34,7 @@ public static class EnumExtensions
     {
         var type = typeof(T);
 
-        if (!type.IsEnum) throw new InvalidOperationException("Tipo deve ser um Enum");
+        if (!type.IsEnum) throw new InvalidOperationException($"{type} is not an enum type.");
 
         foreach (var field in type.GetFields())
         {

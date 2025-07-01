@@ -1,8 +1,11 @@
 ﻿using Common.Extensions;
+using Common.Notifications.Interfaces;
 using Common.Notifications.Messages;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
+using SnapTrace.Adapters;
 using SnapTrace.Configurations.Settings;
 using SnapTrace.Enums;
 using SnapTrace.Extensions;
@@ -15,20 +18,16 @@ namespace SnapTrace.Applications;
 
 public class SnapTraceApplication : ISnapTraceApplication
 {
-    private readonly ILogHttpService _httpService;
-    private readonly KeyValuePair<ProjectType, string> _project;
+    private readonly ISnapTraceHttpService _httpService;
+    private readonly INotificationHandler _notification;
     private readonly SnapTraceSettings _settings;
     private HttpContext _context;
 
-    private const string USER_AGENT = "User-Agent";
-
-    public SnapTraceApplication(ILogHttpService httpService, SnapTraceSettings settings)
+    public SnapTraceApplication(ISnapTraceHttpService httpService, IOptions<SnapTraceSettings> options, INotificationHandler notification)
     {
         _httpService = httpService;
-
-        _settings = settings;
-
-        _project = new KeyValuePair<ProjectType, string>(_settings.ProjectType, settings.Name);
+        _settings = options.Value;
+        _notification = notification;
     }
 
     public async Task Notify(HttpContext context, Exception exception, LogLevel logLevel, long elapsedMilliseconds)
@@ -43,28 +42,36 @@ public class SnapTraceApplication : ISnapTraceApplication
 
         Task.Run(() => _httpService.Add(log));
     }
-
-    public async Task Notify(HttpContext context, IEnumerable<Notification> notifications, LogLevel logLevel, long elapsedMilliseconds)
+    public async Task Notify(HttpContext context, long elapsedMilliseconds)
     {
         if (!_settings.TurnOnLog) return;
 
         _context = context;
 
-        var log = Create(logLevel, elapsedMilliseconds, nameof(Notification));
+        var notifications = _notification.Get();
 
-        log.Errors = AddNotification(notifications);
+        LogLevel logLevel = notifications?.Any() == true
+            ? notifications.Max(n => n.LogLevel)
+            : LogLevel.Information;
+
+        var log = Create(logLevel, elapsedMilliseconds, logLevel > LogLevel.Information ? nameof(Notification) : null);
+
+        log.Errors = AddNotification(notifications.Where(x => x.LogLevel > LogLevel.Information));
 
         Task.Run(() => _httpService.Add(log));
     }
 
     private Log Create(LogLevel logLevel, long elapsedMilliseconds, string errorType)
     {
+        var entries = SnapTraceLogger.GetLogsForCurrentRequest(_context);
+
         return new()
         {
             Path = _context.Request.Path,
             RequisitionTime = elapsedMilliseconds.GetTime(),
             LogLevel = logLevel,
             ErrorType = errorType,
+            Entries = entries,
             Project = AddProject(),
             User = AddUser(),
             Request = AddRequest(),
@@ -75,8 +82,8 @@ public class SnapTraceApplication : ISnapTraceApplication
     {
         return new()
         {
-            Name = _project.Value,
-            Type = _project.Key
+            Name = _settings.Name,
+            Type = _settings.ProjectType
         };
     }
     private User AddUser()
@@ -84,27 +91,28 @@ public class SnapTraceApplication : ISnapTraceApplication
         return new()
         {
             Id = _context.GetUserId(),
-            Code = _context.GetUserCode(),
             HostName = Dns.GetHostName(),
             RemoteIP = _context.GetIpAddress(),
             ServerIP = _context?.Connection?.LocalIpAddress?.MapToIPv4()?.ToString(),
-            SessionId = _context?.GetSessionId()
         };
     }
     private Request AddRequest()
     {
-        string userAgent = _context.Request.Headers[USER_AGENT];
-        userAgent = string.IsNullOrEmpty(userAgent) ? "api" : userAgent;
+        string userAgent = _context.GetUserAgent();
+
+        userAgent = string.IsNullOrEmpty(userAgent) ? "Unknown" : userAgent;
 
         return new()
         {
+            Id = _context.GetRequestId(),
             Method = _context.Request.Method,
             Url = $"{_context.Request.Scheme}://{_context.Request.Host}{_context.Request.Path}{(_context.Request.QueryString.HasValue ? _context.Request.QueryString.Value : string.Empty)}",
             UserAgent = userAgent,
             Body = GetBody(),
             BodySize = _context.Request.ContentLength ?? 0,
-            Headers = Get(_context.Request.Headers)
-
+            CorrelationId = _context.GetCorrelationId(),
+            ClientId = _context.GetClientId(),
+            Headers = Get(_context.Request.Headers),
         };
     }
     private Response AddResponse()
@@ -118,6 +126,8 @@ public class SnapTraceApplication : ISnapTraceApplication
     }
     private IEnumerable<Error> AddException(Exception exception)
     {
+        if (exception is null) return [];
+
         List<Error> errors =
         [
             new()
@@ -133,6 +143,8 @@ public class SnapTraceApplication : ISnapTraceApplication
     }
     private IEnumerable<Error> AddNotification(IEnumerable<Notification> notifications)
     {
+        if (notifications?.Any() != true) return [];
+
         List<Error> errors = [];
 
         foreach (var notification in notifications)
@@ -140,6 +152,7 @@ public class SnapTraceApplication : ISnapTraceApplication
             errors.Add(new()
             {
                 Type = nameof(Notification),
+                LogLevel = notification.LogLevel.ToString(),
                 Message = notification.Key,
                 Tracer = notification.Value,
                 Datail = notification.Detail

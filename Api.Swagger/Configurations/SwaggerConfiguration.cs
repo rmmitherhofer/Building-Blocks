@@ -1,7 +1,10 @@
-﻿using Logs.Extensions;
+﻿
+using Api.Swagger.Extensions;
+using Common.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Swagger.Filters;
@@ -14,7 +17,9 @@ namespace Swagger.Configurations;
 
 public static class SwaggerConfiguration
 {
-    public static IServiceCollection AddSwaggerConfig(this IServiceCollection services)
+    private static string SETTINGS_FIXENUMSOPTIONS_NODE = "SwaggerSettings:FixEnumsOptions:";
+
+    public static IServiceCollection AddSwaggerConfig(this IServiceCollection services, IConfiguration configuration)
     {
         ArgumentNullException.ThrowIfNull(services);
 
@@ -30,9 +35,24 @@ public static class SwaggerConfiguration
 
         services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
-        services.AddSwaggerGen(a =>
+        services.AddSwaggerGen(c =>
         {
-            a.OperationFilter<SwaggerDefaultValues>();
+            c.OperationFilter<SwaggerDefaultValues>();
+
+            c.OperationFilter<AddOptionalHelperOperationFilter>();
+
+            c.AddEnumsWithValuesFixFilters(options =>
+            {
+                options.ApplyParameterFilter = bool.TryParse(configuration[$"{SETTINGS_FIXENUMSOPTIONS_NODE}ApplyParameterFilter"], out bool applyParameterFilter) ? applyParameterFilter : true;
+                options.ApplyDocumentFilter = bool.TryParse(configuration[$"{SETTINGS_FIXENUMSOPTIONS_NODE}ApplyDocumentFilter"], out bool applyDocumentFilter) ? applyDocumentFilter : true;
+                options.ApplySchemaFilter = bool.TryParse(configuration[$"{SETTINGS_FIXENUMSOPTIONS_NODE}ApplySchemaFilter"], out bool applySchemaFilter) ? applySchemaFilter : true;
+                options.DescriptionSource = Enum.TryParse(configuration[$"{SETTINGS_FIXENUMSOPTIONS_NODE}DescriptionSource"], out DescriptionSources descriptionSource) ? descriptionSource : DescriptionSources.DescriptionAttributes;
+                options.IncludeDescriptions = bool.TryParse(configuration[$"{SETTINGS_FIXENUMSOPTIONS_NODE}IncludeDescriptions"], out bool includeDescriptions) ? includeDescriptions : false;
+                options.IncludeXEnumRemarks = bool.TryParse(configuration[$"{SETTINGS_FIXENUMSOPTIONS_NODE}IncludeXEnumRemarks"], out bool includeXEnumRemarks) ? includeXEnumRemarks : false;
+                options.XEnumNamesAlias = configuration[$"{SETTINGS_FIXENUMSOPTIONS_NODE}XEnumNamesAlias"] ?? "X-enumNames";
+                options.XEnumDescriptionsAlias = configuration[$"{SETTINGS_FIXENUMSOPTIONS_NODE}XEnumDescriptionsAlias"] ?? "x-enumDescriptions";
+                options.NewLine = configuration[$"{SETTINGS_FIXENUMSOPTIONS_NODE}NewLine"] ?? "\n";
+            });
 
             foreach (var xmlFile in xmlFiles)
             {
@@ -41,12 +61,12 @@ public static class SwaggerConfiguration
                     string xmlPath = xmlFile.Replace(".dll", ".xml");
                     try
                     {
-                        a.IncludeXmlComments(xmlPath);
+                        c.IncludeXmlComments(xmlPath);
                     }
                     catch
                     {
-                        ConsoleLog.LogWarn($"{nameof(xmlPath)} não localizado em {xmlPath}, verifique se existe a tag <GenerateDocumentationFile>true</GenerateDocumentationFile> no .csproj do projeto");
-                    } 
+                        ConsoleLogExtensions.LogWarn($"{nameof(xmlPath)} não localizado em {xmlPath}, verifique se existe a tag <GenerateDocumentationFile>true</GenerateDocumentationFile> no .csproj do projeto");
+                    }
                 }
             }
         });
@@ -83,8 +103,8 @@ public static class SwaggerConfiguration
         app.UseSwaggerUI(options =>
         {
             string application = string.Empty;
-            
-            if(!Debugger.IsAttached)
+
+            if (!Debugger.IsAttached)
                 application = $"/{Assembly.GetEntryAssembly().GetName().Name.Replace(".Api", "").ToLower()}";
 
             foreach (var description in provider.ApiVersionDescriptions)

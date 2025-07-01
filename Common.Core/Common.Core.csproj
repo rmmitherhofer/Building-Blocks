@@ -1,21 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
+		<TargetFramework>net9.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<PackageId>MitherPack.Common.Core</PackageId>
 		<Authors>Renato Mitherhofer</Authors>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<NoWarn>$(NoWarn);1591</NoWarn>
-		<Version>1.0.3</Version>
+		<Version>9.0.0</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="FluentValidation" Version="11.11.0" />
-		<PackageReference Include="MitherPack.Common.Exceptions" Version="1.0.2" />
-		<PackageReference Include="MitherPack.Common.Logs" Version="1.0.2" />
-		<PackageReference Include="MitherPack.Common.Notifications" Version="1.0.4" />
+		<PackageReference Include="MitherPack.Common.Exceptions" Version="9.0.0" />
+		<PackageReference Include="MitherPack.Common.Notifications" Version="9.0.0" />
 	</ItemGroup>
 
 </Project>

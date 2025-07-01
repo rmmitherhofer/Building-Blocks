@@ -5,23 +5,13 @@ namespace Api.Responses;
 
 public class ErrorResponse
 {
-    public HttpStatusCode? StatusCode { get; private set; }
-    /// <summary>
-    /// Notificações
-    /// </summary>
-    public IEnumerable<Notification> Errors { get; private set; }
+    public HttpStatusCode StatusCode { get; private set; }
+    public string Message { get; private set; }
 
-    public ErrorResponse(HttpStatusCode? statusCode, IEnumerable<Notification> notifications)
+    public ErrorResponse(HttpStatusCode statusCode, string message)
     {
         StatusCode = statusCode;
 
-        Errors = notifications;
-    }
-
-    public ErrorResponse(IEnumerable<Notification> notifications)
-    {
-        StatusCode = HttpStatusCode.InternalServerError;
-
-        Errors = notifications;
+        Message = !string.IsNullOrEmpty(message) ? message : "An error occurred while processing your request.";
     }
 }

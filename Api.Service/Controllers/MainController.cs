@@ -1,11 +1,12 @@
 ﻿using Api.Responses;
+using Common.Extensions;
 using Common.Notifications.Interfaces;
 using Common.Notifications.Messages;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
+using System.Net;
 
 namespace Api.Service.Controllers;
 
@@ -33,9 +34,16 @@ public abstract class MainController(INotificationHandler notification) : Contro
             return Ok(result);
 
         if (_notification.Get().Select(v => v.LogLevel).Contains(LogLevel.Error))
-            return Problem(detail: JsonConvert.SerializeObject(new ErrorResponse(_notification.Get().Where(v => v.LogLevel == LogLevel.Error))));
+            return StatusCode((int)HttpStatusCode.InternalServerError,                
+                new DetailsResponse(HttpStatusCode.InternalServerError, new ValidationResponse(_notification.Get().Where(v => v.LogLevel == LogLevel.Error)))
+                {
+                    CorrelationId = HttpContext.GetCorrelationId()
+                });
 
-        return BadRequest(new ValidationResponse(_notification.Get()));
+        return BadRequest(new DetailsResponse(new ValidationResponse(_notification.Get()))
+        {
+            CorrelationId = HttpContext.GetCorrelationId()
+        });
     }
 
     private ActionResult CustomResponse(ModelStateDictionary modelState)
@@ -57,15 +65,38 @@ public abstract class MainController(INotificationHandler notification) : Contro
     }
 
     private ActionResult CustomResponse(NotFoundResponse response)
-        => NotFound(response);
+        => NotFound(new DetailsResponse(response)
+        {
+            CorrelationId = HttpContext.GetCorrelationId()
+        });
     protected ActionResult NotFound(string? detail = null)
-        => NotFound(new NotFoundResponse(detail));
+        => NotFound(new DetailsResponse(new NotFoundResponse(detail))
+        {
+            CorrelationId = HttpContext.GetCorrelationId()
+        });
     protected bool IsValid()
         => !_notification.HasNotifications();
-    protected void Notify(string type, string key, string mensagem)
-        => _notification.Notify(new Notification(type, key, mensagem));
-    protected void Notify(string key, string mensagem)
-        => _notification.Notify(new Notification(key, mensagem));
+
+    protected void Notify(LogLevel logLevel, string type, string key, string value, string detail)
+        => _notification.Notify(new Notification(logLevel, type, key, value, detail));
+    protected void Notify(string type, string key, string value, string detail)
+        => _notification.Notify(new Notification(LogLevel.Warning, type, key, value, detail));
+
+    protected void Notify(LogLevel logLevel, string type, string key, string value)
+        => _notification.Notify(new Notification(logLevel, type, key, value));
+    protected void Notify(string type, string key, string value)
+        => _notification.Notify(new Notification(LogLevel.Warning, type, key, value));
+
+    protected void Notify(LogLevel logLevel, string key, string value)
+        => _notification.Notify(new Notification(logLevel, key, value));
+    protected void Notify(string key, string value)
+        => _notification.Notify(new Notification(LogLevel.Warning, key, value));
+
+    protected void Notify(LogLevel logLevel, string value)
+        => _notification.Notify(new Notification(logLevel, value));
+    protected void Notify(string value)
+        => _notification.Notify(new Notification(LogLevel.Warning, value));
+
     protected void Notify(Exception exception)
         => _notification.Notify(new Notification(LogLevel.Error, exception.GetType().Name, exception.GetType().Name, exception.Message, exception?.StackTrace));
     protected void Clear()

@@ -5,7 +5,7 @@ namespace Extensoes;
 
 public static class ConfigurationsExtensions
 {
-    public static IConfiguration SetConfiguration(this IConfiguration configuration, IWebHostEnvironment environment)
+    public static IConfiguration Set(this IConfiguration configuration, IWebHostEnvironment environment)
     {
         var configurationManager = (ConfigurationManager)configuration;
 

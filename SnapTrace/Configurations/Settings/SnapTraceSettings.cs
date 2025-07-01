@@ -3,9 +3,21 @@ using System.Reflection;
 
 namespace SnapTrace.Configurations.Settings;
 
-public class SnapTraceSettings(ProjectType projectType, bool turnOnLog = true)
+public class SnapTraceSettings
 {
-    public ProjectType ProjectType { get; } = projectType;
-    public string Name { get; } = Assembly.GetCallingAssembly().FullName.Split(',')[0];
-    public bool TurnOnLog { get; } = turnOnLog;
+    public ProjectType ProjectType { get; set; }
+    public string Name { get; } = Assembly.GetEntryAssembly().GetName().Name;
+    public bool TurnOnLog { get; set; }
+    public SnapTraceHttpServiceSettings Service { get; set; }
+}
+
+public class SnapTraceHttpServiceSettings
+{
+    public string BaseAddress { get; set; }
+    public SnapTraceHttpServiceEndPointsSettings EndPoints { get; set; }
+}
+
+public class SnapTraceHttpServiceEndPointsSettings
+{
+    public string Notify { get; set; }
 }

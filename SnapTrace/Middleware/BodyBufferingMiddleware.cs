@@ -4,6 +4,7 @@ namespace SnapTrace.Middleware;
 
 public class BodyBufferingMiddleware(RequestDelegate next)
 {
+    public const string Name = "BodyBufferingMiddleware";
     private readonly RequestDelegate _next = next;
     public async Task InvokeAsync(HttpContext context)
     {

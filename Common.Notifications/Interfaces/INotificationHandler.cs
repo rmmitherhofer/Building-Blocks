@@ -17,13 +17,13 @@ public interface INotificationHandler
     /// Armazena lista de notificações no contexto
     /// </summary>
     /// <param name="notifications"></param>
-    void Notificar(ICollection<Notification> notifications);
+    void Notify(IEnumerable<Notification> notifications);
 
     /// <summary>
     /// Retorna lista de notificações
     /// </summary>
     /// <returns>Coleção de Notificações</returns>
-    ICollection<Notification> Get();
+    IEnumerable<Notification> Get();
 
     /// <summary>
     /// Valida se possui notificações no contexto
