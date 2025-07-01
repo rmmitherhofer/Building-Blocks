@@ -1,5 +1,4 @@
-﻿using Common.Notifications.Messages;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using SnapTrace.Applications;
 using System.Diagnostics;
@@ -8,17 +7,16 @@ namespace SnapTrace.Middleware;
 
 public class SnapTraceMiddleware
 {
+    public const string Name = "SnapTraceMiddleware";
     private readonly RequestDelegate _next;
-    private readonly ILogger<SnapTraceMiddleware> _logger;
     private readonly ISnapTraceApplication _snapTrace;
     private Stopwatch _diagnostic;
 
-    public SnapTraceMiddleware(RequestDelegate next, ILogger<SnapTraceMiddleware> logger, ISnapTraceApplication snapTrace)
+    public SnapTraceMiddleware(RequestDelegate next, ISnapTraceApplication snapTrace)
     {
         ArgumentNullException.ThrowIfNull(snapTrace, nameof(ISnapTraceApplication));
 
         _next = next;
-        _logger = logger;
         _snapTrace = snapTrace;
     }
 
@@ -40,10 +38,16 @@ public class SnapTraceMiddleware
         }
         finally
         {
+
             if (exception is null)
-                _ = _snapTrace.Notify(context, _diagnostic.ElapsedMilliseconds);
+            {
+                if (!context.Request.Path.Value.Contains("swagger"))
+                    _ = _snapTrace.Notify(context, _diagnostic.ElapsedMilliseconds);
+            }
             else
+            {
                 _ = _snapTrace.Notify(context, exception, LogLevel.Error, _diagnostic.ElapsedMilliseconds);
+            }
         }
     }
 }

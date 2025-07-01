@@ -1,11 +1,9 @@
-﻿using Common.Http.Configurations;
-using Common.Notifications.Configurations;
+﻿using Common.Notifications.Configurations;
 using Extensoes;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using SnapTrace.Adapters;
 using SnapTrace.Applications;
@@ -17,15 +15,15 @@ namespace SnapTrace.Configurations;
 
 public static class SnapTraceConfigurations
 {
-    public static IServiceCollection AddSnapTrace(this IServiceCollection services, IConfiguration configuration, SnapTraceSettings settings, Action<LoggerOptions> configure)
+    const string SNAPTRACE_NODE = "SnapTraceSettings";
+    public static IServiceCollection AddSnapTrace(this IServiceCollection services, IConfiguration configuration, Action<LoggerOptions> configure)
     {
+        ArgumentNullException.ThrowIfNull(services, nameof(IServiceCollection));
+        ArgumentNullException.ThrowIfNull(configuration, nameof(IConfiguration));
+
         services.AddNotificationConfig();
 
-        services.TryAddSingleton(settings);
-
-        services.AddHttpContextAccessor();
-
-        services.AddHttpConfig();
+        services.AddOptions(configuration);
 
         services.AddAppService(configure);
 
@@ -34,8 +32,20 @@ public static class SnapTraceConfigurations
         return services;
     }
 
+    public static IServiceCollection AddOptions(this IServiceCollection services, IConfiguration configuration)
+    {
+        ArgumentNullException.ThrowIfNull(services, nameof(IServiceCollection));
+        ArgumentNullException.ThrowIfNull(configuration, nameof(IConfiguration));
+
+        services.Configure<SnapTraceSettings>(configuration.GetSection(SNAPTRACE_NODE));
+
+        return services;
+    }
+
     private static IServiceCollection AddAppService(this IServiceCollection services, Action<LoggerOptions> configure)
     {
+        ArgumentNullException.ThrowIfNull(services, nameof(IServiceCollection));
+
         LoggerOptions options = new();
 
         configure?.Invoke(options);
@@ -53,10 +63,11 @@ public static class SnapTraceConfigurations
 
     private static IServiceCollection AddHttpService(this IServiceCollection services, IConfiguration configuration)
     {
-        const string SECTION = "Apis";
+        ArgumentNullException.ThrowIfNull(services, nameof(IServiceCollection));
+        ArgumentNullException.ThrowIfNull(configuration, nameof(IConfiguration));
 
-        services.AddHttpClient<ILogHttpService, LogHttpService>(services =>
-            services.BaseAddress = new Uri(configuration.Get("SnapTrace:BaseAddress", SECTION))
+        services.AddHttpClient<ISnapTraceHttpService, SnapTraceHttpService>(services =>
+            services.BaseAddress = new Uri(configuration.Get("Service:BaseAddress", SNAPTRACE_NODE))
         );
 
         return services;
@@ -66,9 +77,9 @@ public static class SnapTraceConfigurations
     {
         ArgumentNullException.ThrowIfNull(app, nameof(IApplicationBuilder));
 
-        app.UseMiddleware<BodyBufferingMiddleware>();
+        app.TryUseMiddleware<BodyBufferingMiddleware>(BodyBufferingMiddleware.Name);
 
-        app.UseMiddleware<SnapTraceMiddleware>();
+        app.TryUseMiddleware<SnapTraceMiddleware>(SnapTraceMiddleware.Name);
 
         return app;
     }

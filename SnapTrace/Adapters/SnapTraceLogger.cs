@@ -75,7 +75,6 @@ public class SnapTraceLogger : ILogger
 public class SnapTraceLoggerProvider : ILoggerProvider
 {
     private readonly LoggerOptions _options;
-    private readonly IServiceProvider _serviceProvider;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
     public SnapTraceLoggerProvider(LoggerOptions options, IHttpContextAccessor httpContextAccessor)

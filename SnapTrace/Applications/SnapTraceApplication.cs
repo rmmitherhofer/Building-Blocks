@@ -3,6 +3,7 @@ using Common.Notifications.Interfaces;
 using Common.Notifications.Messages;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using SnapTrace.Adapters;
 using SnapTrace.Configurations.Settings;
@@ -17,17 +18,15 @@ namespace SnapTrace.Applications;
 
 public class SnapTraceApplication : ISnapTraceApplication
 {
-    private readonly ILogHttpService _httpService;
+    private readonly ISnapTraceHttpService _httpService;
     private readonly INotificationHandler _notification;
-    private readonly KeyValuePair<ProjectType, string> _project;
     private readonly SnapTraceSettings _settings;
     private HttpContext _context;
 
-    public SnapTraceApplication(ILogHttpService httpService, SnapTraceSettings settings, INotificationHandler notification)
+    public SnapTraceApplication(ISnapTraceHttpService httpService, IOptions<SnapTraceSettings> options, INotificationHandler notification)
     {
         _httpService = httpService;
-        _settings = settings;
-        _project = new KeyValuePair<ProjectType, string>(_settings.ProjectType, settings.Name);
+        _settings = options.Value;
         _notification = notification;
     }
 
@@ -43,20 +42,6 @@ public class SnapTraceApplication : ISnapTraceApplication
 
         Task.Run(() => _httpService.Add(log));
     }
-
-    public async Task Notify(HttpContext context, IEnumerable<Notification> notifications, LogLevel logLevel, long elapsedMilliseconds)
-    {
-        if (!_settings.TurnOnLog) return;
-
-        _context = context;
-
-        var log = Create(logLevel, elapsedMilliseconds, nameof(Notification));
-
-        log.Errors = AddNotification(notifications);
-
-        Task.Run(() => _httpService.Add(log));
-    }
-
     public async Task Notify(HttpContext context, long elapsedMilliseconds)
     {
         if (!_settings.TurnOnLog) return;
@@ -97,8 +82,8 @@ public class SnapTraceApplication : ISnapTraceApplication
     {
         return new()
         {
-            Name = _project.Value,
-            Type = _project.Key
+            Name = _settings.Name,
+            Type = _settings.ProjectType
         };
     }
     private User AddUser()
@@ -124,7 +109,7 @@ public class SnapTraceApplication : ISnapTraceApplication
             Url = $"{_context.Request.Scheme}://{_context.Request.Host}{_context.Request.Path}{(_context.Request.QueryString.HasValue ? _context.Request.QueryString.Value : string.Empty)}",
             UserAgent = userAgent,
             Body = GetBody(),
-            BodySize = _context.Request.ContentLength ?? 0,            
+            BodySize = _context.Request.ContentLength ?? 0,
             CorrelationId = _context.GetCorrelationId(),
             ClientId = _context.GetClientId(),
             Headers = Get(_context.Request.Headers),
