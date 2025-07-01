@@ -3,7 +3,6 @@ using Common.Exceptions;
 using Common.Extensions;
 using Common.Notifications.Interfaces;
 using Common.Notifications.Messages;
-using Logs.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;

@@ -7,7 +7,7 @@
 
 		<NoWarn>$(NoWarn);1591</NoWarn>
 
-		<Version>1.0.1</Version>
+		<Version>9.0.0</Version>
 
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 
@@ -18,15 +18,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <!--<PackageReference Include="MitherPack.Api.Responses" Version="1.0.2" />
-	  <PackageReference Include="MitherPack.Common.Exceptions" Version="1.0.2" />
-	  <PackageReference Include="MitherPack.Common.Logs" Version="1.0.2" />-->
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\Api.Responses\Api.Responses.csproj" />
-	  <ProjectReference Include="..\Common.Exceptions\Common.Exceptions.csproj" />
-	  <ProjectReference Include="..\Common.Logs\Common.Logs.csproj" />
+	  <PackageReference Include="MitherPack.Api.Responses" Version="9.0.0" />
 	</ItemGroup>
 
 </Project>
