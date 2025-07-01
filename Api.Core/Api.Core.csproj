@@ -9,15 +9,11 @@
 		<Title>Api Core</Title>
 		<Authors>Renato Mitherhofer</Authors>
 		<NoWarn>$(NoWarn);1591</NoWarn>
-		<Version>1.0.3</Version>
+		<Version>9.0.0</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <!--<PackageReference Include="MitherPack.Common.Core" Version="1.0.3" />-->
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\Common.Core\Common.Core.csproj" />
+	  <PackageReference Include="MitherPack.Common.Core" Version="9.0.0" />
 	</ItemGroup>
 
 </Project>
