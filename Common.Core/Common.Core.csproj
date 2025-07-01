@@ -8,22 +8,12 @@
 		<Authors>Renato Mitherhofer</Authors>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<NoWarn>$(NoWarn);1591</NoWarn>
-		<Version>1.0.3</Version>
+		<Version>9.0.0</Version>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="FluentValidation" Version="12.0.0" />
-		<!--<PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />-->
-		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.6" />
-		<!--<PackageReference Include="MitherPack.Common.Exceptions" Version="1.0.2" />
-		<PackageReference Include="MitherPack.Common.Logs" Version="1.0.2" />
-		<PackageReference Include="MitherPack.Common.Notifications" Version="1.0.4" />-->
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\Common.Exceptions\Common.Exceptions.csproj" />
-	  <ProjectReference Include="..\Common.Extensions\Common.Extensions.csproj" />
-	  <ProjectReference Include="..\Common.Notifications\Common.Notifications.csproj" />
+		<PackageReference Include="MitherPack.Common.Exceptions" Version="9.0.0" />
+		<PackageReference Include="MitherPack.Common.Notifications" Version="9.0.0" />
 	</ItemGroup>
 
 </Project>

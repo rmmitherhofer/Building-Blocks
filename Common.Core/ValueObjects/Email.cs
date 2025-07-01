@@ -14,7 +14,7 @@ public class Email
     {
         if (address is null) return;
 
-        if (!Validate(address)) throw new DomainException($"e-mail {address} inválido");
+        if (!Validate(address)) throw new DomainException("Invalid email format.");
 
         Address = address;
     }
