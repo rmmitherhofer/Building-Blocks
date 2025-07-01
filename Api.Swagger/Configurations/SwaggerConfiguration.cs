@@ -1,8 +1,7 @@
 ﻿
 using Api.Swagger.Extensions;
-using Logs.Extensions;
+using Common.Extensions;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
@@ -66,7 +65,7 @@ public static class SwaggerConfiguration
                     }
                     catch
                     {
-                        ConsoleLog.LogWarn($"{nameof(xmlPath)} não localizado em {xmlPath}, verifique se existe a tag <GenerateDocumentationFile>true</GenerateDocumentationFile> no .csproj do projeto");
+                        ConsoleLogExtensions.LogWarn($"{nameof(xmlPath)} não localizado em {xmlPath}, verifique se existe a tag <GenerateDocumentationFile>true</GenerateDocumentationFile> no .csproj do projeto");
                     }
                 }
             }
