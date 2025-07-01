@@ -2,7 +2,6 @@
 using Common.Exceptions;
 using Common.Extensions;
 using Common.Notifications.Messages;
-using Logs.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
@@ -12,39 +11,34 @@ namespace Api.Service.Middleware;
 
 public class ExceptionMiddleware
 {
+    public const string Name = "ExceptionMiddleware";
     private readonly RequestDelegate _next;
     private readonly ILogger<ExceptionMiddleware> _logger;
-    //private readonly ISnapTraceApplication _snapTrace;
-    //private Stopwatch _diagnostic;
 
-    public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger/*, ISnapTraceApplication snapTrace*/)
+    public ExceptionMiddleware(RequestDelegate next, ILogger<ExceptionMiddleware> logger)
     {
-        //ArgumentNullException.ThrowIfNull(snapTrace, nameof(ISnapTraceApplication));
-
         _next = next;
         _logger = logger;
-        //_snapTrace = snapTrace;
     }
 
     public async Task InvokeAsync(HttpContext context)
     {
         Exception exception = null;
         LogLevel logLevel = LogLevel.Trace;
-        //_diagnostic = new();
-        //_diagnostic.Start();
 
         try
         {
             context.Response.SetCorrelationId();
 
             await _next(context);
-
-
         }
         catch (DomainException ex)
         {
-            exception = ex;
             logLevel = HandleRequestException(context, ex, HttpStatusCode.BadRequest);
+        }
+        catch (NotFoundException ex)
+        {
+            logLevel = HandleRequestException(context, ex, HttpStatusCode.NotFound);
         }
         catch (CustomHttpRequestException ex)
         {
@@ -75,13 +69,14 @@ public class ExceptionMiddleware
         {
             case HttpStatusCode.Unauthorized:
             case HttpStatusCode.BadRequest:
+            case HttpStatusCode.NotFound:
                 logLevel = LogLevel.Warning;
-                _logger.LogWarn($"Message: {exception.Message} - detail: {exception.StackTrace}");
+                _logger.LogWarn($"Message: {exception.Message}");
                 SendException(context, exception, statusCode, logLevel);
                 return logLevel;
             case HttpStatusCode.BadGateway:
                 logLevel = LogLevel.Error;
-                _logger.LogFail($"Message: {exception.Message} - detail: {exception.StackTrace}");
+                _logger.LogFail($"Message: {exception.Message}");
                 break;
             case HttpStatusCode.InternalServerError:
                 logLevel = LogLevel.Critical;
@@ -92,6 +87,7 @@ public class ExceptionMiddleware
 
         return logLevel;
     }
+
     private void SendException(HttpContext context, Exception exception, HttpStatusCode statusCode, LogLevel logLevel)
     {
         var notifications = new List<Notification> { new(logLevel, exception.GetType().Name, exception.GetType().Name, exception.Message, logLevel == LogLevel.Critical ? exception?.StackTrace! : null) };
@@ -102,10 +98,21 @@ public class ExceptionMiddleware
         switch (logLevel)
         {
             case LogLevel.Warning:
-                context.Response.WriteAsync(JsonConvert.SerializeObject(new DetailsResponse(new ValidationResponse(notifications))
+                switch (statusCode)
                 {
-                    CorrelationId = context.GetCorrelationId()
-                }));
+                    case HttpStatusCode.NotFound:
+                        context.Response.WriteAsync(JsonConvert.SerializeObject(new DetailsResponse(new NotFoundResponse(exception.Message))
+                        {
+                            CorrelationId = context.GetCorrelationId()
+                        }));
+                        break;
+                    default:
+                        context.Response.WriteAsync(JsonConvert.SerializeObject(new DetailsResponse(new ValidationResponse(notifications))
+                        {
+                            CorrelationId = context.GetCorrelationId()
+                        }));
+                        break;
+                }
                 break;
             default:
                 context.Response.WriteAsync(JsonConvert.SerializeObject(new DetailsResponse(statusCode, new ValidationResponse(notifications))

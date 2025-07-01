@@ -5,6 +5,7 @@ namespace Api.Service.Middleware;
 
 public class RequestIndetityMiddleware
 {
+    public const string Name = "RequestIndetityMiddleware";
     private readonly RequestDelegate _next;
 
     public RequestIndetityMiddleware(RequestDelegate next)
