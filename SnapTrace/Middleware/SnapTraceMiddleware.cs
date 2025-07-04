@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
 using SnapTrace.Applications;
 using System.Diagnostics;
 
@@ -34,20 +33,13 @@ public class SnapTraceMiddleware
         }
         catch (Exception ex)
         {
-            exception = ex;
+            context.Items["Exception"] = ex;
+            throw;
         }
         finally
         {
-
-            if (exception is null)
-            {
-                if (!context.Request.Path.Value.Contains("swagger"))
-                    _ = _snapTrace.Notify(context, _diagnostic.ElapsedMilliseconds);
-            }
-            else
-            {
-                _ = _snapTrace.Notify(context, exception, LogLevel.Error, _diagnostic.ElapsedMilliseconds);
-            }
+            if (!context.Request.Path.Value.Contains("swagger"))
+                _ = _snapTrace.Notify(context, _diagnostic.ElapsedMilliseconds);
         }
     }
 }

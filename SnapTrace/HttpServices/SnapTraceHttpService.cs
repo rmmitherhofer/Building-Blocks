@@ -16,7 +16,7 @@ namespace SnapTrace.HttpServices;
 
 public interface ISnapTraceHttpService
 {
-    Task Add(Log log);
+    Task Add(LogContextRequest log);
 }
 
 public class SnapTraceHttpService : HttpService, ISnapTraceHttpService
@@ -31,7 +31,7 @@ public class SnapTraceHttpService : HttpService, ISnapTraceHttpService
         _settings = options.Value;
     }
 
-    public async Task Add(Log log)
+    public async Task Add(LogContextRequest log)
     {
         var uri = _settings.Service.EndPoints.Notify;
 
@@ -60,6 +60,9 @@ public class SnapTraceHttpService : HttpService, ISnapTraceHttpService
         try
         {
             details = await DeserializeObjectResponseAsync<DetailsResponse>(response);
+
+            if (details is null)
+                throw new CustomHttpRequestException();
         }
         catch (Exception)
         {

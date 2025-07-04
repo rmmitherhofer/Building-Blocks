@@ -4,10 +4,14 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using SnapTrace.Adapters;
 using SnapTrace.Applications;
+using SnapTrace.Builders;
 using SnapTrace.Configurations.Settings;
+using SnapTrace.Extensions;
 using SnapTrace.HttpServices;
 using SnapTrace.Middleware;
 
@@ -39,6 +43,14 @@ public static class SnapTraceConfigurations
 
         services.Configure<SnapTraceSettings>(configuration.GetSection(SNAPTRACE_NODE));
 
+        services.Configure<SensitiveDataMaskerOptions>(configuration.GetSection($"{SNAPTRACE_NODE}:SensitiveDataMasker"));
+
+        services.AddSingleton(sp =>
+        {
+            var options = sp.GetRequiredService<IOptions<SensitiveDataMaskerOptions>>().Value;
+            return new SensitiveDataMasker(options);
+        });
+
         return services;
     }
 
@@ -56,7 +68,8 @@ public static class SnapTraceConfigurations
             return new SnapTraceLoggerProvider(options, httpContextAccessor);
         });
 
-        services.AddScoped<ISnapTraceApplication, SnapTraceApplication>();
+        services.TryAddScoped<ISnapTraceApplication, SnapTraceApplication>();
+        services.TryAddScoped<ILogContextBuilder, LogContextBuilder>();
 
         return services;
     }
@@ -77,9 +90,11 @@ public static class SnapTraceConfigurations
     {
         ArgumentNullException.ThrowIfNull(app, nameof(IApplicationBuilder));
 
+        app.TryUseMiddleware<SnapTraceMiddleware>(SnapTraceMiddleware.Name);
+
         app.TryUseMiddleware<BodyBufferingMiddleware>(BodyBufferingMiddleware.Name);
 
-        app.TryUseMiddleware<SnapTraceMiddleware>(SnapTraceMiddleware.Name);
+        app.TryUseMiddleware<CaptureResponseBodyMiddleware>(CaptureResponseBodyMiddleware.Name);
 
         return app;
     }

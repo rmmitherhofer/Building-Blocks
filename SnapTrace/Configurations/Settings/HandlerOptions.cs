@@ -14,11 +14,20 @@ public class HandlerOptions
     }
     internal class HandlersContainer
     {
-        public Func<Exception, string> AppendExceptionDetails { get; set; }      
+        public Func<Exception, string> AppendExceptionDetails { get; set; }
 
         public HandlersContainer()
         {
-            AppendExceptionDetails = (ex) => null; 
+            AppendExceptionDetails = (ex) => null;
         }
     }
+}
+
+
+public class SensitiveDataMaskerOptions
+{
+    public List<string> SensitiveKeys { get; set; } =
+    [
+        "password", "senha", "token", "accessToken", "signature", "assinatura", "secret", "key", "pin"
+    ];
 }

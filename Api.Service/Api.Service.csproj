@@ -16,7 +16,11 @@
 		<PackageReference Include="MitherPack.Api.Requests" Version="9.0.0" />
 		<PackageReference Include="MitherPack.Api.Swagger" Version="9.0.0" />
 		<PackageReference Include="MitherPack.Common.Core" Version="9.0.0" />
-		<PackageReference Include="SnapTrace" Version="9.0.0" />
+		<!--<PackageReference Include="SnapTrace" Version="9.0.0" />-->
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\SnapTrace\SnapTrace.csproj" />
 	</ItemGroup>
 
 </Project>

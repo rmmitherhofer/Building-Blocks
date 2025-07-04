@@ -5,9 +5,11 @@ namespace SnapTrace.Configurations.Settings;
 
 public class SnapTraceSettings
 {
+    public Guid ProjectId { get; set; }
     public ProjectType ProjectType { get; set; }
     public string Name { get; } = Assembly.GetEntryAssembly().GetName().Name;
     public bool TurnOnLog { get; set; }
+    public int MaxResponseBodySizeInMb { get; set; } = 1;
     public SnapTraceHttpServiceSettings Service { get; set; }
 }
 

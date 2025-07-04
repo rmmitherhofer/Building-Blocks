@@ -34,35 +34,34 @@ public class ExceptionMiddleware
         }
         catch (DomainException ex)
         {
-            logLevel = HandleRequestException(context, ex, HttpStatusCode.BadRequest);
+            logLevel = await HandleRequestExceptionAsync(context, ex, HttpStatusCode.BadRequest);
         }
         catch (NotFoundException ex)
         {
-            logLevel = HandleRequestException(context, ex, HttpStatusCode.NotFound);
+            logLevel = await HandleRequestExceptionAsync(context, ex, HttpStatusCode.NotFound);
         }
         catch (CustomHttpRequestException ex)
         {
             exception = ex;
-            logLevel = HandleRequestException(context, ex, HttpStatusCode.BadGateway);
+            logLevel = await HandleRequestExceptionAsync(context, ex, HttpStatusCode.BadGateway);
         }
         catch (UnauthorizedAccessException ex)
         {
             exception = ex;
-            logLevel = HandleRequestException(context, ex, HttpStatusCode.Unauthorized);
+            logLevel = await HandleRequestExceptionAsync(context, ex, HttpStatusCode.Unauthorized);
         }
         catch (Exception ex)
         {
             exception = ex;
-            logLevel = HandleRequestException(context, ex, HttpStatusCode.InternalServerError);
+            logLevel = await HandleRequestExceptionAsync(context, ex, HttpStatusCode.InternalServerError);
         }
         finally
         {
-            if (exception is not null)
-                throw exception;
+            context.Items["Exception"] = exception;
         }
     }
 
-    private LogLevel HandleRequestException(HttpContext context, Exception exception, HttpStatusCode statusCode)
+    private async Task<LogLevel> HandleRequestExceptionAsync(HttpContext context, Exception exception, HttpStatusCode statusCode)
     {
         LogLevel logLevel = LogLevel.Information;
         switch (statusCode)
@@ -72,7 +71,7 @@ public class ExceptionMiddleware
             case HttpStatusCode.NotFound:
                 logLevel = LogLevel.Warning;
                 _logger.LogWarn($"Message: {exception.Message}");
-                SendException(context, exception, statusCode, logLevel);
+                await SendExceptionAsync(context, exception, statusCode, logLevel);
                 return logLevel;
             case HttpStatusCode.BadGateway:
                 logLevel = LogLevel.Error;
@@ -83,43 +82,32 @@ public class ExceptionMiddleware
                 _logger.LogCrit($"Message: {exception.Message} - detail: {exception.StackTrace}");
                 break;
         }
-        SendException(context, exception, statusCode, logLevel);
+
+        await SendExceptionAsync(context, exception, statusCode, logLevel);
 
         return logLevel;
     }
 
-    private void SendException(HttpContext context, Exception exception, HttpStatusCode statusCode, LogLevel logLevel)
+    private async Task SendExceptionAsync(HttpContext context, Exception exception, HttpStatusCode statusCode, LogLevel logLevel)
     {
         var notifications = new List<Notification> { new(logLevel, exception.GetType().Name, exception.GetType().Name, exception.Message, logLevel == LogLevel.Critical ? exception?.StackTrace! : null) };
 
         context.Response.StatusCode = (int)statusCode;
         context.Response.ContentType = "application/json";
 
-        switch (logLevel)
+        string jsonResponse;
+
+        if (logLevel == LogLevel.Warning)
         {
-            case LogLevel.Warning:
-                switch (statusCode)
-                {
-                    case HttpStatusCode.NotFound:
-                        context.Response.WriteAsync(JsonConvert.SerializeObject(new DetailsResponse(new NotFoundResponse(exception.Message))
-                        {
-                            CorrelationId = context.GetCorrelationId()
-                        }));
-                        break;
-                    default:
-                        context.Response.WriteAsync(JsonConvert.SerializeObject(new DetailsResponse(new ValidationResponse(notifications))
-                        {
-                            CorrelationId = context.GetCorrelationId()
-                        }));
-                        break;
-                }
-                break;
-            default:
-                context.Response.WriteAsync(JsonConvert.SerializeObject(new DetailsResponse(statusCode, new ValidationResponse(notifications))
-                {
-                    CorrelationId = context.GetCorrelationId()
-                }));
-                break;
+            jsonResponse = statusCode == HttpStatusCode.NotFound
+                ? JsonConvert.SerializeObject(new DetailsResponse(new NotFoundResponse(exception.Message)) { CorrelationId = context.GetCorrelationId() })
+                : JsonConvert.SerializeObject(new DetailsResponse(new ValidationResponse(notifications)) { CorrelationId = context.GetCorrelationId() });
         }
+        else
+        {
+            jsonResponse = JsonConvert.SerializeObject(new DetailsResponse(statusCode, new ValidationResponse(notifications)) { CorrelationId = context.GetCorrelationId() });
+        }
+
+        await context.Response.WriteAsync(jsonResponse);
     }
 }
