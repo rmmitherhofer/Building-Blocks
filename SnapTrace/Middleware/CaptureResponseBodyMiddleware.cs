@@ -1,18 +1,28 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using SnapTrace.Configurations.Settings;
-using SnapTrace.Extensions;
-using System.Text.Json;
 
 namespace SnapTrace.Middleware;
 
-public class CaptureResponseBodyMiddleware(RequestDelegate next, SensitiveDataMasker sensitiveDataMasker, IOptions<SnapTraceSettings> options)
+/// <summary>
+/// Middleware that captures the HTTP response body for logging purposes,
+/// storing it in the current context if its size is within the configured limit.
+/// </summary>
+public class CaptureResponseBodyMiddleware(RequestDelegate next, IOptions<SnapTraceSettings> options)
 {
+    /// <summary>
+    /// Middleware name identifier.
+    /// </summary>
     public const string Name = "CaptureResponseBodyMiddleware";
+
     private readonly SnapTraceSettings _settings = options.Value;
     private readonly RequestDelegate _next = next;
-    private readonly SensitiveDataMasker _sensitiveDataMasker = sensitiveDataMasker;
 
+    /// <summary>
+    /// Captures the response body and stores it in <c>HttpContext.Items["CapturedResponseBody"]</c>
+    /// if the content length is within the allowed size.
+    /// </summary>
+    /// <param name="context">The current HTTP context.</param>
     public async Task InvokeAsync(HttpContext context)
     {
         var originalBody = context.Response.Body;

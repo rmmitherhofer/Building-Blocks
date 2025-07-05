@@ -1,24 +1,35 @@
-﻿
-using Api.Swagger.Extensions;
+﻿using Api.Swagger.Extensions;
+using Api.Swagger.Filters;
+using Api.Swagger.Middlewares;
+using Api.Swagger.Options;
 using Common.Extensions;
+using Common.Logs.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Swagger.Filters;
-using Swagger.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Diagnostics;
 using System.Reflection;
 
-namespace Swagger.Configurations;
+namespace Api.Swagger.Configurations;
 
+/// <summary>
+/// Provides extension methods to configure Swagger and API versioning in the application.
+/// </summary>
 public static class SwaggerConfiguration
 {
     private static string SETTINGS_FIXENUMSOPTIONS_NODE = "SwaggerSettings:FixEnumsOptions:";
 
+    /// <summary>
+    /// Adds and configures Swagger services, including custom filters and XML comments.
+    /// Also configures API versioning.
+    /// </summary>
+    /// <param name="services">The IServiceCollection to add the services to.</param>
+    /// <param name="configuration">The application configuration for reading settings.</param>
+    /// <returns>The IServiceCollection with Swagger and versioning services configured.</returns>
     public static IServiceCollection AddSwaggerConfig(this IServiceCollection services, IConfiguration configuration)
     {
         ArgumentNullException.ThrowIfNull(services);
@@ -35,10 +46,11 @@ public static class SwaggerConfiguration
 
         services.AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
+        services.Configure<SwaggerDefaultHeadersOptions>(configuration.GetSection("SwaggerSettings:DefaultHeaders"));
+
         services.AddSwaggerGen(c =>
         {
             c.OperationFilter<SwaggerDefaultValues>();
-
             c.OperationFilter<AddOptionalHelperOperationFilter>();
 
             c.AddEnumsWithValuesFixFilters(options =>
@@ -65,14 +77,20 @@ public static class SwaggerConfiguration
                     }
                     catch
                     {
-                        ConsoleLogExtensions.LogWarn($"{nameof(xmlPath)} não localizado em {xmlPath}, verifique se existe a tag <GenerateDocumentationFile>true</GenerateDocumentationFile> no .csproj do projeto");
+                        ConsoleLogExtensions.LogWarn($"{nameof(xmlPath)} not found at {xmlPath}, please verify if <GenerateDocumentationFile>true</GenerateDocumentationFile> is set in the project's .csproj file");
                     }
                 }
             }
         });
+
         return services;
     }
 
+    /// <summary>
+    /// Adds API versioning and API explorer services.
+    /// </summary>
+    /// <param name="services">The IServiceCollection to add the services to.</param>
+    /// <returns>The IServiceCollection with versioning services configured.</returns>
     private static IServiceCollection AddVersioningConfig(this IServiceCollection services)
     {
         ArgumentNullException.ThrowIfNull(services);
@@ -93,6 +111,13 @@ public static class SwaggerConfiguration
         return services;
     }
 
+    /// <summary>
+    /// Adds and configures the Swagger middleware and Swagger UI in the application pipeline.
+    /// Also adds the middleware to validate required headers based on configuration.
+    /// </summary>
+    /// <param name="app">The IApplicationBuilder to configure.</param>
+    /// <param name="provider">The API version description provider.</param>
+    /// <returns>The IApplicationBuilder with Swagger middleware configured.</returns>
     public static IApplicationBuilder UseSwaggerConfig(this IApplicationBuilder app, IApiVersionDescriptionProvider provider)
     {
         ArgumentNullException.ThrowIfNull(app);
@@ -109,11 +134,15 @@ public static class SwaggerConfiguration
 
             foreach (var description in provider.ApiVersionDescriptions)
             {
-                string isDeprecated = description.IsDeprecated ? " (Descontinuado)" : string.Empty;
+                string isDeprecated = description.IsDeprecated ? " (Deprecated)" : string.Empty;
 
                 options.SwaggerEndpoint($"/swagger/{description.GroupName}/swagger.json", description.GroupName.ToUpperInvariant() + isDeprecated);
             }
         });
+
+        app.TryUseMiddleware<RequestValidateHeadersMiddleware>();
+
         return app;
     }
 }
+

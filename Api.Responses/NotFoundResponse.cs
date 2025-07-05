@@ -4,30 +4,33 @@ using System.Net;
 namespace Api.Responses;
 
 /// <summary>
-/// Classe Response de registro nao localizado
+/// Represents a standard 404 Not Found API response with optional detail information.
 /// </summary>
 public class NotFoundResponse : NotFoundResult
 {
     /// <summary>
-    /// Status code
+    /// Gets the HTTP status code representing the response.
     /// </summary>
     public HttpStatusCode Status { get; }
+
     /// <summary>
-    /// Titulo
+    /// Gets the title that summarizes the type of response.
     /// </summary>
     public string Title { get; }
+
     /// <summary>
-    /// Datalhamento
+    /// Gets the detailed message associated with the response.
     /// </summary>
     public string Detail { get; }
+
     /// <summary>
-    /// Construtor
+    /// Initializes a new instance of the <see cref="NotFoundResponse"/> class with an optional detail message.
     /// </summary>
-    /// <param name="detail"></param>
+    /// <param name="detail">An optional detailed message to provide context about the not found result.</param>
     public NotFoundResponse(string? detail = null)
     {
         Status = HttpStatusCode.NotFound;
-        Title = "Não encontrado";
-        Detail = detail ?? "Consulta não retornou registros";
+        Title = "Not found";
+        Detail = detail ?? "Query returned no results.";
     }
 }

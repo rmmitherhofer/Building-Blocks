@@ -1,7 +1,8 @@
 ﻿using Api.Service.Middleware;
+using Api.Swagger.Configurations;
+using Common.Extensions;
 using Common.Logs.Configurations;
 using Common.Notifications.Configurations;
-using Extensoes;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
@@ -9,13 +10,22 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using SnapTrace.Configurations;
 using SnapTrace.Formatters;
-using Swagger.Configurations;
 using System.Text.Json.Serialization;
 
 namespace Api.Service.Configurations;
 
+/// <summary>
+/// Provides configuration extensions for setting up core API services and middleware.
+/// </summary>
 public static class ApiConfiguration
 {
+    /// <summary>
+    /// Registers core services for the API, such as controllers, Swagger, SnapTrace, and custom configurations.
+    /// </summary>
+    /// <param name="services">The service collection to add services to.</param>
+    /// <param name="configuration">The application configuration.</param>
+    /// <param name="environment">The hosting environment.</param>
+    /// <returns>The updated service collection.</returns>
     public static IServiceCollection AddCoreApiConfig(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
     {
         ArgumentNullException.ThrowIfNull(services, nameof(IServiceCollection));
@@ -51,6 +61,12 @@ public static class ApiConfiguration
 
         return services;
     }
+
+    /// <summary>
+    /// Configures the HTTP request pipeline by registering routing, middleware, and endpoint mappings.
+    /// </summary>
+    /// <param name="app">The application builder.</param>
+    /// <returns>The updated application builder.</returns>
     public static IApplicationBuilder UseCoreApiConfig(this IApplicationBuilder app)
     {
         ArgumentNullException.ThrowIfNull(app, nameof(IApplicationBuilder));
@@ -61,13 +77,13 @@ public static class ApiConfiguration
 
         app.UseSnapTrace();
 
-        app.TryUseMiddleware<RequestIndetityMiddleware>(RequestIndetityMiddleware.Name);
+        app.TryUseMiddleware<RequestIndetityMiddleware>();
 
         app.UseNotificationConfig();
 
         app.UseLogDecoratorConfig();
 
-        app.TryUseMiddleware<ExceptionMiddleware>(ExceptionMiddleware.Name);
+        app.TryUseMiddleware<ExceptionMiddleware>();
 
         app.UseSwaggerConfig(app.ApplicationServices.GetRequiredService<IApiVersionDescriptionProvider>());
 

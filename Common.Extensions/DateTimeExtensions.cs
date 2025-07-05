@@ -1,72 +1,78 @@
-﻿namespace Extensoes;
+﻿using System.Globalization;
 
+namespace Common.Extensions;
+
+/// <summary>
+/// Provides extension methods for parsing and validating date strings in Brazilian Portuguese format and other common formats.
+/// </summary>
 public static class DateTimeExtensions
 {
-    public static DateTime? YearMonthPtBRToDateTimeNulable(this string? date)
+    private static readonly CultureInfo PtBr = new("pt-BR");
+
+    private static readonly string[] SupportedFormats = new[]
     {
-        if (string.IsNullOrEmpty(date)) return null;
+        "dd/MM/yyyy",
+        "dd/MM/yyyy HH:mm:ss",
+        "dd/MM/yyyy HH:mm",
+        "dd/MM/yyyyTHH:mm:ss",
+        "MM/yyyy",
+        "yyyy-MM-dd",
+        "yyyy-MM-ddTHH:mm:ss",
+        "yyyy-MM-dd HH:mm:ss",
+        "yyyy-MM-ddTHH:mm:ss.fffZ"
+    };
 
-        return date.YearMonthPtBRToDateTime();
-    }
-    public static DateTime YearMonthPtBRToDateTime(this string date)
+    /// <summary>
+    /// Attempts to parse the input string to a nullable <see cref="DateTime"/> using supported formats.
+    /// Returns null if parsing fails or input is null/empty.
+    /// </summary>
+    /// <param name="input">The date string to parse.</param>
+    /// <returns>A nullable <see cref="DateTime"/> if parsing succeeds; otherwise, null.</returns>
+    public static DateTime? ToDateTimeNullable(this string? input)
+        => TryParseDate(input, out var result) ? result : null;
+
+    /// <summary>
+    /// Parses the input string to a <see cref="DateTime"/> using supported formats.
+    /// Throws <see cref="FormatException"/> if parsing fails.
+    /// </summary>
+    /// <param name="input">The date string to parse.</param>
+    /// <returns>The parsed <see cref="DateTime"/> value.</returns>
+    /// <exception cref="FormatException">Thrown when the input string does not match any supported date format.</exception>
+    public static DateTime ToDateTime(this string input)
     {
-        try
-        {
-            var data = date.Split('/');
+        if (TryParseDate(input, out var result) && result.HasValue)
+            return result.Value;
 
-            int.TryParse(data[0], out int month);
-            int.TryParse(data[1][..4], out int year);
-
-            return new DateTime(year, month, 1, 0, 0, 0);
-        }
-        catch (Exception ex)
-        {
-            throw new FormatException($"Invalid date format: {ex.Message}", ex);
-        }
-    }
-    public static DateTime? DatePtBRToDateTimeNulable(this string? date)
-    {
-        if (string.IsNullOrEmpty(date)) return null;
-
-        return date.DatePtBRToDateTime();
-    }
-    public static DateTime DatePtBRToDateTime(this string date)
-    {
-        try
-        {
-            var data = date.Split('/');
-
-            int.TryParse(data[0], out int day);
-            int.TryParse(data[1], out int month);
-            int.TryParse(data[2][..4], out int year);
-
-            return new DateTime(year, month, day, 0, 0, 0);
-        }
-        catch (Exception ex)
-        {
-            throw new FormatException($"Invalid date format: {ex.Message}", ex);
-        }
+        throw new FormatException($"Invalid date format. Supported formats: {string.Join(", ", SupportedFormats)}");
     }
 
-    public static DateTime DateTimePtBRToDateTime(this string dateTime)
+    /// <summary>
+    /// Tries to parse the input string to a nullable <see cref="DateTime"/>.
+    /// </summary>
+    /// <param name="input">The date string to parse.</param>
+    /// <param name="result">When this method returns, contains the parsed <see cref="DateTime"/> value if successful; otherwise, null.</param>
+    /// <returns>True if parsing was successful; otherwise, false.</returns>
+    public static bool TryParseDate(string? input, out DateTime? result)
     {
-        try
-        {
-            var data = dateTime.Split('/');
-            var horario = dateTime.Split(' ')[1];
+        result = null;
 
-            int.TryParse(data[0], out int day);
-            int.TryParse(data[1], out int month);
-            int.TryParse(data[2][..4], out int year);
-            int.TryParse(horario.Split(':')[0], out int hour);
-            int.TryParse(horario.Split(':')[1], out int minute);
-            int.TryParse(horario.Split(':')[2], out int second);
+        if (string.IsNullOrWhiteSpace(input))
+            return false;
 
-            return new DateTime(year, month, day, hour, minute, second);
-        }
-        catch (Exception ex)
+        if (DateTime.TryParseExact(input, SupportedFormats, PtBr, DateTimeStyles.None, out var parsed))
         {
-            throw new FormatException($"Invalid date format: {ex.Message}", ex);
+            result = parsed;
+            return true;
         }
+
+        return false;
     }
+
+    /// <summary>
+    /// Determines whether the specified string is a valid date according to supported formats.
+    /// </summary>
+    /// <param name="input">The date string to validate.</param>
+    /// <returns>True if the input is a valid date; otherwise, false.</returns>
+    public static bool IsValidDate(this string? input)
+        => TryParseDate(input, out _);
 }

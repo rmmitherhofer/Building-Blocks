@@ -1,7 +1,8 @@
 ﻿using Common.Extensions;
+using Common.Json;
 using Common.Notifications.Interfaces;
 using Common.Notifications.Messages;
-using Extensoes;
+using Common.User.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
@@ -12,14 +13,17 @@ using SnapTrace.Extensions;
 using SnapTrace.Models;
 using System.Net;
 using System.Reflection;
-using System.Text.Json;
 
 namespace SnapTrace.Builders;
 
+/// <summary>
+/// Builder for the log context that collects detailed information about the HTTP request,
+/// response, environment, user, notifications, exceptions, and other metrics for sending to SnapTrace.
+/// </summary>
 public class LogContextBuilder : ILogContextBuilder
 {
     private readonly SnapTraceSettings _settings;
-    private readonly SensitiveDataMasker _sensitiveDataMasker; 
+    private readonly SensitiveDataMasker _sensitiveDataMasker;
     private readonly INotificationHandler _notification;
 
     private HttpContext _context;
@@ -29,6 +33,12 @@ public class LogContextBuilder : ILogContextBuilder
     private IEnumerable<Notification> _notifications = [];
     private Exception? _exception;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="LogContextBuilder"/> class.
+    /// </summary>
+    /// <param name="options">SnapTrace configuration settings.</param>
+    /// <param name="sensitiveDataMasker">Service for masking sensitive data.</param>
+    /// <param name="notification">Handler for system notifications.</param>
     public LogContextBuilder(IOptions<SnapTraceSettings> options, SensitiveDataMasker sensitiveDataMasker, INotificationHandler notification)
     {
         _settings = options.Value;
@@ -36,30 +46,52 @@ public class LogContextBuilder : ILogContextBuilder
         _notification = notification;
     }
 
+    /// <summary>
+    /// Sets the current HTTP context to capture data from.
+    /// </summary>
+    /// <param name="context">HTTP context of the request.</param>
+    /// <returns>The builder instance for chaining.</returns>
     public ILogContextBuilder WithHttpContext(HttpContext context)
     {
         _context = context;
         return this;
     }
 
+    /// <summary>
+    /// Sets the elapsed time of the request in milliseconds.
+    /// </summary>
+    /// <param name="elapsedMs">Elapsed time in milliseconds.</param>
+    /// <returns>The builder instance for chaining.</returns>
     public ILogContextBuilder WithElapsedMilliseconds(long elapsedMs)
     {
         _elapsedMs = elapsedMs;
         return this;
     }
 
+    /// <summary>
+    /// Includes the current system notifications in the log context.
+    /// </summary>
+    /// <returns>The builder instance for chaining.</returns>
     public ILogContextBuilder WithNotifications()
     {
         _notifications = _notification.Get() ?? [];
         return this;
     }
 
+    /// <summary>
+    /// Includes the captured exception in the log context, if any.
+    /// </summary>
+    /// <returns>The builder instance for chaining.</returns>
     public ILogContextBuilder WithException()
     {
         _exception = GetException();
         return this;
     }
 
+    /// <summary>
+    /// Builds the <see cref="LogContextRequest"/> object containing all collected data for sending.
+    /// </summary>
+    /// <returns>A detailed object representing the log context.</returns>
     public async Task<LogContextRequest> BuildAsync()
     {
         return new LogContextRequest
@@ -67,7 +99,6 @@ public class LogContextBuilder : ILogContextBuilder
             EndpointPath = _context.Request.Path,
             RequestDuration = _elapsedMs.GetTime(),
             ElapsedMilliseconds = _elapsedMs,
-            LogSeverity = (int)_logLevel,
             TraceIdentifier = _context.TraceIdentifier,
             ProjectInfo = AddProject(),
             Environment = AddEnvironment(),
@@ -78,10 +109,14 @@ public class LogContextBuilder : ILogContextBuilder
             LogEntries = AddLogEntries(),
             ErrorCategory = _errorCategory,
             Notifications = AddNotifications(),
-            Exceptions = AddExceptions()
+            Exceptions = AddExceptions(),
+            LogAttentionLevel = _logLevel.Map(),
         };
     }
 
+    /// <summary>
+    /// Adds information about the configured project.
+    /// </summary>
     private ProjectInfo AddProject() => new()
     {
         Id = _settings.ProjectId,
@@ -89,55 +124,72 @@ public class LogContextBuilder : ILogContextBuilder
         Type = _settings.ProjectType
     };
 
+    /// <summary>
+    /// Adds information about the current execution environment.
+    /// </summary>
     private EnvironmentInfo AddEnvironment() => new()
     {
         MachineName = Environment.MachineName,
         EnvironmentName = Environment.GetEnvironmentVariable("DOTNET_ENVIRONMENT") ?? Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Unknown",
         ApplicationVersion = Assembly.GetEntryAssembly()?.GetName().Version?.ToString() ?? "Unknown",
-        ThreadId = Environment.CurrentManagedThreadId
+        ThreadId = Environment.CurrentManagedThreadId,
     };
+
+    /// <summary>
+    /// Adds information about the current user's context.
+    /// </summary>
     private UserContextRequest AddUserContext()
     {
         var user = _context.User;
+        var request = _context.Request;
 
         return new()
         {
-            Id = _context.GetUserId(),
-            Code = null,
-            Name = _context.GetUserName(),
-            IsAuthenticated = _context.IsAuthenticated(),
-            AuthenticationType = _context.User.Identity?.AuthenticationType,
-            Roles = user.Claims.Where(c => c.Type == "role").Select(c => c.Value).ToList(),
+            Id = user.GetId() ?? request.GetUserId(),
+            TenantId = user.GetTenantId(),
+            Name = user.GetName() ?? request.GetUserName(),
+            IsAuthenticated = user.IsAuthenticated(),
+            AuthenticationType = user.GetAuthenticationType(),
+            Roles = user.GetRoles(),
             Claims = user.Claims.ToDictionary(c => c.Type, c => c.Value),
-            IpAddress = _context.GetIpAddress()
+            IpAddress = request.GetIpAddress()
         };
     }
+
+    /// <summary>
+    /// Adds detailed HTTP request information, including headers and message body.
+    /// </summary>
+    /// <returns>Object containing request data.</returns>
     private async Task<RequestInfoRequest> AddRequestInfoAsync()
     {
-        var req = _context.Request;
-
+        var request = _context.Request;
         var body = await GetRequestBodyAsync();
 
         return new()
         {
-            RequestId = _context.GetRequestId(),
-            CorrelationId = _context.GetCorrelationId(),
-            HttpMethod = req.Method,
-            RequestUrl = $"{req.Scheme}://{req.Host}{req.Path}{(req.QueryString.HasValue ? req.QueryString.Value : string.Empty)}",
-            Scheme = req.Scheme,
-            Protocol = req.Protocol,
-            IsHttps = req.IsHttps,
-            QueryString = req.QueryString.ToString(),
-            RouteValues = req.RouteValues.ToDictionary(k => k.Key, v => v.Value?.ToString()),
-            UserAgent = _context.GetUserAgent(),
-            ClientId = _context.GetClientId(),
-            Headers = req.Headers.ToDictionary(k => k.Key, v => v.Value.ToList()),
-            ContentType = req.ContentType,
-            ContentLength = req.ContentLength ?? 0,
+            RequestId = request.GetRequestId(),
+            CorrelationId = request.GetCorrelationId(),
+            HttpMethod = request.Method,
+            RequestUrl = request.GetFullUrl(),
+            Scheme = request.Scheme,
+            Protocol = request.Protocol,
+            IsHttps = request.IsHttps,
+            QueryString = request.QueryString.ToString(),
+            RouteValues = request.RouteValues.ToDictionary(k => k.Key, v => v.Value?.ToString()),
+            UserAgent = request.GetUserAgent(),
+            ClientId = request.GetClientId(),
+            Headers = request.Headers.ToDictionary(k => k.Key, v => v.Value.ToList()),
+            ContentType = request.GetContentType(),
+            ContentLength = request.ContentLength ?? 0,
             Body = body,
-            BodySize = body?.ToString()?.Length ?? 0
+            BodySize = body?.ToString()?.Length ?? 0,
+            IsAjaxRequest = request.IsAjaxRequest(),
         };
     }
+
+    /// <summary>
+    /// Adds HTTP response information, including status, headers, and body.
+    /// </summary>
     private ResponseInfoRequest AddResponseInfo()
     {
         var response = _context.Response;
@@ -152,6 +204,9 @@ public class LogContextBuilder : ILogContextBuilder
         };
     }
 
+    /// <summary>
+    /// Adds general diagnostic information about the execution environment.
+    /// </summary>
     private DiagnosticRequest AddDiagnostics() => new()
     {
         MemoryUsageMb = GC.GetTotalMemory(false) / (1024.0 * 1024),
@@ -160,6 +215,9 @@ public class LogContextBuilder : ILogContextBuilder
         Dependencies = []
     };
 
+    /// <summary>
+    /// Adds log entries recorded during the current request.
+    /// </summary>
     private IEnumerable<LogEntryRequest> AddLogEntries()
     {
         var entries = SnapTraceLogger.GetLogsForCurrentRequest(_context);
@@ -176,6 +234,9 @@ public class LogContextBuilder : ILogContextBuilder
         }) ?? [];
     }
 
+    /// <summary>
+    /// Adds captured notifications to the log and updates severity level if needed.
+    /// </summary>
     private IEnumerable<NotificationInfoRequest> AddNotifications()
     {
         if (_notifications?.Any() != true) return [];
@@ -197,6 +258,9 @@ public class LogContextBuilder : ILogContextBuilder
         });
     }
 
+    /// <summary>
+    /// Adds captured exceptions to the log and sets severity level to critical.
+    /// </summary>
     private IEnumerable<ExceptionInfoRequest> AddExceptions()
     {
         if (_exception == null) return [];
@@ -216,6 +280,10 @@ public class LogContextBuilder : ILogContextBuilder
         ];
     }
 
+    /// <summary>
+    /// Retrieves and masks the HTTP request body, handling different content types.
+    /// </summary>
+    /// <returns>Object representing the request body, or null.</returns>
     private async Task<object?> GetRequestBodyAsync()
     {
         if (_context.Request.HasFormContentType)
@@ -248,7 +316,7 @@ public class LogContextBuilder : ILogContextBuilder
 
             try
             {
-                var obj = JsonSerializer.Deserialize<object>(body);
+                var obj = JsonExtensions.Deserialize<object>(body);
                 return _sensitiveDataMasker.Mask(obj);
             }
             catch
@@ -258,17 +326,20 @@ public class LogContextBuilder : ILogContextBuilder
         }
     }
 
+    /// <summary>
+    /// Retrieves and masks the captured HTTP response body from the context.
+    /// </summary>
+    /// <returns>Masked JSON string or raw response body, or null.</returns>
     private string? GetCapturedResponseBody()
     {
         if (_context.Items.TryGetValue("CapturedResponseBody", out var bodyObj) && bodyObj is string body)
         {
             try
             {
-                var jsonDoc = JsonDocument.Parse(body);
-                var obj = JsonSerializer.Deserialize<object>(body);
+                var obj = JsonExtensions.Deserialize<object>(body);
                 var masked = _sensitiveDataMasker.Mask(obj);
 
-                return JsonSerializer.Serialize(masked);
+                return JsonExtensions.Serialize(masked);
             }
             catch
             {
@@ -278,6 +349,10 @@ public class LogContextBuilder : ILogContextBuilder
         return null;
     }
 
+    /// <summary>
+    /// Retrieves the exception stored in the HTTP context, if any, and sets the log level.
+    /// </summary>
+    /// <returns>Captured exception or null.</returns>
     private Exception? GetException()
     {
         if (_context.Items.TryGetValue("Exception", out var exceptionObj) && exceptionObj is Exception exception)

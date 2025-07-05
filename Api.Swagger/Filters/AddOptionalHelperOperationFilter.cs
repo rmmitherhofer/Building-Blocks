@@ -1,25 +1,31 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Api.Swagger.Options;
+using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Swagger.Filters;
+namespace Api.Swagger.Filters;
 
+/// <summary>
+/// Operation filter that adds optional default and custom headers to Swagger documentation
+/// based on the configured options.
+/// </summary>
 internal class AddOptionalHelperOperationFilter : IOperationFilter
 {
-    private const string SETTINGS_DEFAULT_HEADERS_NODE = "SwaggerSettings:DefaultHeaders:";
+    private readonly SwaggerDefaultHeadersOptions _options;
 
-    private readonly bool _xClientIdRequired;
-    private readonly bool _xForwardedForRequired;
-    private readonly bool _xCorrelationIdRequired;
-    private readonly bool _xUserAgentRequired;
+    /// <summary>
+    /// Initializes a new instance of the <see cref="AddOptionalHelperOperationFilter"/> class
+    /// with configured header options.
+    /// </summary>
+    /// <param name="options">The options containing default and additional headers configuration.</param>
+    public AddOptionalHelperOperationFilter(IOptions<SwaggerDefaultHeadersOptions> options) => _options = options.Value;
 
-    public AddOptionalHelperOperationFilter(IConfiguration configuration)
-    {
-        _xClientIdRequired = bool.TryParse(configuration[$"{SETTINGS_DEFAULT_HEADERS_NODE}X-Client-ID-Required"], out bool xClientIdRequired) ? xClientIdRequired : true;
-        _xForwardedForRequired = bool.TryParse(configuration[$"{SETTINGS_DEFAULT_HEADERS_NODE}X-Forwarded-For-Required"], out bool xForwardedForRequired) ? xForwardedForRequired : false;
-        _xCorrelationIdRequired = bool.TryParse(configuration[$"{SETTINGS_DEFAULT_HEADERS_NODE}X-Correlation-ID-Required"], out bool xCorrelationIdRequired) ? xCorrelationIdRequired : false;
-        _xUserAgentRequired = bool.TryParse(configuration[$"{SETTINGS_DEFAULT_HEADERS_NODE}User-Agent-Required"], out bool xUserAgentRequired) ? xUserAgentRequired : false;
-    }
+    /// <summary>
+    /// Applies the filter to add optional headers to the Swagger operation documentation.
+    /// Headers are added only if enabled and if not already present in the operation.
+    /// </summary>
+    /// <param name="operation">The Swagger operation to modify.</param>
+    /// <param name="context">The context of the operation filter.</param>
     public void Apply(OpenApiOperation operation, OperationFilterContext context)
     {
         operation.Parameters ??= [];
@@ -29,57 +35,47 @@ internal class AddOptionalHelperOperationFilter : IOperationFilter
             .Select(p => p.Name)
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-        List<OpenApiParameter> headers = [
-            new(){
-                Name = "X-Client-ID",
-                In = ParameterLocation.Header,
-                Required = _xClientIdRequired,
-                Schema = new OpenApiSchema
+        var headers = new List<OpenApiParameter>();
+
+        void AddHeader(string name, HeaderOption option)
+        {
+            if (option.Enabled)
+            {
+                headers.Add(new OpenApiParameter
                 {
-                    Type = "string",
-                    Description = "Client ID"
-                },
-                Description = "Client ID, used to identify the client application making the request."
-            },
-            new(){
-                Name = "X-Forwarded-For",
-                In = ParameterLocation.Header,
-                Required = _xForwardedForRequired,
-                Schema = new OpenApiSchema
-                {
-                    Type = "string",
-                    Description = "Forwarded IP address"
-                },
-                Description = "The original IP address of the client making the request."
-            },
-            new(){
-                Name = "X-Correlation-ID",
-                In = ParameterLocation.Header,
-                Required = _xCorrelationIdRequired,
-                Schema = new OpenApiSchema
-                {
-                    Type = "string",
-                    Description = "Correlation ID"
-                },
-                Description = "A unique identifier for tracing requests across systems."
-            },
-            new(){
-                Name = "User-Agent",
-                In = ParameterLocation.Header,
-                Required = _xUserAgentRequired,
-                Schema = new OpenApiSchema
-                {
-                    Type = "string",
-                    Description = "User Agent"
-                },
-                Description = "Information about the client application making the request."
+                    Name = name,
+                    In = ParameterLocation.Header,
+                    Required = option.Required,
+                    Schema = new OpenApiSchema { Type = "string" },
+                    Description = option.Description
+                });
             }
-        ];
+        }
+
+        AddHeader("X-Client-ID", _options.XClientId);
+        AddHeader("X-Forwarded-For", _options.XForwardedFor);
+        AddHeader("X-Correlation-ID", _options.XCorrelationId);
+        AddHeader("User-Agent", _options.UserAgent);
+
+        foreach (var customHeader in _options.AdditionalHeaders)
+        {
+            if (!string.IsNullOrWhiteSpace(customHeader.Name))
+            {
+                headers.Add(new OpenApiParameter
+                {
+                    Name = customHeader.Name,
+                    In = ParameterLocation.Header,
+                    Required = customHeader.Required,
+                    Schema = new OpenApiSchema { Type = "string" },
+                    Description = customHeader.Description
+                });
+            }
+        }
 
         foreach (var header in headers)
         {
-            if (!existingHeaders.Contains(header.Name))            
-                operation.Parameters.Add(header);            
+            if (!existingHeaders.Contains(header.Name))
+                operation.Parameters.Add(header);
         }
     }
 }

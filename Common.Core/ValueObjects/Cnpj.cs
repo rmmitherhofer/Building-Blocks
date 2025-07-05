@@ -1,8 +1,17 @@
 ﻿using Common.Exceptions;
 
-namespace Core.ValueObjects;
+namespace Common.Core.ValueObjects;
 
-public abstract class NationalRegistry{
+/// <summary>
+/// Base class for Brazilian national registry numbers validation.
+/// </summary>
+public abstract class NationalRegistry
+{
+    /// <summary>
+    /// Checks if the number is in the list of invalid repetitive sequences.
+    /// </summary>
+    /// <param name="number">Number string to validate.</param>
+    /// <returns>True if invalid, otherwise false.</returns>
     protected static bool IsValid(string number)
     {
         var invalidNumbers = new List<string>();
@@ -17,18 +26,47 @@ public abstract class NationalRegistry{
         return invalidNumbers.Contains(number);
     }
 
+    /// <summary>
+    /// Removes all non-digit characters from the input string.
+    /// </summary>
+    /// <param name="input">Input string.</param>
+    /// <returns>Only digits from input.</returns>
     protected static string OnlyNumbers(string input)
         => new string(input.Where(char.IsDigit).ToArray());
 }
 
+/// <summary>
+/// Represents a Brazilian CNPJ (Cadastro Nacional da Pessoa Jurídica).
+/// </summary>
 public class Cnpj : NationalRegistry
 {
     public const int CnpjMaxLength = 14;
+
+    /// <summary>
+    /// The full CNPJ number as digits only.
+    /// </summary>
     public string Number { get; private set; }
+
+    /// <summary>
+    /// The registration part of the CNPJ (first 8 digits).
+    /// </summary>
     public string Registration { get; private set; }
+
+    /// <summary>
+    /// The branch part of the CNPJ (next 4 digits).
+    /// </summary>
     public string? Branch { get; private set; }
+
+    /// <summary>
+    /// The verification digit (last 2 digits).
+    /// </summary>
     public string Digit { get; private set; }
 
+    /// <summary>
+    /// Creates a new instance of <see cref="Cnpj"/> after validation.
+    /// </summary>
+    /// <param name="number">CNPJ number string.</param>
+    /// <exception cref="DomainException">Thrown when CNPJ is invalid.</exception>
     public Cnpj(string number)
     {
         number = number.Replace(".", "").Replace("-", "").Replace("/", "");
@@ -43,6 +81,11 @@ public class Cnpj : NationalRegistry
         Digit = Number.Substring(12, 2);
     }
 
+    /// <summary>
+    /// Validates a given CNPJ number string.
+    /// </summary>
+    /// <param name="cnpj">CNPJ string to validate.</param>
+    /// <returns>True if valid, otherwise false.</returns>
     public static bool Validate(string cnpj)
     {
         int[] multiplier1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
@@ -84,13 +127,33 @@ public class Cnpj : NationalRegistry
     }
 }
 
+/// <summary>
+/// Represents a Brazilian CPF (Cadastro de Pessoas Físicas).
+/// </summary>
 public class Cpf : NationalRegistry
 {
     public const int CpfMaxLength = 11;
+
+    /// <summary>
+    /// The full CPF number as digits only.
+    /// </summary>
     public string Number { get; private set; }
+
+    /// <summary>
+    /// The registration part of the CPF (first 9 digits).
+    /// </summary>
     public string Registration { get; private set; }
+
+    /// <summary>
+    /// The verification digit (last 2 digits).
+    /// </summary>
     public string Digit { get; private set; }
 
+    /// <summary>
+    /// Creates a new instance of <see cref="Cpf"/> after validation.
+    /// </summary>
+    /// <param name="number">CPF number string.</param>
+    /// <exception cref="DomainException">Thrown when CPF is invalid.</exception>
     public Cpf(string number)
     {
         number = number.Replace(".", "").Replace("-", "");
@@ -104,6 +167,11 @@ public class Cpf : NationalRegistry
         Digit = Number.Substring(9, 2);
     }
 
+    /// <summary>
+    /// Validates a given CPF number string.
+    /// </summary>
+    /// <param name="cpf">CPF string to validate.</param>
+    /// <returns>True if valid, otherwise false.</returns>
     public static bool Validar(string cpf)
     {
         int[] multiplier1 = [10, 9, 8, 7, 6, 5, 4, 3, 2];

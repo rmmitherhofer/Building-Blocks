@@ -1,233 +1,101 @@
-﻿using Microsoft.Extensions.Logging;
-using System.Net;
+﻿using SnapTrace.Enums;
 using System.Text.Json.Serialization;
 
 namespace SnapTrace.Models;
 
+
+/// <summary>
+/// Represents the full context of a request log, including environment, request, response, diagnostics, and exceptions.
+/// </summary>
 public class LogContextRequest
 {
-    [JsonPropertyName("ProjectInfo")]
+    /// <summary>
+    /// Information about the project generating the log.
+    /// </summary>
+    [JsonPropertyName("projectInfo")]
     public ProjectInfo ProjectInfo { get; set; }
 
-    [JsonPropertyName("Environment")]
+    /// <summary>
+    /// Information about the environment where the application is running.
+    /// </summary>
+    [JsonPropertyName("environment")]
     public EnvironmentInfo Environment { get; set; }
 
-    [JsonPropertyName("EndpointPath")]
+    /// <summary>
+    /// The HTTP endpoint path requested.
+    /// </summary>
+    [JsonPropertyName("endpointPath")]
     public string EndpointPath { get; set; }
 
-    [JsonPropertyName("RequestDuration")]
+    /// <summary>
+    /// Formatted duration of the request.
+    /// </summary>
+    [JsonPropertyName("requestDuration")]
     public string RequestDuration { get; set; }
 
-    [JsonPropertyName("ElapsedMilliseconds")]
+    /// <summary>
+    /// Elapsed time of the request in milliseconds.
+    /// </summary>
+    [JsonPropertyName("elapsedMilliseconds")]
     public long ElapsedMilliseconds { get; set; }
 
-    [JsonPropertyName("LogSeverity")]
-    public int LogSeverity { get; set; }
+    /// <summary>
+    /// Attention level of the log.
+    /// </summary>
+    [JsonPropertyName("logAttentionLevel")]
+    public LogAttentionLevel LogAttentionLevel { get; set; }
 
-    [JsonPropertyName("TraceIdentifier")]
+    /// <summary>
+    /// Unique identifier for the request trace.
+    /// </summary>
+    [JsonPropertyName("traceIdentifier")]
     public string TraceIdentifier { get; set; }
 
-    [JsonPropertyName("UserContextRequest")]
+    /// <summary>
+    /// Authenticated user information, if available.
+    /// </summary>
+    [JsonPropertyName("userContext")]
     public UserContextRequest UserContext { get; set; }
 
-    [JsonPropertyName("RequestInfoRequest")]
+    /// <summary>
+    /// HTTP request information.
+    /// </summary>
+    [JsonPropertyName("requestInfo")]
     public RequestInfoRequest RequestInfo { get; set; }
 
-    [JsonPropertyName("ResponseInfoRequest")]
+    /// <summary>
+    /// HTTP response information.
+    /// </summary>
+    [JsonPropertyName("responseInfo")]
     public ResponseInfoRequest ResponseInfo { get; set; }
 
-    [JsonPropertyName("DiagnosticRequest")]
+    /// <summary>
+    /// Diagnostic data such as memory usage, dependencies, and cache hits.
+    /// </summary>
+    [JsonPropertyName("diagnostics")]
     public DiagnosticRequest Diagnostics { get; set; }
 
-    [JsonPropertyName("ErrorCategory")]
+    /// <summary>
+    /// Category of the detected error, if applicable.
+    /// </summary>
+    [JsonPropertyName("errorCategory")]
     public string ErrorCategory { get; set; }
 
-    [JsonPropertyName("LogEntries")]
+    /// <summary>
+    /// Notifications generated during the request processing.
+    /// </summary>
+    [JsonPropertyName("notifications")]
     public IEnumerable<NotificationInfoRequest> Notifications { get; set; }
 
-    [JsonPropertyName("LogEntries")]
+    /// <summary>
+    /// Detailed log entries (messages, levels, sources).
+    /// </summary>
+    [JsonPropertyName("logEntries")]
     public IEnumerable<LogEntryRequest> LogEntries { get; set; }
-    [JsonPropertyName("ExceptionDetails")]
+
+    /// <summary>
+    /// Captured exception details during processing.
+    /// </summary>
+    [JsonPropertyName("exceptionDetails")]
     public IEnumerable<ExceptionInfoRequest> Exceptions { get; set; }
-}
-public class UserContextRequest
-{
-    [JsonPropertyName("UserId")]
-    public string Id { get; set; }
-
-    [JsonPropertyName("UserCode")]
-    public string Code { get; set; }
-
-    [JsonPropertyName("UserName")]
-    public string Name { get; set; }
-
-    [JsonPropertyName("IsAuthenticated")]
-    public bool IsAuthenticated { get; set; }
-
-    [JsonPropertyName("AuthenticationType")]
-    public string AuthenticationType { get; set; }
-
-    [JsonPropertyName("Roles")]
-    public List<string> Roles { get; set; }
-
-    [JsonPropertyName("Claims")]
-    public Dictionary<string, string> Claims { get; set; }
-
-    [JsonPropertyName("MachineName")]
-    public string MachineName { get; set; }
-
-    [JsonPropertyName("ClientIp")]
-    public string IpAddress { get; set; }
-}
-
-public class RequestInfoRequest
-{
-    [JsonPropertyName("RequestId")]
-    public string RequestId { get; set; }
-
-    [JsonPropertyName("CorrelationId")]
-    public string CorrelationId { get; set; }
-
-    [JsonPropertyName("HttpMethod")]
-    public string HttpMethod { get; set; }
-
-    [JsonPropertyName("RequestUrl")]
-    public string RequestUrl { get; set; }
-
-    [JsonPropertyName("Scheme")]
-    public string Scheme { get; set; }
-
-    [JsonPropertyName("Protocol")]
-    public string Protocol { get; set; }
-
-    [JsonPropertyName("IsHttps")]
-    public bool IsHttps { get; set; }
-
-    [JsonPropertyName("QueryString")]
-    public string QueryString { get; set; }
-
-    [JsonPropertyName("RouteValues")]
-    public Dictionary<string, string> RouteValues { get; set; }
-
-    [JsonPropertyName("UserAgent")]
-    public string UserAgent { get; set; }
-
-    [JsonPropertyName("ClientId")]
-    public string ClientId { get; set; }
-
-    [JsonPropertyName("Headers")]
-    public Dictionary<string, List<string>> Headers { get; set; }
-
-    [JsonPropertyName("ContentType")]
-    public string ContentType { get; set; }
-
-    [JsonPropertyName("ContentLength")]
-    public long? ContentLength { get; set; }
-
-    [JsonPropertyName("Body")]
-    public object Body { get; set; }
-
-    [JsonPropertyName("BodySize")]
-    public double BodySize { get; set; }
-}
-
-public class ResponseInfoRequest
-
-{
-    [JsonPropertyName("StatusCode")]
-    public HttpStatusCode StatusCode { get; set; }
-
-    [JsonPropertyName("ReasonPhrase")]
-    public string ReasonPhrase { get; set; }
-
-    [JsonPropertyName("Headers")]
-    public Dictionary<string, List<string>> Headers { get; set; }
-
-    [JsonPropertyName("Body")]
-    public object Body { get; set; }
-
-    [JsonPropertyName("BodySize")]
-    public double BodySize { get; set; }
-}
-
-public class DiagnosticRequest
-{
-    [JsonPropertyName("MemoryUsageMb")]
-    public double MemoryUsageMb { get; set; }
-
-    [JsonPropertyName("DbQueryCount")]
-    public int DbQueryCount { get; set; }
-
-    [JsonPropertyName("CacheHit")]
-    public bool CacheHit { get; set; }
-
-    [JsonPropertyName("Dependencies")]
-    public List<DependencyInfoRequest> Dependencies { get; set; }
-}
-
-public class DependencyInfoRequest
-{
-    [JsonPropertyName("Type")]
-    public string Type { get; set; }
-
-    [JsonPropertyName("Target")]
-    public string Target { get; set; }
-
-    [JsonPropertyName("Success")]
-    public bool Success { get; set; }
-
-    [JsonPropertyName("DurationMs")]
-    public int DurationMs { get; set; }
-}
-
-public class LogEntryRequest
-{
-    [JsonPropertyName("LogCategory")]
-    public string LogCategory { get; set; }
-
-    [JsonPropertyName("LogSeverity")]
-    public LogLevel LogSeverity { get; set; }
-
-    [JsonPropertyName("LogMessage")]
-    public string LogMessage { get; set; }
-
-    [JsonPropertyName("MemberType")]
-    public string? MemberType { get; set; }
-
-    [JsonPropertyName("MemberName")]
-    public string? MemberName { get; set; }
-
-    [JsonPropertyName("SourceLineNumber")]
-    public int SourceLineNumber { get; set; }
-
-    [JsonPropertyName("Timestamp")]
-    public DateTime Timestamp { get; set; }
-}
-
-public class ExceptionInfoRequest
-{
-    [JsonPropertyName("type")]
-    public string Type { get; set; }
-
-    [JsonPropertyName("message")]
-    public string Message { get; set; }
-    [JsonPropertyName("tracer")]
-    public string? Tracer { get; set; }
-    [JsonPropertyName("detail")]
-    public string? Detail { get; set; }
-}
-
-public class  NotificationInfoRequest
-{
-    public Guid Id { get;  set; }
-
-    public DateTime Timestamp { get;  set; }
-
-    public LogLevel LogLevel { get;  set; }
-
-    public string? Key { get;  set; }
-
-    public string Value { get;  set; }
-
-    public string? Detail { get;  set; }
 }

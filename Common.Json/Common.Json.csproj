@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net9.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+		<NoWarn>$(NoWarn);1591</NoWarn>
+
+		<Version>9.0.2</Version>
+
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+
+		<Authors>Renato Mitherhofer</Authors>
+
+		<PackageId>MitherPack.Common.Json</PackageId>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+	</PropertyGroup>
+</Project>

@@ -1,67 +1,86 @@
 ﻿using System.Globalization;
 
-namespace Extensoes;
+namespace Common.Extensions;
 
+/// <summary>
+/// Extension methods for formatting and parsing numbers with culture-specific settings.
+/// </summary>
 public static class NumberExtensions
 {
-    public static string PtBR(this decimal? value)
+    /// <summary>
+    /// Formats a nullable decimal as a string in pt-BR culture format.
+    /// Returns "0.00" if value is null.
+    /// </summary>
+    /// <param name="value">Nullable decimal value.</param>
+    /// <returns>Formatted string in pt-BR format.</returns>
+    public static string ToPtBr(this decimal? value)
     {
-        if (value == null) return "0";
-        return FormatNumberToPtBR(value);
+        if (value == null) return "0.00";
+
+        return FormatNumber(value.Value, new CultureInfo("pt-BR"));
     }
 
-    public static string PtBR(this decimal value) => FormatNumberToPtBR(value);
+    /// <summary>
+    /// Formats a decimal as a string in pt-BR culture format.
+    /// </summary>
+    /// <param name="value">Decimal value.</param>
+    /// <returns>Formatted string in pt-BR format.</returns>
+    public static string ToPtBr(this decimal value)
+        => FormatNumber(value, new CultureInfo("pt-BR"));
 
-    private static string FormatNumberToPtBR(object value, int decimalQuantity = 2)
+    /// <summary>
+    /// Formats a decimal number with specified culture and number of decimal places.
+    /// </summary>
+    /// <param name="value">Decimal value.</param>
+    /// <param name="culture">Culture info to format the number.</param>
+    /// <param name="decimalPlaces">Number of decimal places (default is 2).</param>
+    /// <returns>Formatted number string.</returns>
+    public static string FormatNumber(this decimal value, CultureInfo culture, int decimalPlaces = 2)
     {
-        if (string.IsNullOrWhiteSpace(value?.ToString())) throw new ArgumentNullException(nameof(value));
+        if (culture == null) throw new ArgumentNullException(nameof(culture));
 
-        return string.Format(new CultureInfo("pt-BR"), $"{{0:N{decimalQuantity}}}", value);
+        return string.Format(culture, $"{{0:N{decimalPlaces}}}", value);
     }
 
-    public static decimal? RevertMaskToDecimal(this string? value, CultureInfo? culture = null)
+    /// <summary>
+    /// Parses a string representing a currency or number to decimal using optional culture.
+    /// Throws <see cref="FormatException"/> if parsing fails.
+    /// </summary>
+    /// <param name="value">String value to parse.</param>
+    /// <param name="culture">Optional culture info; if null, uses current culture.</param>
+    /// <returns>Nullable decimal parsed from string.</returns>
+    public static decimal? ParseToDecimal(this string? value, CultureInfo? culture = null)
     {
-        if (string.IsNullOrEmpty(value)) return null;
-
-        bool converted = decimal.TryParse(RevertMask(value, culture), out decimal result);
-
-        return converted ? result : throw new FormatException($"Falha ao formatar valor {value}");
-    }
-
-    private static string RevertMask(string value, CultureInfo? culture = null)
-    {
-        if (string.IsNullOrWhiteSpace(value)) throw new ArgumentNullException(nameof(value));
-
-        string convertedValue = value.RemoveMaskReal().Replace(" ", "").Trim();
+        if (string.IsNullOrWhiteSpace(value)) return null;
 
         culture ??= CultureInfo.CurrentCulture;
 
-        if (!convertedValue.Contains(','))
-            return convertedValue.Replace(".", "");
+        var normalized = NormalizeCurrencyString(value, culture);
 
-        string newValue = string.Empty;
+        if (decimal.TryParse(normalized, NumberStyles.Number | NumberStyles.AllowCurrencySymbol, culture, out var result))
+            return result;
 
-        var num = convertedValue.Replace(",", ".").Split(".");
-
-        for (int i = 0; i < num.Length; i++)
-        {
-            bool isLastValue = num.Length - 1 == i;
-
-            if (isLastValue)
-            {
-                newValue += culture.Name switch
-                {
-                    "pt-BR" => $",{num[i]}",
-                    _ => $".{num[i]}"
-                };
-            }
-            else
-            {
-                newValue += num[i];
-            }
-        }
-
-        return newValue;
+        throw new FormatException($"Failed to parse '{value}' to decimal using culture '{culture.Name}'.");
     }
 
+    /// <summary>
+    /// Normalizes a currency string by removing currency symbols, spaces, and formatting group and decimal separators.
+    /// </summary>
+    /// <param name="value">Currency string to normalize.</param>
+    /// <param name="culture">Culture info used to identify separators.</param>
+    /// <returns>Normalized string suitable for decimal parsing.</returns>
+    private static string NormalizeCurrencyString(string value, CultureInfo culture)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            throw new ArgumentNullException(nameof(value));
+
+        string cleaned = value.RemoveCurrencySymbols().Replace(" ", "").Trim();
+
+        var nfi = culture.NumberFormat;
+
+        cleaned = cleaned.Replace(nfi.CurrencyGroupSeparator, "");
+        cleaned = cleaned.Replace(nfi.CurrencyDecimalSeparator, ".");
+
+        return cleaned;
+    }
 }

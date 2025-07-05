@@ -1,49 +1,57 @@
 ﻿using Api.Responses;
 using Common.Exceptions;
-using Common.Extensions;
 using Common.Http;
+using Common.Http.Extensions;
+using Common.Json;
+using Common.Logs.Extensions;
 using Common.Notifications.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Newtonsoft.Json;
 using SnapTrace.Configurations.Settings;
 using SnapTrace.Models;
-using System.Net;
 using System.Text;
 
 namespace SnapTrace.HttpServices;
 
-public interface ISnapTraceHttpService
-{
-    Task Add(LogContextRequest log);
-}
-
+/// <summary>
+/// HTTP service responsible for communicating with the SnapTrace logging endpoint.
+/// </summary>
 public class SnapTraceHttpService : HttpService, ISnapTraceHttpService
 {
     private readonly SnapTraceSettings _settings;
-    public SnapTraceHttpService(HttpClient httpClient,
-        IHttpContextAccessor accessor,
+
+    /// <summary>
+    /// Initializes a new instance of <see cref="SnapTraceHttpService"/>.
+    /// </summary>
+    /// <param name="httpClient">The configured HTTP client for sending requests.</param>
+    /// <param name="notification">Notification handler for capturing domain notifications.</param>
+    /// <param name="logger">Logger instance for internal logging.</param>
+    /// <param name="options">SnapTrace configuration settings.</param>
+    public SnapTraceHttpService(
+        HttpClient httpClient,
         INotificationHandler notification,
         ILogger<SnapTraceHttpService> logger,
-        IOptions<SnapTraceSettings> options) : base(httpClient, accessor, notification, logger)
-    {
-        _settings = options.Value;
-    }
+        IOptions<SnapTraceSettings> options
+    ) : base(httpClient, notification, logger) => _settings = options.Value;
 
-    public async Task Add(LogContextRequest log)
+    /// <summary>
+    /// Sends the given <see cref="LogContextRequest"/> to the SnapTrace API.
+    /// </summary>
+    /// <param name="log">The log context to be transmitted.</param>
+    public async Task Flush(LogContextRequest log)
     {
         var uri = _settings.Service.EndPoints.Notify;
 
-        var content = SerializeContent(log);
+        var content = JsonExtensions.SerializeContent(log);
 
-        _logger.LogTrace("Body: " + JsonConvert.SerializeObject(log));
+        if(_settings.WritePayloadToConsole)
+            _logger.LogTrace("Payload: " + JsonExtensions.Serialize(log));
 
         var response = await PostAsync(uri, content);
 
         try
         {
-            if (ResponseHasErrors(response))
+            if (response.HasErrors())
                 await Print(response);
         }
         catch (CustomHttpRequestException ex)
@@ -52,32 +60,39 @@ public class SnapTraceHttpService : HttpService, ISnapTraceHttpService
         }
     }
 
+    /// <summary>
+    /// Reads and prints the details from an HTTP error response returned by the SnapTrace API.
+    /// </summary>
+    /// <param name="response">The HTTP response containing error details.</param>
     private async Task Print(HttpResponseMessage response)
     {
         StringBuilder sb = new();
-        DetailsResponse details = null;
+        ApiResponse apiResponse = null;
 
         try
         {
-            details = await DeserializeObjectResponseAsync<DetailsResponse>(response);
+            apiResponse = await response.ReadAsAsync<ApiResponse>();
 
-            if (details is null)
+            if (apiResponse is null)
                 throw new CustomHttpRequestException();
         }
         catch (Exception)
         {
-            throw new CustomHttpRequestException(response.StatusCode, $"{response.RequestMessage.Method} - {response.RequestMessage.RequestUri} - {response.StatusCode} - {response.StatusCode}");
+            throw new CustomHttpRequestException(
+                response.StatusCode,
+                $"{response.RequestMessage.Method} - {response.RequestMessage.RequestUri} - {response.StatusCode} - {response.StatusCode}"
+            );
         }
 
-        sb.AppendLine($"{nameof(SnapTraceHttpService)}: Status Code: {response.StatusCode}");
+        sb.AppendLine($"{nameof(SnapTraceHttpService)}: StatusCode: {response.StatusCode}");
 
-        foreach (var issue in details.Issues)
+        foreach (var issue in apiResponse.Issues)
         {
             sb.AppendLine($"Type: {issue.DescriptionType}");
             sb.AppendLine($"Title: {issue.Title}");
 
             foreach (var detail in issue.Details)
-                sb.AppendLine($"Level: {detail.LogLevel.ToString()} - Key: {detail.Key} - Value {detail.Value}");
+                sb.AppendLine($"Level: {detail.LogLevel} - Key: {detail.Key} - Value {detail.Value}");
 
             switch (issue.Type)
             {

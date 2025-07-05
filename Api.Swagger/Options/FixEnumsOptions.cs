@@ -1,72 +1,73 @@
-﻿namespace Swagger.Options;
+﻿namespace Api.Swagger.Options;
 
 /// <summary>
-/// Various configuration properties for fixing enums.
+/// Various configuration properties for customizing enum representation in Swagger documentation.
 /// </summary>
 public class FixEnumsOptions
 {
     #region Properties
 
     /// <summary>
-    /// Included file paths with XML comments.
+    /// Gets the set of included XML documentation file paths to read comments from.
     /// </summary>
     public HashSet<string> IncludedXmlCommentsPaths { get; } = new HashSet<string>();
 
     /// <summary>
-    /// Include descriptions from <see cref="DescriptionAttribute"/> or xml comments. Default value is false.
+    /// Gets or sets a value indicating whether to include descriptions from <see cref="System.ComponentModel.DescriptionAttribute"/> or XML comments.
+    /// Default is <c>false</c>.
     /// </summary>
     public bool IncludeDescriptions { get; set; } = false;
 
     /// <summary>
-    /// Include remarks for descriptions from xml comments. Default value is false.
+    /// Gets or sets a value indicating whether to include remarks from XML comments in enum descriptions.
+    /// Default is <c>false</c>.
     /// </summary>
     public bool IncludeXEnumRemarks { get; set; } = false;
 
     /// <summary>
-    /// Source to get descriptions. Default value is <see cref="DescriptionSources.DescriptionAttributes"/>.
+    /// Gets or sets the source to retrieve descriptions from.
+    /// Default is <see cref="DescriptionSources.DescriptionAttributes"/>.
     /// </summary>
     public DescriptionSources DescriptionSource { get; set; } = DescriptionSources.DescriptionAttributes;
 
     /// <summary>
-    /// Apply fix enum filter to OpenApi schema. Default value is true.
-    /// <para>
-    /// Equivalent to "options.SchemaFilter&lt;XEnumNamesSchemaFilter&gt;();"
-    /// </para>
+    /// Gets or sets a value indicating whether to apply the enum names schema filter in Swagger schemas.
+    /// This corresponds to calling <c>options.SchemaFilter&lt;XEnumNamesSchemaFilter&gt;();</c>.
+    /// Default is <c>true</c>.
     /// </summary>
     public bool ApplySchemaFilter { get; set; } = true;
 
     /// <summary>
-    /// Apply fix enum filter to OpenApi parameters. Default value is true.
-    /// <para>
-    /// Equivalent to "options.ParameterFilter&lt;XEnumNamesParameterFilter&gt;();"
-    /// </para>
+    /// Gets or sets a value indicating whether to apply the enum names parameter filter in Swagger parameters.
+    /// This corresponds to calling <c>options.ParameterFilter&lt;XEnumNamesParameterFilter&gt;();</c>.
+    /// Default is <c>true</c>.
     /// </summary>
     public bool ApplyParameterFilter { get; set; } = true;
 
     /// <summary>
-    /// Apply fix enum filter to OpenApi document. Default value is true.
-    /// <para>
-    /// Equivalent to "options.DocumentFilter&lt;DisplayEnumsWithValuesDocumentFilter&gt;();"
-    /// </para>
+    /// Gets or sets a value indicating whether to apply the document filter to display enum values with descriptions.
+    /// This corresponds to calling <c>options.DocumentFilter&lt;DisplayEnumsWithValuesDocumentFilter&gt;();</c>.
+    /// Default is <c>true</c>.
     /// </summary>
     public bool ApplyDocumentFilter { get; set; } = true;
 
     /// <summary>
-    /// Alias for replacing "x-enumNames" in swagger documentation.
+    /// Gets or sets the alias key used for enum names in the Swagger documentation extensions.
+    /// Default is <c>"x-enumNames"</c>.
     /// </summary>
     public string XEnumNamesAlias { get; set; } = "x-enumNames";
 
     /// <summary>
-    /// Alias for replacing "x-enumDescriptions" in swagger documentation.
+    /// Gets or sets the alias key used for enum descriptions in the Swagger documentation extensions.
+    /// Default is <c>"x-enumDescriptions"</c>.
     /// </summary>
     public string XEnumDescriptionsAlias { get; set; } = "x-enumDescriptions";
 
     /// <summary>
-    /// New line for enum values descriptions.
+    /// Gets or sets the string used for new lines in enum values descriptions.
+    /// For example: <see cref="Environment.NewLine"/> or "\n".
+    /// Default is "\n".
     /// </summary>
-    /// <remarks>
-    /// For example, <see cref="Environment.NewLine"/> or "\n".
-    /// </remarks>
     public string NewLine { get; set; } = "\n";
 
     #endregion
