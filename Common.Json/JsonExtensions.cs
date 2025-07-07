@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
@@ -19,6 +20,7 @@ public static class JsonExtensions
     /// </summary>
     public static readonly JsonSerializerOptions SerializeDefaultOptions = new()
     {
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
         WriteIndented = false
@@ -29,6 +31,7 @@ public static class JsonExtensions
     /// </summary>
     public static readonly JsonSerializerOptions DeserializeDefaultOptions = new()
     {
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
         PropertyNameCaseInsensitive = true,
         WriteIndented = false,
