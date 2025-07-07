@@ -3,30 +3,55 @@ using Microsoft.Extensions.Logging;
 using SnapTrace.Extensions;
 using SnapTrace.Formatters;
 using SnapTrace.Models;
+using SnapTrace.Options;
 
 namespace SnapTrace.Adapters;
 
+/// <summary>
+/// Custom logger that stores log entries per HTTP request context.
+/// </summary>
 public class SnapTraceLogger : ILogger
 {
     private readonly string _category;
-    private readonly LoggerOptions _options;
+    private readonly SnapTraceOptions _options;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    private const string LogsKey = "__SnapTrace_Logger_Logs__";
+    private const string LOGS_KEY = "__SnapTrace_Logger_Logs__";
 
-    public SnapTraceLogger(LoggerOptions options, string category, IHttpContextAccessor httpContextAccessor)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="SnapTraceLogger"/> class.
+    /// </summary>
+    /// <param name="options">The logger options.</param>
+    /// <param name="category">The logger category.</param>
+    /// <param name="httpContextAccessor">HTTP context accessor.</param>
+    public SnapTraceLogger(SnapTraceOptions options, string category, IHttpContextAccessor httpContextAccessor)
     {
-        ArgumentNullException.ThrowIfNull(options, nameof(LoggerOptions));
+        ArgumentNullException.ThrowIfNull(options, nameof(SnapTraceOptions));
 
         _options = options;
         _category = category;
         _httpContextAccessor = httpContextAccessor;
     }
 
+    /// <summary>
+    /// Begins a logical operation scope. Not implemented.
+    /// </summary>
     public IDisposable BeginScope<TState>(TState state) => null;
 
+    /// <summary>
+    /// Determines whether the given log level is enabled. Always returns true.
+    /// </summary>
     public bool IsEnabled(LogLevel logLevel) => true;
 
+    /// <summary>
+    /// Logs a message to the current HTTP context.
+    /// </summary>
+    /// <typeparam name="TState">The type of the state.</typeparam>
+    /// <param name="logLevel">The log level.</param>
+    /// <param name="eventId">The event ID.</param>
+    /// <param name="state">The log state.</param>
+    /// <param name="exception">The exception to log.</param>
+    /// <param name="formatter">The message formatter.</param>
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception exception, Func<TState, Exception, string> formatter)
     {
         if (formatter == null) return;
@@ -53,44 +78,24 @@ public class SnapTraceLogger : ILogger
 
         if (context == null) return;
 
-        if (!context.Items.TryGetValue(LogsKey, out var obj) || obj is not List<LogEntry> logs)
+        if (!context.Items.TryGetValue(LOGS_KEY, out var obj) || obj is not List<LogEntry> logs)
         {
-            logs = new List<LogEntry>();
-            context.Items[LogsKey] = logs;
+            logs = [];
+            context.Items[LOGS_KEY] = logs;
         }
         logs.Add(logEntry);
     }
 
+    /// <summary>
+    /// Gets the logs for the current HTTP request.
+    /// </summary>
+    /// <param name="context">The HTTP context.</param>
+    /// <returns>The list of log entries.</returns>
     public static IEnumerable<LogEntry> GetLogsForCurrentRequest(HttpContext context)
     {
-        if (context.Items.TryGetValue(LogsKey, out var obj) && obj is IEnumerable<LogEntry> logs)
+        if (context.Items.TryGetValue(LOGS_KEY, out var obj) && obj is IEnumerable<LogEntry> logs)
             return logs;
 
         return [];
     }
-}
-
-
-[ProviderAlias("SnapTrace")]
-public class SnapTraceLoggerProvider : ILoggerProvider
-{
-    private readonly LoggerOptions _options;
-    private readonly IHttpContextAccessor _httpContextAccessor;
-
-    public SnapTraceLoggerProvider(LoggerOptions options, IHttpContextAccessor httpContextAccessor)
-    {
-        _options = options;
-        _httpContextAccessor = httpContextAccessor;
-    }
-
-    public ILogger CreateLogger(string categoryName)
-    {
-        return new SnapTraceLogger(_options, categoryName, _httpContextAccessor);
-    }
-    public void Dispose() { }
-}
-
-public class LoggerOptions
-{
-    public Func<FormatterArgs, string> Formatter { get; set; }
 }

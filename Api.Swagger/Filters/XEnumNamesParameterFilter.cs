@@ -1,13 +1,17 @@
 ﻿using Api.Swagger.Extensions;
+using Api.Swagger.Options;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
-using Swagger.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Xml.XPath;
 
-namespace Swagger.Filters;
+namespace Api.Swagger.Filters;
 
+/// <summary>
+/// Parameter filter to add enum names and descriptions as Swagger extensions
+/// to improve enum documentation in Swagger UI.
+/// </summary>
 internal class XEnumNamesParameterFilter : IParameterFilter
 {
     #region Fields
@@ -20,17 +24,18 @@ internal class XEnumNamesParameterFilter : IParameterFilter
     private readonly string _newLine;
     private readonly DescriptionSources _descriptionSources;
     private readonly bool _applyFiler;
-    private readonly HashSet<XPathNavigator> _xmlNavigators = [];
+    private readonly HashSet<XPathNavigator> _xmlNavigators = new();
 
     #endregion
 
     #region Constructors
 
     /// <summary>
-    /// Constructor.
+    /// Initializes a new instance of the <see cref="XEnumNamesParameterFilter"/> class.
+    /// Reads configuration options to control behavior of the filter.
     /// </summary>
-    /// <param name="options"><see cref="FixEnumsOptions"/>.</param>
-    /// <param name="configureOptions">An <see cref="Action{FixEnumsOptions}"/> to configure options for filter.</param>
+    /// <param name="options">The options for fixing enums configuration.</param>
+    /// <param name="configureOptions">Optional action to further configure the options.</param>
     public XEnumNamesParameterFilter(IOptions<FixEnumsOptions> options, Action<FixEnumsOptions>? configureOptions = null)
     {
         if (options.Value is not null)
@@ -57,10 +62,11 @@ internal class XEnumNamesParameterFilter : IParameterFilter
     #region Methods
 
     /// <summary>
-    /// Apply the filter.
+    /// Applies the filter to the Swagger parameter, adding enum names and descriptions
+    /// as extensions for better Swagger UI display.
     /// </summary>
-    /// <param name="parameter"><see cref="OpenApiParameter"/>.</param>
-    /// <param name="context"><see cref="ParameterFilterContext"/>.</param>
+    /// <param name="parameter">The OpenAPI parameter to update.</param>
+    /// <param name="context">The parameter filter context providing type and schema information.</param>
     public void Apply(OpenApiParameter parameter, ParameterFilterContext context)
     {
         if (!_applyFiler) return;
@@ -69,9 +75,9 @@ internal class XEnumNamesParameterFilter : IParameterFilter
 
         if (typeInfo is null) return;
 
+        OpenApiArray enumsArray = new();
+        OpenApiArray enumsDescriptionsArray = new();
 
-        OpenApiArray enumsArray = [];
-        OpenApiArray enumsDescriptionsArray = [];
         if (typeInfo.IsEnum)
         {
             var names = Enum
@@ -135,7 +141,6 @@ internal class XEnumNamesParameterFilter : IParameterFilter
                     {
                         if (parameter.Description is null)
                             parameter.Description = description;
-
                         else if (!parameter.Description.Contains(description))
                             parameter.Description += description;
                     }
@@ -151,7 +156,6 @@ internal class XEnumNamesParameterFilter : IParameterFilter
             {
                 if (parameter.Description is null)
                     parameter.Description = description;
-
                 else if (!parameter.Description.Contains(description))
                     parameter.Description += description;
             }
@@ -160,3 +164,4 @@ internal class XEnumNamesParameterFilter : IParameterFilter
 
     #endregion
 }
+

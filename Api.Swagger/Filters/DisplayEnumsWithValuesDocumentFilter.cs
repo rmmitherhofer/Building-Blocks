@@ -1,11 +1,15 @@
 ﻿using Api.Swagger.Extensions;
+using Api.Swagger.Options;
 using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
-using Swagger.Options;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
-namespace Swagger.Filters;
+namespace Api.Swagger.Filters;
 
+/// <summary>
+/// Document filter to enhance enum types in Swagger documentation by appending
+/// their values and descriptions.
+/// </summary>
 internal class DisplayEnumsWithValuesDocumentFilter : IDocumentFilter
 {
     #region Fields
@@ -21,10 +25,10 @@ internal class DisplayEnumsWithValuesDocumentFilter : IDocumentFilter
     #region Constructors
 
     /// <summary>
-    /// Constructor.
+    /// Initializes a new instance of the <see cref="DisplayEnumsWithValuesDocumentFilter"/> class.
     /// </summary>
-    /// <param name="options"><see cref="FixEnumsOptions"/>.</param>
-    /// <param name="configureOptions">An <see cref="Action{FixEnumsOptions}"/> to configure options for filter.</param>
+    /// <param name="options">Configuration options for enum display.</param>
+    /// <param name="configureOptions">Optional action to configure the options.</param>
     public DisplayEnumsWithValuesDocumentFilter(IOptions<FixEnumsOptions> options, Action<FixEnumsOptions>? configureOptions = null)
     {
         if (options.Value is not null)
@@ -43,14 +47,16 @@ internal class DisplayEnumsWithValuesDocumentFilter : IDocumentFilter
     #region Methods
 
     /// <summary>
-    /// Apply the filter.
+    /// Applies the document filter to enrich enum schemas and parameters with
+    /// values and descriptions in the generated Swagger documentation.
     /// </summary>
-    /// <param name="openApiDoc"><see cref="OpenApiDocument"/>.</param>
-    /// <param name="context"><see cref="DocumentFilterContext"/>.</param>
+    /// <param name="openApiDoc">The Swagger/OpenAPI document.</param>
+    /// <param name="context">The filter context.</param>
     public void Apply(OpenApiDocument openApiDoc, DocumentFilterContext context)
     {
         if (!_applyFiler) return;
 
+        // Update schemas to append enum values and descriptions
         foreach (var schemaDictionaryItem in openApiDoc.Components.Schemas)
         {
             var schema = schemaDictionaryItem.Value;
@@ -59,7 +65,6 @@ internal class DisplayEnumsWithValuesDocumentFilter : IDocumentFilter
             {
                 if (schema.Description is null)
                     schema.Description = description;
-
                 else if (!schema.Description.Contains(description))
                     schema.Description += description;
             }
@@ -67,14 +72,15 @@ internal class DisplayEnumsWithValuesDocumentFilter : IDocumentFilter
 
         if (openApiDoc.Paths.Count <= 0) return;
 
+        // Update parameters schemas in operations
         foreach (var parameter in openApiDoc.Paths.Values.SelectMany(v => v.Operations).SelectMany(op => op.Value.Parameters))
         {
             OpenApiSchema schema = null;
+
             if (parameter.Schema?.Reference is null)
             {
                 if (parameter.Schema?.AllOf?.Count > 0)
                     schema = context.SchemaRepository.Schemas.FirstOrDefault(s => parameter.Schema.AllOf.FirstOrDefault(a => a.Reference.Id == s.Key) != null).Value;
-
                 else
                     continue;
             }
@@ -93,7 +99,6 @@ internal class DisplayEnumsWithValuesDocumentFilter : IDocumentFilter
                 {
                     if (parameter.Description is null)
                         parameter.Description = description;
-
                     else if (!parameter.Description.Contains(description))
                         parameter.Description += description;
                 }
@@ -109,7 +114,7 @@ internal class DisplayEnumsWithValuesDocumentFilter : IDocumentFilter
                 {
                     if (requestBodyContent.Value.Schema?.Reference?.Id is not null)
                     {
-                        var schema = context.SchemaRepository.Schemas[requestBodyContent.Value.Schema?.Reference?.Id];
+                        var schema = context.SchemaRepository.Schemas[requestBodyContent.Value.Schema.Reference.Id];
                         if (schema is not null)
                         {
                             requestBodyContent.Value.Schema.Description = schema.Description;

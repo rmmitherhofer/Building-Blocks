@@ -3,36 +3,36 @@
 namespace Common.Notifications.Interfaces;
 
 /// <summary>
-/// Handler para orquestrar notificações no contexto
+/// Handler to orchestrate notifications within the context.
 /// </summary>
 public interface INotificationHandler
 {
     /// <summary>
-    /// Armazena notificação no contexto
+    /// Stores a single notification in the context.
     /// </summary>
-    /// <param name="notification"></param>
+    /// <param name="notification">The notification to store.</param>
     void Notify(Notification notification);
 
     /// <summary>
-    /// Armazena lista de notificações no contexto
+    /// Stores a list of notifications in the context.
     /// </summary>
-    /// <param name="notifications"></param>
+    /// <param name="notifications">The collection of notifications to store.</param>
     void Notify(IEnumerable<Notification> notifications);
 
     /// <summary>
-    /// Retorna lista de notificações
+    /// Retrieves the list of notifications from the context.
     /// </summary>
-    /// <returns>Coleção de Notificações</returns>
+    /// <returns>A collection of notifications.</returns>
     IEnumerable<Notification> Get();
 
     /// <summary>
-    /// Valida se possui notificações no contexto
+    /// Checks if there are any notifications present in the context.
     /// </summary>
-    /// <returns>true or false</returns>
+    /// <returns>True if there are notifications; otherwise, false.</returns>
     bool HasNotifications();
 
     /// <summary>
-    /// Limpa a lista de notificações no contexto
+    /// Clears the list of notifications from the context.
     /// </summary>
     void Clear();
 }

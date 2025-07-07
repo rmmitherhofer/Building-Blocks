@@ -2,41 +2,44 @@
 
 namespace Common.Notifications.Messages;
 
+/// <summary>
+/// Represents a domain notification with metadata such as timestamp, log level, and content.
+/// </summary>
 public class Notification : Message
 {
     /// <summary>
-    /// Id da notificação
+    /// Unique identifier of the notification.
     /// </summary>
     public Guid Id { get; private set; }
 
     /// <summary>
-    /// Data hora da notificação
+    /// Timestamp when the notification was created.
     /// </summary>
     public DateTime Timestamp { get; private set; }
 
     /// <summary>
-    /// Nivel de alerta da notificação
+    /// Logging level associated with the notification.
     /// </summary>
     public LogLevel LogLevel { get; private set; }
+
     /// <summary>
-    /// Chave
+    /// Optional key that identifies the context of the notification.
     /// </summary>
     public string? Key { get; private set; }
+
     /// <summary>
-    /// Valor
+    /// Main content or value of the notification.
     /// </summary>
     public string Value { get; private set; }
+
     /// <summary>
-    /// Detalhe
+    /// Optional detailed message.
     /// </summary>
     public string Detail { get; private set; }
 
     /// <summary>
-    /// Construtor
+    /// Initializes a new notification with full context.
     /// </summary>
-    /// <param name="type">Tipo</param>
-    /// <param name="key">Chave</param>
-    /// <param name="value">Valor</param>
     public Notification(LogLevel logLevel, string type, string key, string value, string detail) : base(type)
     {
         Id = Guid.NewGuid();
@@ -47,12 +50,10 @@ public class Notification : Message
         Value = value;
         Detail = detail;
     }
+
     /// <summary>
-    /// Construtor
+    /// Initializes a new notification with a default log level (Information).
     /// </summary>
-    /// <param name="type">Tipo</param>
-    /// <param name="key">Chave</param>
-    /// <param name="value">Valor</param>
     public Notification(string type, string key, string value, string detail) : base(type)
     {
         Id = Guid.NewGuid();
@@ -65,11 +66,8 @@ public class Notification : Message
     }
 
     /// <summary>
-    /// Construtor
+    /// Initializes a new notification with specified log level, key and value.
     /// </summary>
-    /// <param name="type">Tipo</param>
-    /// <param name="key">Chave</param>
-    /// <param name="value">Valor</param>
     public Notification(LogLevel logLevel, string type, string key, string value) : base(type)
     {
         Id = Guid.NewGuid();
@@ -79,12 +77,10 @@ public class Notification : Message
         Key = key;
         Value = value;
     }
+
     /// <summary>
-    /// Construtor
+    /// Initializes a new notification with default log level (Information), key and value.
     /// </summary>
-    /// <param name="type">Tipo</param>
-    /// <param name="key">Chave</param>
-    /// <param name="value">Valor</param>
     public Notification(string type, string key, string value) : base(type)
     {
         Id = Guid.NewGuid();
@@ -96,10 +92,8 @@ public class Notification : Message
     }
 
     /// <summary>
-    /// Construtor
+    /// Initializes a new notification with specified log level, key and value.
     /// </summary>
-    /// <param name="key">Chave</param>
-    /// <param name="value">Valor</param>
     public Notification(LogLevel logLevel, string key, string value)
     {
         Id = Guid.NewGuid();
@@ -109,15 +103,13 @@ public class Notification : Message
         Key = key;
         Value = value;
     }
+
     /// <summary>
-    /// Construtor
+    /// Initializes a new notification with default log level (Information), key and value.
     /// </summary>
-    /// <param name="key">Chave</param>
-    /// <param name="value">Valor</param>
     public Notification(string key, string value)
     {
         Id = Guid.NewGuid();
-
         AgregationId = Id;
         LogLevel = LogLevel.Information;
         Timestamp = DateTime.Now;
@@ -126,9 +118,8 @@ public class Notification : Message
     }
 
     /// <summary>
-    /// Construtor
+    /// Initializes a new notification with specified log level and value only.
     /// </summary>
-    /// <param name="value">Valor</param>
     public Notification(LogLevel logLevel, string value)
     {
         Id = Guid.NewGuid();
@@ -137,16 +128,16 @@ public class Notification : Message
         Timestamp = DateTime.Now;
         Value = value;
     }
+
     /// <summary>
-    /// Construtor
+    /// Initializes a new notification with default log level (Information) and value only.
     /// </summary>
-    /// <param name="value">Valor</param>
     public Notification(string value)
     {
         Id = Guid.NewGuid();
         AgregationId = Id;
         Timestamp = DateTime.Now;
+        LogLevel = LogLevel.Information;
         Value = value;
     }
 }
-

@@ -1,44 +1,64 @@
 ﻿using Api.Responses;
 using Common.Exceptions;
 using Common.Extensions;
+using Common.Http.Extensions;
+using Common.Logs.Extensions;
 using Common.Notifications.Interfaces;
 using Common.Notifications.Messages;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Net;
-using System.Net.Http.Headers;
-using System.Reflection;
-using System.Text;
 
 namespace Common.Http;
-
+/// <summary>
+/// Base class for making HTTP requests with built-in logging, header configuration, and response validation.
+/// Supports synchronous and asynchronous operations for all main HTTP verbs.
+/// </summary>
 public abstract class HttpService
 {
+    /// <summary>
+    /// Logger for logging request and response inf
+    /// </summary>
     protected ILogger _logger;
-    protected HttpClient _httpClient;    
+    /// <summary>
+    /// HTTP client instance used for sending requests.
+    /// </summary>
+    protected HttpClient _httpClient;
+    /// <summary>
+    /// Stopwatch for measuring request duration.
+    /// </summary>
     private Stopwatch _stopwatch;
-    protected readonly IHttpContextAccessor _httpContextAccessor;
+    /// <summary>
+    /// Flag indicating whether to log headers and body content.
+    /// </summary>
+    private bool IsDetailedLoggingEnabled = false;
+    /// <summary>
+    /// Notification handler for capturing validation or API errors.
+    /// </summary>
     protected readonly INotificationHandler _notification;
 
-    public const string CONTENT_TYPE = "application/json";
-
-    protected HttpService(HttpClient httpClient, IHttpContextAccessor httpContextAccessor, INotificationHandler notification, ILogger logger)
+    /// <summary>
+    /// Initializes a new instance of the <see cref="HttpService"/> class.
+    /// </summary>
+    /// <param name="httpClient">HttpClient to be used for requests.</param>
+    /// <param name="notification">Notification handler for storing notifications.</param>
+    /// <param name="logger">Logger instance for logging request and response details.</param>
+    protected HttpService(HttpClient httpClient, INotificationHandler notification, ILogger logger)
     {
         ArgumentNullException.ThrowIfNull(httpClient, nameof(HttpClient));
-        ArgumentNullException.ThrowIfNull(httpContextAccessor, nameof(IHttpContextAccessor));
         ArgumentNullException.ThrowIfNull(logger, logger.GetType().Name);
 
         _httpClient = httpClient;
-        _httpContextAccessor = httpContextAccessor;
         _notification = notification;
         _logger = logger;
     }
 
+    /// <summary>
+    /// Sends a GET request asynchronously to the specified URI.
+    /// </summary>
     protected Task<HttpResponseMessage> GetAsync(string uri)
     {
-        AddDefaultHeaders();
+        _httpClient.AddDefaultHeaders();
 
         LogRequest(HttpMethod.Get.Method, new Uri(_httpClient.BaseAddress! + uri));
 
@@ -48,9 +68,13 @@ public abstract class HttpService
 
         return response;
     }
+
+    /// <summary>
+    /// Sends a GET request synchronously to the specified URI.
+    /// </summary>
     protected HttpResponseMessage Get(string uri)
     {
-        AddDefaultHeaders();
+        _httpClient.AddDefaultHeaders();
 
         LogRequest(HttpMethod.Get.Method, new Uri(_httpClient.BaseAddress! + uri));
 
@@ -60,9 +84,13 @@ public abstract class HttpService
 
         return response;
     }
+
+    /// <summary>
+    /// Sends a POST request asynchronously to the specified URI with the provided content.
+    /// </summary>
     protected Task<HttpResponseMessage> PostAsync(string uri, HttpContent content)
     {
-        AddDefaultHeaders();
+        _httpClient.AddDefaultHeaders();
 
         LogRequest(HttpMethod.Post.Method, new Uri(_httpClient.BaseAddress! + uri), content);
 
@@ -72,9 +100,13 @@ public abstract class HttpService
 
         return response;
     }
+
+    /// <summary>
+    /// Sends a POST request synchronously to the specified URI with the provided content.
+    /// </summary>
     protected HttpResponseMessage Post(string uri, HttpContent content)
     {
-        AddDefaultHeaders();
+        _httpClient.AddDefaultHeaders();
 
         LogRequest(HttpMethod.Post.Method, new Uri(_httpClient.BaseAddress! + uri), content);
 
@@ -84,9 +116,13 @@ public abstract class HttpService
 
         return response;
     }
+
+    /// <summary>
+    /// Sends a PUT request asynchronously to the specified URI with the provided content.
+    /// </summary>
     protected Task<HttpResponseMessage> PutAsync(string uri, HttpContent content)
     {
-        AddDefaultHeaders();
+        _httpClient.AddDefaultHeaders();
 
         LogRequest(HttpMethod.Put.Method, new Uri(_httpClient.BaseAddress! + uri));
 
@@ -96,9 +132,13 @@ public abstract class HttpService
 
         return response;
     }
+
+    /// <summary>
+    /// Sends a PUT request synchronously to the specified URI with the provided content.
+    /// </summary>
     protected HttpResponseMessage Put(string uri, HttpContent content)
     {
-        AddDefaultHeaders();
+        _httpClient.AddDefaultHeaders();
 
         LogRequest(HttpMethod.Put.Method, new Uri(_httpClient.BaseAddress! + uri), content);
 
@@ -108,9 +148,13 @@ public abstract class HttpService
 
         return response;
     }
+
+    /// <summary>
+    /// Sends a PATCH request asynchronously to the specified URI with the provided content.
+    /// </summary>
     protected Task<HttpResponseMessage> PatchAsync(string uri, HttpContent content)
     {
-        AddDefaultHeaders();
+        _httpClient.AddDefaultHeaders();
 
         LogRequest(HttpMethod.Patch.Method, new Uri(_httpClient.BaseAddress! + uri));
 
@@ -120,9 +164,13 @@ public abstract class HttpService
 
         return response;
     }
+
+    /// <summary>
+    /// Sends a PATCH request synchronously to the specified URI with the provided content.
+    /// </summary>
     protected HttpResponseMessage Patch(string uri, HttpContent content)
     {
-        AddDefaultHeaders();
+        _httpClient.AddDefaultHeaders();
 
         LogRequest(HttpMethod.Patch.Method, new Uri(_httpClient.BaseAddress! + uri), content);
 
@@ -132,9 +180,13 @@ public abstract class HttpService
 
         return response;
     }
+
+    /// <summary>
+    /// Sends a DELETE request asynchronously to the specified URI.
+    /// </summary>
     protected Task<HttpResponseMessage> DeleteAsync(string uri)
     {
-        AddDefaultHeaders();
+        _httpClient.AddDefaultHeaders();
 
         LogRequest(HttpMethod.Delete.Method, new Uri(_httpClient.BaseAddress! + uri));
 
@@ -144,9 +196,13 @@ public abstract class HttpService
 
         return response;
     }
+
+    /// <summary>
+    /// Sends a DELETE request synchronously to the specified URI.
+    /// </summary>
     protected HttpResponseMessage Delete(string uri)
     {
-        AddDefaultHeaders();
+        _httpClient.AddDefaultHeaders();
 
         LogRequest(HttpMethod.Delete.Method, new Uri(_httpClient.BaseAddress! + uri));
 
@@ -157,174 +213,72 @@ public abstract class HttpService
         return response;
     }
 
-    #region Serialization
-    protected StringContent SerializeContent(object data)
-    {
-        var content = JsonConvert.SerializeObject(data);
-
-        return new(content, Encoding.UTF8, CONTENT_TYPE);
-    }
-    protected static async Task<TResponse?> DeserializeObjectResponseAsync<TResponse>(HttpResponseMessage httpResponse)
-        => JsonConvert.DeserializeObject<TResponse>(await httpResponse.Content.ReadAsStringAsync());
-
-    protected static TResponse? DeserializeObjectResponse<TResponse>(HttpResponseMessage httpResponse)
-        => JsonConvert.DeserializeObject<TResponse>(httpResponse.Content.ReadAsStringAsync().Result);
-    #endregion
-
     #region Validation
-    protected static bool ResponseHasErrors(HttpResponseMessage response, bool throwException = true)
+
+    /// <summary>
+    /// Validates the HTTP response and deserializes its content to the specified response type.
+    /// </summary>
+    /// <typeparam name="TResponse">The expected response type.</typeparam>
+    /// <param name="response">The HTTP response message to validate and read.</param>
+    /// <returns>The deserialized response object.</returns>
+    protected async Task<TResponse?> ValidateAndReturn<TResponse>(HttpResponseMessage response)
     {
-        switch (response.StatusCode)
-        {
-            case HttpStatusCode.Forbidden:
-            case HttpStatusCode.BadGateway:
-            case HttpStatusCode.BadRequest:
-                return true;
-            case HttpStatusCode.Unauthorized:
-            case HttpStatusCode.InternalServerError:
-                if (throwException)
-                    throw new CustomHttpRequestException(response.StatusCode, $"{response.RequestMessage.Method} - {response.RequestMessage.RequestUri} - {(int)response.StatusCode} - {response.StatusCode}");
+        await ValidateResponse(response);
 
-                return true;
-        }
-
-        try
-        {
-            response.EnsureSuccessStatusCode();
-            return false;
-        }
-        catch
-        {
-            return true;
-        }
+        return await response.ReadAsAsync<TResponse>();
     }
-    protected TResponse ValidateAndReturn<TResponse>(HttpResponseMessage response)
-    {
-        ValidateResponse(response);
 
-        return DeserializeObjectResponse<TResponse>(response);
-    }
-    protected void ValidateResponse(HttpResponseMessage response, bool throwException = false)
+    /// <summary>
+    /// Validates the HTTP response, notifies issues, and optionally throws exceptions for unexpected status codes.
+    /// </summary>
+    /// <param name="response">The HTTP response message to validate.</param>
+    /// <param name="throwException">Determines whether to throw an exception on unexpected status codes.</param>
+    protected async Task ValidateResponse(HttpResponseMessage response, bool throwException = false)
     {
-        if (ResponseHasErrors(response, throwException))
+        if (response.HasErrors(throwException))
         {
-            var errorResponse = DeserializeObjectResponse<DetailsResponse>(response);
+            var apiResponse = await response.ReadAsAsync<ApiResponse>();
+
+            foreach (var issue in apiResponse.Issues)
+            {
+                if (issue.Details?.Any() != true) continue;
+
+                foreach (var error in issue.Details)
+                    _notification.Notify(new Notification(error.LogLevel, error.Type, error.Key, error.Value, error.Detail));
+            }
 
             switch (response.StatusCode)
             {
-                case HttpStatusCode.InternalServerError:
-                case HttpStatusCode.BadGateway:
-                    foreach (var issue in errorResponse.Issues.Where(x => x.Type == IssuerResponseType.Error))
-                    {
-                        foreach (var error in issue.Details)                        
-                            _notification.Notify(new Notification(error.LogLevel, error.Type, error.Key, error.Value, error.Detail));
-                    }
-                    break;
+                case HttpStatusCode.OK:
+                case HttpStatusCode.NoContent:
+                case HttpStatusCode.NotFound:
                 case HttpStatusCode.BadRequest:
-                    foreach (var issue in errorResponse.Issues.Where(x => x.Type == IssuerResponseType.Validation))
-                    {
-                        foreach (var validation in issue.Details)
-                            _notification.Notify(new Notification(validation.LogLevel, validation.Type, validation.Key, validation.Value, validation.Detail));
-                    }
+                case HttpStatusCode.Created:
+                case HttpStatusCode.Continue:
+                case HttpStatusCode.ResetContent:
+                case HttpStatusCode.Accepted:
+                case HttpStatusCode.PartialContent:
+                case HttpStatusCode.MultiStatus:
+                case HttpStatusCode.AlreadyReported:
+                case HttpStatusCode.IMUsed:
                     break;
                 default:
                     throw new CustomHttpRequestException($"{response.RequestMessage.Method} - {response.RequestMessage.RequestUri} - {(int)response.StatusCode} - {response.StatusCode}");
             }
         }
-    } 
-    #endregion
-
-    #region Headers
-    protected void SetBearerToken(string token)
-        => _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-    protected void AddHeader(string key, string value)
-    {
-        if(!_httpClient.DefaultRequestHeaders.Contains(key))
-            _httpClient.DefaultRequestHeaders.Add(key, value);
-    }
-    private void AddDefaultHeaders()
-    {
-        AddHeaderIpAddress();
-        AddHeaderUserId();
-        AddHeaderCorrelationId();
-        AddHeaderClientId();
-        AddHeaderUserAgent();
-        AddHeaderServerHostName();
-    }
-    private string AddHeaderIpAddress()
-    {
-        if (_httpContextAccessor is null) return string.Empty;
-
-        var ip = _httpContextAccessor.HttpContext?.GetIpAddress();
-
-        if (!string.IsNullOrEmpty(ip))
-            AddHeader(HttpContextExtensions.FORWARDED, ip);
-
-        return ip ?? string.Empty;
-    }
-    private string AddHeaderUserId()
-    {
-        if (_httpContextAccessor is null) return string.Empty;
-
-        var userId = _httpContextAccessor.HttpContext?.GetUserId();
-
-        if (!string.IsNullOrEmpty(userId))
-            AddHeader(HttpContextExtensions.USER_ID, userId);
-
-        return userId ?? string.Empty;
-    }
-    private string AddHeaderCorrelationId()
-    {
-        if (_httpContextAccessor is null) return string.Empty;
-
-        var correlationId = _httpContextAccessor.HttpContext?.GetCorrelationId();
-
-        if(string.IsNullOrEmpty(correlationId))
-            correlationId = _httpContextAccessor.HttpContext?.GetRequestId();
-
-        if (!string.IsNullOrEmpty(correlationId))
-            AddHeader(HttpContextExtensions.CORRELATION_ID, correlationId);
-
-        return correlationId ?? string.Empty;
-    }
-    private string AddHeaderClientId()
-    {
-        if (_httpContextAccessor is null) return string.Empty;
-
-        var clientId = _httpContextAccessor.HttpContext?.GetClientId();
-
-        clientId = string.Join(';', clientId, Assembly.GetEntryAssembly().GetName().Name);
-
-        if (!string.IsNullOrEmpty(clientId))
-            AddHeader(HttpContextExtensions.CLIENT_ID, clientId);
-
-        return clientId ?? string.Empty;
-    }
-    private string AddHeaderUserAgent()
-    {
-        if (_httpContextAccessor is null) return string.Empty;
-
-        var userAgent = _httpContextAccessor.HttpContext?.GetUserAgent();
-
-        if (!string.IsNullOrEmpty(userAgent))
-            AddHeader(HttpContextExtensions.USER_AGENT, userAgent);
-
-        return userAgent ?? string.Empty;
-    }
-    private string AddHeaderServerHostName()
-    {
-        if (_httpContextAccessor is null) return string.Empty;
-
-        var podeName = Dns.GetHostName();
-
-        if (!string.IsNullOrEmpty(podeName))
-            AddHeader(HttpContextExtensions.POD_NAME, podeName);
-
-        return podeName ?? string.Empty;
     }
     #endregion
+
+    /// <summary>
+    /// Enables logging of HTTP headers and body content for all requests and responses.
+    /// </summary>
+    protected void EnableLogHeadersAndBody() => IsDetailedLoggingEnabled = true;
 
     #region Logs
+
+    /// <summary>
+    /// Logs the start of an HTTP request including method, URI, headers, and optional content.
+    /// </summary>
     private void LogRequest(string httpMehod, Uri uri, HttpContent? content = null)
     {
         _stopwatch = new();
@@ -332,19 +286,24 @@ public abstract class HttpService
 
         var headersJson = string.Empty;
         var contentJson = string.Empty;
+        if (IsDetailedLoggingEnabled)
+        {
+            headersJson = $"|Headers:{_httpClient.GetHeadersJsonFormat()}";
 
-        headersJson = $"|Headers:{JsonConvert.SerializeObject(_httpClient.DefaultRequestHeaders)}";
-
-        if (content is not null)
-            contentJson = $"|Content:{content.ReadAsStringAsync().Result}";
-
+            if (content is not null)
+                contentJson = $"|Content:{content.ReadAsStringAsync().Result}";
+        }
         _logger.LogInfo($"Start processing HTTP request {httpMehod} {uri}{headersJson}{contentJson}");
     }
+
+    /// <summary>
+    /// Logs the end of an HTTP request including method, URI, elapsed time and response status.
+    /// </summary>
     private void LogResponse(HttpResponseMessage response)
     {
         _stopwatch.Stop();
 
-        string message = $"End processing HTTP request {response?.RequestMessage?.Method} {response?.RequestMessage?.RequestUri} after {_stopwatch.ElapsedMilliseconds.GetTime()} - {response.StatusCode}";
+        string message = $"End processing HTTP request {response?.RequestMessage?.Method} {response?.RequestMessage?.RequestUri} after {_stopwatch.GetTime()} - {response.StatusCode}";
 
         switch (response.StatusCode)
         {
@@ -406,6 +365,6 @@ public abstract class HttpService
                 _logger.LogCrit(message);
                 break;
         }
-    } 
+    }
     #endregion
 }

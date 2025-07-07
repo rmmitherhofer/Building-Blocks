@@ -3,10 +3,19 @@ using System.Text;
 
 namespace SnapTrace.Formatters;
 
+/// <summary>
+/// Formats exceptions into strings, optionally appending custom details from configured handlers.
+/// Ensures exceptions are only logged once by marking them internally.
+/// </summary>
 public class ExceptionFormatter
 {
     private const string ExceptionLoggedKey = "SnapTrace-ExceptionLogged";
 
+    /// <summary>
+    /// Formats the specified exception into a string, including any additional details provided by custom handlers.
+    /// </summary>
+    /// <param name="ex">The exception to format.</param>
+    /// <returns>A formatted string representation of the exception.</returns>
     public string Format(Exception ex)
     {
         StringBuilder sb = new();
@@ -26,6 +35,12 @@ public class ExceptionFormatter
         return sb.ToString().Trim();
     }
 
+    /// <summary>
+    /// Recursively formats the exception and its base exception, avoiding duplicate logging.
+    /// </summary>
+    /// <param name="ex">The exception to format.</param>
+    /// <param name="sb">The StringBuilder to append the formatted exception details.</param>
+    /// <param name="header">An optional header to include before the exception details.</param>
     private void FormatException(Exception ex, StringBuilder sb, string? header = null)
     {
         string id = $"{ExceptionLoggedKey}";

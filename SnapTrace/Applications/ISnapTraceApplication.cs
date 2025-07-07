@@ -1,11 +1,12 @@
-﻿using Common.Notifications.Messages;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.AspNetCore.Http;
+using SnapTrace.Models;
 
 namespace SnapTrace.Applications;
 
+/// <summary>
+/// Defines a contract for notifying the SnapTrace system with request context information.
+/// </summary>
 public interface ISnapTraceApplication
 {
-    Task Notify(HttpContext context, Exception exception, LogLevel logLevel, long elapsedMilliseconds);
-    Task Notify(HttpContext context, long elapsedMilliseconds);
+    Task Notify(Snapshot snapshot);
 }
