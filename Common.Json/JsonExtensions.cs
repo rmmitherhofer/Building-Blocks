@@ -115,4 +115,36 @@ public static class JsonExtensions
             return false;
         }
     }
+
+    /// <summary>
+    /// Attempts to pretty-print a raw JSON string with indentation.
+    /// If the input is invalid or not parsable, the original string is returned.
+    /// </summary>
+    /// <param name="rawJsonString">The raw JSON string to format.</param>
+    /// <param name="options">Optional deserialization options for internal parsing.</param>
+    /// <returns>The formatted JSON string if successful; otherwise, the original input.</returns>
+    public static string TryFormatJson(string rawJsonString, JsonSerializerOptions? options = null)
+    {
+        try
+        {
+            if (string.IsNullOrWhiteSpace(rawJsonString))
+                return rawJsonString;
+
+            if (rawJsonString.StartsWith("\"") && rawJsonString.EndsWith("\""))
+            {
+                rawJsonString = Deserialize<string>(rawJsonString, options);
+            }
+
+            using var doc = JsonDocument.Parse(rawJsonString);
+
+            return Serialize(doc.RootElement, new JsonSerializerOptions
+            {
+                WriteIndented = true
+            });
+        }
+        catch
+        {
+            return rawJsonString;
+        }
+    }
 }

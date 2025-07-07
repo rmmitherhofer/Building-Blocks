@@ -1,4 +1,5 @@
 ﻿using Common.Extensions;
+using Common.Http.Configurations;
 using Common.Notifications.Configurations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -8,13 +9,16 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using SnapTrace.Applications;
+using SnapTrace.BackgroundServices;
 using SnapTrace.Builders;
 using SnapTrace.Configurations.Settings;
+using SnapTrace.Enums;
 using SnapTrace.Extensions;
 using SnapTrace.HttpServices;
 using SnapTrace.Middleware;
 using SnapTrace.Options;
 using SnapTrace.Providers;
+using SnapTrace.Queues;
 
 namespace SnapTrace.Configurations;
 
@@ -39,11 +43,11 @@ public static class SnapTraceConfigurations
 
         services.AddNotificationConfig();
 
+        services.AddHttpConfig();
+
         services.AddOptions(configuration);
 
-        services.AddAppService(configure);
-
-        services.AddHttpService(configuration);
+        services.AddAppService(configuration, configure);
 
         return services;
     }
@@ -98,7 +102,7 @@ public static class SnapTraceConfigurations
     /// <param name="services">The service collection to add services to.</param>
     /// <param name="configure">Action to configure <see cref="SnapTraceOptions"/>.</param>
     /// <returns>The updated service collection.</returns>
-    private static IServiceCollection AddAppService(this IServiceCollection services, Action<SnapTraceOptions> configure)
+    private static IServiceCollection AddAppService(this IServiceCollection services, IConfiguration configuration, Action<SnapTraceOptions> configure)
     {
         ArgumentNullException.ThrowIfNull(services, nameof(IServiceCollection));
 
@@ -106,14 +110,27 @@ public static class SnapTraceConfigurations
 
         configure?.Invoke(options);
 
-        services.AddSingleton<ILoggerProvider, SnapTraceLoggerProvider>(sp =>
+        var provider = services.BuildServiceProvider();
+        var settings = provider.GetRequiredService<IOptions<SnapTraceSettings>>().Value;
+
+        if (settings.ExecutionMode == SnapTraceExecutionMode.Disabled) return services;
+
+        if (settings.ExecutionMode == SnapTraceExecutionMode.Full)
         {
-            var httpContextAccessor = sp.GetRequiredService<IHttpContextAccessor>();
-            return new SnapTraceLoggerProvider(options, httpContextAccessor);
-        });
+            services.AddSingleton<ILoggerProvider, SnapTraceLoggerProvider>(sp =>
+            {
+                var httpContextAccessor = sp.GetRequiredService<IHttpContextAccessor>();
+                return new SnapTraceLoggerProvider(options, httpContextAccessor);
+            });
+        }
 
         services.TryAddScoped<ISnapTraceApplication, SnapTraceApplication>();
         services.TryAddScoped<ILogContextBuilder, LogContextBuilder>();
+
+        services.AddSingleton<ISnapTraceQueue, SnapTraceQueue>();
+        services.AddHostedService<SnapTraceBackgroundService>();
+
+        services.AddHttpService(configuration);
 
         return services;
     }
@@ -144,6 +161,12 @@ public static class SnapTraceConfigurations
     public static IApplicationBuilder UseSnapTrace(this IApplicationBuilder app)
     {
         ArgumentNullException.ThrowIfNull(app, nameof(IApplicationBuilder));
+
+        app.UseHttpConfig();
+
+        var settings = app.ApplicationServices.GetRequiredService<IOptions<SnapTraceSettings>>().Value;
+
+        if (settings.ExecutionMode == SnapTraceExecutionMode.Disabled) return app;
 
         app.TryUseMiddleware<SnapTraceMiddleware>();
 

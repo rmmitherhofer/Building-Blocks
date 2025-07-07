@@ -25,14 +25,19 @@ public class SnapTraceSettings
     public string Name { get; } = Assembly.GetEntryAssembly().GetName().Name;
 
     /// <summary>
-    /// Indicates whether logging is enabled.
+    /// Defines the current logging behavior of SnapTrace.
     /// </summary>
-    public bool TurnOnLog { get; set; }
+    public SnapTraceExecutionMode ExecutionMode { get; set; }
 
     /// <summary>
     /// Maximum size of the response body to capture, in megabytes.
     /// </summary>
     public int MaxResponseBodySizeInMb { get; set; } = 1;
+
+    /// <summary>
+    /// Indicates whether to capture the response body for logging.
+    /// </summary>
+    public bool CaptureResponseBody { get; set; } = true;
 
     /// <summary>
     /// HTTP service specific settings for SnapTrace.

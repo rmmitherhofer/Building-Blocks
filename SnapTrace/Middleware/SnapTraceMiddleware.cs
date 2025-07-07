@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using SnapTrace.Applications;
+using SnapTrace.Models;
+using SnapTrace.Queues;
 using System.Diagnostics;
 
 namespace SnapTrace.Middleware;
@@ -17,6 +19,7 @@ public class SnapTraceMiddleware
 
     private readonly RequestDelegate _next;
     private readonly ISnapTraceApplication _snapTrace;
+    private readonly ISnapTraceQueue _queue;
     private Stopwatch _diagnostic;
 
     /// <summary>
@@ -24,12 +27,13 @@ public class SnapTraceMiddleware
     /// </summary>
     /// <param name="next">The next middleware in the pipeline.</param>
     /// <param name="snapTrace">The SnapTrace application service used to send log data.</param>
-    public SnapTraceMiddleware(RequestDelegate next, ISnapTraceApplication snapTrace)
+    public SnapTraceMiddleware(RequestDelegate next, ISnapTraceApplication snapTrace, ISnapTraceQueue queue)
     {
         ArgumentNullException.ThrowIfNull(snapTrace, nameof(ISnapTraceApplication));
 
         _next = next;
         _snapTrace = snapTrace;
+        _queue = queue;
     }
 
     /// <summary>
@@ -39,25 +43,14 @@ public class SnapTraceMiddleware
     /// <param name="context">The current HTTP context.</param>
     public async Task InvokeAsync(HttpContext context)
     {
-        Exception exception = null;
-        try
-        {
-            _diagnostic = new();
-            _diagnostic.Start();
+        _diagnostic = new();
+        _diagnostic.Start();
 
-            await _next(context);
+        await _next(context);
 
-            _diagnostic.Stop();
-        }
-        catch (Exception ex)
-        {
-            context.Items["Exception"] = ex;
-            throw;
-        }
-        finally
-        {
-            if (!context.Request.Path.Value.Contains("swagger"))
-                _ = _snapTrace.Notify(context, _diagnostic.ElapsedMilliseconds);
-        }
+        _diagnostic.Stop();
+
+        if (!context.Request.Path.Value.Contains("swagger"))
+            _queue.Enqueue(await new Snapshot().CaptureAsync(context, _diagnostic.ElapsedMilliseconds));
     }
 }

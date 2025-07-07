@@ -10,6 +10,8 @@ using Microsoft.Extensions.Options;
 using SnapTrace.Configurations.Settings;
 using SnapTrace.Models;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace SnapTrace.HttpServices;
 
@@ -44,8 +46,8 @@ public class SnapTraceHttpService : HttpService, ISnapTraceHttpService
 
         var content = JsonExtensions.SerializeContent(log);
 
-        if(_settings.WritePayloadToConsole)
-            _logger.LogTrace("Payload: " + JsonExtensions.Serialize(log));
+        if (_settings.WritePayloadToConsole)
+            EnableLogHeadersAndBody();  
 
         var response = await PostAsync(uri, content);
 

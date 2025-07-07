@@ -1,16 +1,19 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Options;
 using SnapTrace.Builders;
 using SnapTrace.Configurations.Settings;
+using SnapTrace.Enums;
 using SnapTrace.HttpServices;
+using SnapTrace.Models;
 
 namespace SnapTrace.Applications;
 
 /// <summary>
-/// Implementation of <see cref="ISnapTraceApplication"/> that builds and sends log context to SnapTrace API.
+/// Implementation of <see cref="ISnapTraceApplication"/> responsible for building and sending log context data
+/// to the SnapTrace API based on runtime snapshot information.
 /// </summary>
 public class SnapTraceApplication : ISnapTraceApplication
 {
+
     private readonly ILogContextBuilder _builder;
     private readonly ISnapTraceHttpService _httpService;
     private readonly SnapTraceSettings _settings;
@@ -32,22 +35,40 @@ public class SnapTraceApplication : ISnapTraceApplication
     }
 
     /// <summary>
-    /// Notifies SnapTrace by building a log context from the current HTTP request and sending it asynchronously.
+    /// Builds a complete log context from the provided snapshot and sends it to the SnapTrace API,
+    /// if logging is enabled via configuration.
     /// </summary>
-    /// <param name="context">The HTTP context of the request.</param>
-    /// <param name="elapsedMilliseconds">The time in milliseconds the request took to complete.</param>
-    /// <returns>A task that represents the asynchronous operation.</returns>
-    public async Task Notify(HttpContext context, long elapsedMilliseconds)
+    /// <param name="snapshot">The snapshot containing request, response, exception, and other contextual data.</param>
+
+    public async Task Notify(Snapshot snapshot)
     {
-        if (!_settings.TurnOnLog) return;
+        if (_settings.ExecutionMode == SnapTraceExecutionMode.Disabled) return;
 
-        var log = await _builder
-            .WithHttpContext(context)
-            .WithElapsedMilliseconds(elapsedMilliseconds)
-            .WithNotifications()
-            .WithException()
-            .BuildAsync();
+        LogContextRequest log = null;
 
-        Task.Run(() => _httpService.Flush(log));
+        switch (_settings.ExecutionMode)
+        {
+            case SnapTraceExecutionMode.ExceptionsOnly:
+                log = _builder.WithSnapTraceLogSnapshot(snapshot)
+                    .WithException()
+                    .Build();
+                break;
+
+            case SnapTraceExecutionMode.NotificationsAndExceptions:
+                log = _builder.WithSnapTraceLogSnapshot(snapshot)
+                    .WithNotifications()
+                    .WithException()
+                    .Build();
+                break;
+
+            case SnapTraceExecutionMode.Full:
+                log = _builder.WithSnapTraceLogSnapshot(snapshot)
+                    .WithLogEntries()
+                    .WithNotifications()
+                    .WithException()
+                    .Build();
+                break;
+        }
+        await _httpService.Flush(log);
     }
 }

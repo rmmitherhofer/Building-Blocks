@@ -16,7 +16,7 @@ public class SnapTraceLogger : ILogger
     private readonly SnapTraceOptions _options;
     private readonly IHttpContextAccessor _httpContextAccessor;
 
-    private const string LogsKey = "__SnapTrace_Logger_Logs__";
+    private const string LOGS_KEY = "__SnapTrace_Logger_Logs__";
 
     /// <summary>
     /// Initializes a new instance of the <see cref="SnapTraceLogger"/> class.
@@ -78,10 +78,10 @@ public class SnapTraceLogger : ILogger
 
         if (context == null) return;
 
-        if (!context.Items.TryGetValue(LogsKey, out var obj) || obj is not List<LogEntry> logs)
+        if (!context.Items.TryGetValue(LOGS_KEY, out var obj) || obj is not List<LogEntry> logs)
         {
             logs = [];
-            context.Items[LogsKey] = logs;
+            context.Items[LOGS_KEY] = logs;
         }
         logs.Add(logEntry);
     }
@@ -93,7 +93,7 @@ public class SnapTraceLogger : ILogger
     /// <returns>The list of log entries.</returns>
     public static IEnumerable<LogEntry> GetLogsForCurrentRequest(HttpContext context)
     {
-        if (context.Items.TryGetValue(LogsKey, out var obj) && obj is IEnumerable<LogEntry> logs)
+        if (context.Items.TryGetValue(LOGS_KEY, out var obj) && obj is IEnumerable<LogEntry> logs)
             return logs;
 
         return [];

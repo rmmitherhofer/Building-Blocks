@@ -10,16 +10,16 @@ namespace SnapTrace.Models;
 public class LogContextRequest
 {
     /// <summary>
-    /// Information about the project generating the log.
+    /// Attention level of the log.
     /// </summary>
-    [JsonPropertyName("projectInfo")]
-    public ProjectInfo ProjectInfo { get; set; }
+    [JsonPropertyName("logAttentionLevel")]
+    public LogAttentionLevel LogAttentionLevel { get; set; }
 
     /// <summary>
-    /// Information about the environment where the application is running.
+    /// The correlation ID for tracking requests across services.
     /// </summary>
-    [JsonPropertyName("environment")]
-    public EnvironmentInfo Environment { get; set; }
+    [JsonPropertyName("correlationId")]
+    public string CorrelationId { get; set; }
 
     /// <summary>
     /// The HTTP endpoint path requested.
@@ -38,18 +38,29 @@ public class LogContextRequest
     /// </summary>
     [JsonPropertyName("elapsedMilliseconds")]
     public long ElapsedMilliseconds { get; set; }
-
-    /// <summary>
-    /// Attention level of the log.
-    /// </summary>
-    [JsonPropertyName("logAttentionLevel")]
-    public LogAttentionLevel LogAttentionLevel { get; set; }
-
     /// <summary>
     /// Unique identifier for the request trace.
     /// </summary>
     [JsonPropertyName("traceIdentifier")]
     public string TraceIdentifier { get; set; }
+
+    /// <summary>
+    /// Category of the detected error, if applicable.
+    /// </summary>
+    [JsonPropertyName("errorCategory")]
+    public string ErrorCategory { get; set; }
+
+    /// <summary>
+    /// Information about the project generating the log.
+    /// </summary>
+    [JsonPropertyName("projectInfo")]
+    public ProjectInfo ProjectInfo { get; set; }
+
+    /// <summary>
+    /// Information about the environment where the application is running.
+    /// </summary>
+    [JsonPropertyName("environment")]
+    public EnvironmentInfo Environment { get; set; }
 
     /// <summary>
     /// Authenticated user information, if available.
@@ -74,12 +85,6 @@ public class LogContextRequest
     /// </summary>
     [JsonPropertyName("diagnostics")]
     public DiagnosticRequest Diagnostics { get; set; }
-
-    /// <summary>
-    /// Category of the detected error, if applicable.
-    /// </summary>
-    [JsonPropertyName("errorCategory")]
-    public string ErrorCategory { get; set; }
 
     /// <summary>
     /// Notifications generated during the request processing.

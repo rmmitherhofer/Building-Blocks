@@ -36,17 +36,20 @@ public class CaptureResponseBodyMiddleware(RequestDelegate next, IOptions<SnapTr
 
         long maxSize = _settings.MaxResponseBodySizeInMb * 1024L * 1024L;
 
-        if (memoryStream.Length <= maxSize)
+        if (_settings.CaptureResponseBody)
         {
-            memoryStream.Seek(0, SeekOrigin.Begin);
-            capturedBody = await new StreamReader(memoryStream).ReadToEndAsync();
+            if (memoryStream.Length <= maxSize)
+            {
+                memoryStream.Seek(0, SeekOrigin.Begin);
+                capturedBody = await new StreamReader(memoryStream).ReadToEndAsync();
+            }
+            else
+            {
+                capturedBody = $"[Body not captured. Size exceeds limit of {_settings.MaxResponseBodySizeInMb}MB]";
+            }
+            context.Items["CapturedResponseBody"] = capturedBody;
         }
-        else
-        {
-            capturedBody = $"[Body not captured. Size exceeds limit of {_settings.MaxResponseBodySizeInMb}MB]";
-        }
-
-        context.Items["CapturedResponseBody"] = capturedBody;
+        context.Items["CapturedResponseBodySize"] = memoryStream.Length;
 
         memoryStream.Seek(0, SeekOrigin.Begin);
         await memoryStream.CopyToAsync(originalBody);

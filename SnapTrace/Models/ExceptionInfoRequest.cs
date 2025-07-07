@@ -6,28 +6,28 @@ namespace SnapTrace.Models;
 /// Represents detailed information about an exception.
 /// </summary>
 public class ExceptionInfoRequest
-    {
-        /// <summary>
-        /// The type or class name of the exception.
-        /// </summary>
-        [JsonPropertyName("type")]
-        public string Type { get; set; }
+{
+    /// <summary>
+    /// The type or class name of the exception.
+    /// </summary>
+    [JsonPropertyName("type")]
+    public string Type { get; set; }
 
-        /// <summary>
-        /// The exception message.
-        /// </summary>
-        [JsonPropertyName("message")]
-        public string Message { get; set; }
+    /// <summary>
+    /// The exception message.
+    /// </summary>
+    [JsonPropertyName("message")]
+    public string Message { get; set; }
 
-        /// <summary>
-        /// Optional stack trace or tracer information.
-        /// </summary>
-        [JsonPropertyName("tracer")]
-        public string? Tracer { get; set; }
+    /// <summary>
+    /// Optional stack trace or tracer information.
+    /// </summary>
+    [JsonPropertyName("tracer")]
+    public string? Tracer { get; set; }
 
-        /// <summary>
-        /// Optional detailed additional information about the exception.
-        /// </summary>
-        [JsonPropertyName("detail")]
-        public string? Detail { get; set; }
-    }
+    /// <summary>
+    /// Optional detailed additional information about the exception.
+    /// </summary>
+    [JsonPropertyName("innerException")]
+    public string? InnerException { get; set; }
+}

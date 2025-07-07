@@ -10,12 +10,31 @@ using System.Diagnostics;
 using System.Net;
 
 namespace Common.Http;
-
+/// <summary>
+/// Base class for making HTTP requests with built-in logging, header configuration, and response validation.
+/// Supports synchronous and asynchronous operations for all main HTTP verbs.
+/// </summary>
 public abstract class HttpService
 {
+    /// <summary>
+    /// Logger for logging request and response inf
+    /// </summary>
     protected ILogger _logger;
+    /// <summary>
+    /// HTTP client instance used for sending requests.
+    /// </summary>
     protected HttpClient _httpClient;
+    /// <summary>
+    /// Stopwatch for measuring request duration.
+    /// </summary>
     private Stopwatch _stopwatch;
+    /// <summary>
+    /// Flag indicating whether to log headers and body content.
+    /// </summary>
+    private bool IsDetailedLoggingEnabled = false;
+    /// <summary>
+    /// Notification handler for capturing validation or API errors.
+    /// </summary>
     protected readonly INotificationHandler _notification;
 
     /// <summary>
@@ -250,6 +269,11 @@ public abstract class HttpService
     }
     #endregion
 
+    /// <summary>
+    /// Enables logging of HTTP headers and body content for all requests and responses.
+    /// </summary>
+    protected void EnableLogHeadersAndBody() => IsDetailedLoggingEnabled = true;
+
     #region Logs
 
     /// <summary>
@@ -262,12 +286,13 @@ public abstract class HttpService
 
         var headersJson = string.Empty;
         var contentJson = string.Empty;
+        if (IsDetailedLoggingEnabled)
+        {
+            headersJson = $"|Headers:{_httpClient.GetHeadersJsonFormat()}";
 
-        headersJson = $"|Headers:{_httpClient.GetHeadersJsonFormat()}";
-
-        if (content is not null)
-            contentJson = $"|Content:{content.ReadAsStringAsync().Result}";
-
+            if (content is not null)
+                contentJson = $"|Content:{content.ReadAsStringAsync().Result}";
+        }
         _logger.LogInfo($"Start processing HTTP request {httpMehod} {uri}{headersJson}{contentJson}");
     }
 

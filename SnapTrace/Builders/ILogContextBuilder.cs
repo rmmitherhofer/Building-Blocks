@@ -1,42 +1,43 @@
-﻿using Microsoft.AspNetCore.Http;
-using SnapTrace.Models;
+﻿using SnapTrace.Models;
 
 namespace SnapTrace.Builders;
 
 /// <summary>
-/// Defines a contract for building a <see cref="LogContextRequest"/> from HTTP context and related data.
+/// Represents a builder interface for constructing a <see cref="LogContextRequest"/> instance,
+/// allowing fluent composition of various contextual elements such as log entries, notifications,
+/// exceptions, and snapshot metadata collected during an HTTP request.
 /// </summary>
+
 public interface ILogContextBuilder
 {
     /// <summary>
-    /// Adds the HTTP context to be used when building the log context.
+    /// Initializes the builder with a <see cref="Snapshot"/> containing core request context data.
     /// </summary>
-    /// <param name="context">The current HTTP context.</param>
-    /// <returns>The builder instance.</returns>
-    ILogContextBuilder WithHttpContext(HttpContext context);
+    /// <param name="snapshot">The snapshot containing metadata for the request.</param>
+    /// <returns>The current builder instance.</returns>
+    ILogContextBuilder WithSnapTraceLogSnapshot(Snapshot snapshot);
 
     /// <summary>
-    /// Adds the elapsed time in milliseconds for the current request.
+    /// Adds any registered domain notifications (e.g., validation errors) to the log context.
     /// </summary>
-    /// <param name="elapsedMs">The time in milliseconds.</param>
-    /// <returns>The builder instance.</returns>
-    ILogContextBuilder WithElapsedMilliseconds(long elapsedMs);
-
-    /// <summary>
-    /// Attaches any domain notifications (validation messages, etc.) to the log context.
-    /// </summary>
-    /// <returns>The builder instance.</returns>
+    /// <returns>The current builder instance.</returns>
     ILogContextBuilder WithNotifications();
+
+    /// <summary>
+    /// Adds log entries collected during the request lifecycle to the log context.
+    /// </summary>
+    /// <returns>The current builder instance.</returns>
+    ILogContextBuilder WithLogEntries();
 
     /// <summary>
     /// Attaches any exception captured during the request to the log context.
     /// </summary>
-    /// <returns>The builder instance.</returns>
+    /// <returns>The current builder instance.</returns>
     ILogContextBuilder WithException();
 
     /// <summary>
-    /// Builds the final <see cref="LogContextRequest"/> asynchronously with all collected data.
+    /// Builds the final <see cref="LogContextRequest"/> with all collected data.
     /// </summary>
     /// <returns>The constructed log context object.</returns>
-    Task<LogContextRequest> BuildAsync();
+    LogContextRequest Build();
 }

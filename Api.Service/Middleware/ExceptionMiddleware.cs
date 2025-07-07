@@ -115,7 +115,7 @@ public class ExceptionMiddleware
     {
         var notifications = new List<Notification>
         {
-            new(logLevel, exception.GetType().Name, exception.GetType().Name, exception.Message, logLevel == LogLevel.Critical ? exception?.StackTrace! : null)
+            new(logLevel, exception.GetType().Name, exception.GetType().Name, exception.Message)
         };
 
         context.Response.StatusCode = (int)statusCode;

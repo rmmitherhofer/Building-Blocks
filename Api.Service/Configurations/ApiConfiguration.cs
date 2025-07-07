@@ -49,7 +49,7 @@ public static class ApiConfiguration
 
         services.AddSnapTrace(configuration, options =>
         {
-            options.Formatter = (FormatterArgs args) =>
+            options.Formatter = (args) =>
             {
                 if (args.Exception == null)
                     return args.DefaultValue;

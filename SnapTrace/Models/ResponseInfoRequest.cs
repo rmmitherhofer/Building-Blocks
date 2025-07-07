@@ -24,17 +24,17 @@ public class ResponseInfoRequest
     /// The HTTP headers included in the response.
     /// </summary>
     [JsonPropertyName("headers")]
-    public Dictionary<string, List<string>> Headers { get; set; }
+    public IDictionary<string, List<string>> Headers { get; set; }
 
     /// <summary>
     /// The body content of the response.
     /// </summary>
     [JsonPropertyName("body")]
-    public object Body { get; set; }
+    public object? Body { get; set; }
 
     /// <summary>
     /// The size of the body content in bytes.
     /// </summary>
     [JsonPropertyName("bodySize")]
-    public double BodySize { get; set; }
+    public long BodySize { get; set; }
 }

@@ -14,12 +14,6 @@ public class RequestInfoRequest
     public string RequestId { get; set; }
 
     /// <summary>
-    /// The correlation ID for tracking requests across services.
-    /// </summary>
-    [JsonPropertyName("correlationId")]
-    public string CorrelationId { get; set; }
-
-    /// <summary>
     /// The HTTP method used in the request (GET, POST, etc.).
     /// </summary>
     [JsonPropertyName("httpMethod")]
@@ -59,7 +53,7 @@ public class RequestInfoRequest
     /// The route values extracted from the request URL.
     /// </summary>
     [JsonPropertyName("routeValues")]
-    public Dictionary<string, string> RouteValues { get; set; }
+    public IDictionary<string, string> RouteValues { get; set; }
 
     /// <summary>
     /// The User-Agent header from the request.
@@ -77,7 +71,7 @@ public class RequestInfoRequest
     /// The HTTP headers included in the request.
     /// </summary>
     [JsonPropertyName("headers")]
-    public Dictionary<string, List<string>> Headers { get; set; }
+    public IDictionary<string, List<string>> Headers { get; set; }
 
     /// <summary>
     /// The content type of the request body.
@@ -95,7 +89,7 @@ public class RequestInfoRequest
     /// The request body content.
     /// </summary>
     [JsonPropertyName("body")]
-    public object Body { get; set; }
+    public object? Body { get; set; }
 
     /// <summary>
     /// The size of the body in bytes.
@@ -108,4 +102,9 @@ public class RequestInfoRequest
     /// </summary>
     [JsonPropertyName("isAjaxRequest")]
     public bool IsAjaxRequest { get; set; }
+    /// <summary>
+    /// The IP address of the request origin.
+    /// </summary>
+    [JsonPropertyName("IpAddress")]
+    public string? IpAddress { get; set; }
 }
