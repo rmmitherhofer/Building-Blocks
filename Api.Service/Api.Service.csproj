@@ -8,7 +8,7 @@
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Authors>Renato Mitherhofer</Authors>
 		<NoWarn>$(NoWarn);1591</NoWarn>
-		<Version>9.0.2</Version>
+		<Version>9.0.3</Version>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
 
@@ -17,7 +17,7 @@
 		<PackageReference Include="MitherPack.Api.Requests" Version="9.0.1" />
 		<PackageReference Include="MitherPack.Api.Swagger" Version="9.0.1" />
 		<PackageReference Include="MitherPack.Common.Core" Version="9.0.1" />
-		<PackageReference Include="SnapTrace" Version="9.0.3" />
+		<PackageReference Include="SnapTrace" Version="9.0.4" />
 	</ItemGroup>
 
 </Project>

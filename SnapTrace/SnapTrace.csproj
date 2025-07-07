@@ -7,13 +7,13 @@
 		<NoWarn>$(NoWarn);1591</NoWarn>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<PackageId>SnapTrace</PackageId>
-		<Version>9.0.3</Version>
+		<Version>9.0.4</Version>
 		<Authors>Renato MItherhofer</Authors>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="MitherPack.Common.Http" Version="9.0.2" />
+	  <PackageReference Include="MitherPack.Common.Http" Version="9.0.3" />
 	</ItemGroup>
 
 </Project>

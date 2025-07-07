@@ -7,7 +7,7 @@
 
 		<NoWarn>$(NoWarn);1591</NoWarn>
 
-		<Version>9.0.2</Version>
+		<Version>9.0.3</Version>
 
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 
@@ -19,7 +19,7 @@
 
 	<ItemGroup>
 	  <PackageReference Include="MitherPack.Api.Responses" Version="9.0.1" />
-	  <PackageReference Include="MitherPack.Common.Json" Version="9.0.3" />
+	  <PackageReference Include="MitherPack.Common.Json" Version="9.0.4" />
 	  <PackageReference Include="MitherPack.Common.User" Version="9.0.2" />
 	</ItemGroup>
 
