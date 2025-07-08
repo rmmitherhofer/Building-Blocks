@@ -105,22 +105,22 @@ public class NotificationHandler : INotificationHandler
         switch (notification.LogLevel)
         {
             case LogLevel.Trace:
-                _logger.LogTrace($"[Notification] {notification.Key}: {notification.Value}");
+                _logger.LogTrace($"[{nameof(Notification)}]|{notification.Key}: {notification.Value}");
                 break;
             case LogLevel.Debug:
-                _logger.LogDebug($"[Notification] {notification.Key}: {notification.Value}");
+                _logger.LogDebug($"[{nameof(Notification)}]|{notification.Key}: {notification.Value}");
                 break;
             case LogLevel.Information:
-                _logger.LogInformation($"[Notification] {notification.Key}: {notification.Value}");
+                _logger.LogInformation($"[{nameof(Notification)}]|{notification.Key}: {notification.Value}");
                 break;
             case LogLevel.Warning:
-                _logger.LogWarning($"[Notification] {notification.Key}: {notification.Value}");
+                _logger.LogWarning($"[{nameof(Notification)}]|{notification.Key}: {notification.Value}");
                 break;
             case LogLevel.Error:
-                _logger.LogError($"[Notification] {notification.Key}: {notification.Value}");
+                _logger.LogError($"[{nameof(Notification)}]|{notification.Key}: {notification.Value}");
                 break;
             case LogLevel.Critical:
-                _logger.LogCritical($"[Notification] {notification.Key}: {notification.Value}");
+                _logger.LogCritical($"[{nameof(Notification)}]|{notification.Key}: {notification.Value}");
                 break;
             case LogLevel.None:
                 break;

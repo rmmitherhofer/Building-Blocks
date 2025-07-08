@@ -1,4 +1,6 @@
-﻿namespace Api.Responses;
+﻿using System.Text.Json.Serialization;
+
+namespace Api.Responses;
 
 /// <summary>
 /// Represents the base class for paginated API responses, including metadata such as total records and navigation pages.
@@ -8,32 +10,45 @@ public abstract class PaginatedResponse : Response
     /// <summary>
     /// Gets the total number of records returned by the query (not just on the current page).
     /// </summary>
-    public int TotalRecords { get; }
+    [JsonPropertyName("totalRecords")]
+
+    public int TotalRecords { get; set; }
 
     /// <summary>
     /// Gets the number of records per page.
     /// </summary>
-    public int PageSize { get; } = 0;
+    [JsonPropertyName("pageSize")]
+
+    public int PageSize { get; set; } = 0;
 
     /// <summary>
     /// Gets the current page number (1-based index).
     /// </summary>
-    public int PageNumber { get; } = 1;
+    [JsonPropertyName("pageNumber")]
+
+    public int PageNumber { get; set; } = 1;
 
     /// <summary>
     /// Gets the total number of pages based on the total records and page size.
     /// </summary>
-    public int PageCount { get; } = 0;
+    [JsonPropertyName("pageCount")]
+    public int PageCount { get; set; } = 0;
 
     /// <summary>
     /// Gets the previous page number, if it exists; otherwise, null.
     /// </summary>
-    public int? BackPage { get; }
+    [JsonPropertyName("backPage")]
+    public int? BackPage { get; set; }
 
     /// <summary>
     /// Gets the next page number, if it exists; otherwise, null.
     /// </summary>
-    public int? NextPage { get; }
+    [JsonPropertyName("nextPage")]
+    public int? NextPage { get; set; }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="PaginatedResponse"/> class.
+    /// </summary>
+    protected PaginatedResponse() { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="PaginatedResponse"/> class with pagination metadata.

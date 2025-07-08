@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using System.Text.Json.Serialization;
 
 namespace Api.Responses;
 
@@ -11,18 +12,24 @@ public class NotFoundResponse : NotFoundResult
     /// <summary>
     /// Gets the HTTP status code representing the response.
     /// </summary>
-    public HttpStatusCode Status { get; }
+    [JsonPropertyName("status")]
+    public HttpStatusCode Status { get; set; }
 
     /// <summary>
     /// Gets the title that summarizes the type of response.
     /// </summary>
-    public string Title { get; }
+    [JsonPropertyName("title")]
+    public string Title { get; set; }
 
     /// <summary>
     /// Gets the detailed message associated with the response.
     /// </summary>
-    public string Detail { get; }
-
+    [JsonPropertyName("detail")]
+    public string Detail { get; set; }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="NotFoundResponse"/> class.
+    /// </summary>
+    public NotFoundResponse() { }
     /// <summary>
     /// Initializes a new instance of the <see cref="NotFoundResponse"/> class with an optional detail message.
     /// </summary>

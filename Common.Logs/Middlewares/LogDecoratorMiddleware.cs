@@ -1,5 +1,6 @@
 ﻿using Common.Extensions;
 using Common.Logs.Extensions;
+using Common.User.Extensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics;
@@ -17,7 +18,7 @@ internal class LogDecoratorMiddleware
     /// <summary>
     /// Middleware identifier name.
     /// </summary>
-    public const string Name = "LogDecoratorMiddleware";
+    public const string Name = nameof(LogDecoratorMiddleware);
 
     private readonly ILogger<LogDecoratorMiddleware> _logger;
     private readonly RequestDelegate _next;
@@ -41,37 +42,25 @@ internal class LogDecoratorMiddleware
     /// <returns>A task that represents the completion of request processing.</returns>
     public async Task InvokeAsync(HttpContext context)
     {
-        Exception exception = null;
         Stopwatch diagnostic = new();
         diagnostic.Start();
 
-        try
+        if (!context.Request.Path.Value.Contains("swagger"))
         {
-            if (!context.Request.Path.Value.Contains("swagger"))
-            {
-                HeaderRequest(context);
-                _logger.LogInfo($"Request:{context.Request.GetFullUrl()}");
-            }
-
-            await _next(context);
+            HeaderRequest(context);
+            _logger.LogInfo($"Request:{context.Request.GetFullUrl()}");
         }
-        catch (Exception ex)
-        {
-            exception = ex;
-        }
-        finally
-        {
-            diagnostic.Stop();
 
-            if (!context.Request.Path.Value.Contains("swagger"))
-            {
-                _logger.LogInfo(
-                    $"Response:{context.Request.GetFullUrl()} - Timer request: {diagnostic.GetTime()} - " +
-                    $"Status code: {context.Response.StatusCode} - {(HttpStatusCode)context.Response.StatusCode}");
-            }
+        await _next(context);
 
-            if (exception is not null)
-                throw exception;
+        diagnostic.Stop();
+
+        if (!context.Request.Path.Value.Contains("swagger"))
+        {
+            _logger.LogInfo(
+                $"Response:{context.Request.GetFullUrl()} - Timer request: {diagnostic.GetTime()} - " +
+                $"Status code: {context.Response.StatusCode} - {(HttpStatusCode)context.Response.StatusCode}");
+
         }
     }
 
@@ -93,20 +82,52 @@ internal class LogDecoratorMiddleware
         if (!string.IsNullOrEmpty(context.Request.GetClientId()))
             builder.AppendLine($"Client-ID             : {context.Request.GetClientId()}");
 
+        builder.AppendLine($"IsAjaxRequest         : {context.Request.IsAjaxRequest()}");
+
         if (!string.IsNullOrEmpty(context.Request.GetUserAgent()))
             builder.AppendLine($"User-Agent            : {context.Request.GetUserAgent()}");
 
         if (!string.IsNullOrEmpty(context.Request.GetIpAddress()))
             builder.AppendLine($"IP-Address            : {context.Request.GetIpAddress()}");
 
-        if (!string.IsNullOrEmpty(context.Request.GetUserId()))
-            builder.AppendLine($"User-ID               : {context.Request.GetUserId()}");
-
-        if (!string.IsNullOrEmpty(context.Request.GetUserId()))
-            builder.AppendLine($"IsAuthenticated       : {context.User?.Identity?.IsAuthenticated}");
-
         if (!string.IsNullOrEmpty(context.Request.GetPodName()))
             builder.AppendLine($"Pod-Request           : {context.Request.GetPodName()}");
+
+        if (context.User.IsAuthenticated())
+        {
+            builder.AppendLine($"IsAuthenticated       : {true}");
+
+            if (!string.IsNullOrEmpty(context.User.GetId()))
+                builder.AppendLine($"User-ID           : {context.Request.GetUserId()}");
+
+            if (!string.IsNullOrEmpty(context.User.GetAccount()))
+                builder.AppendLine($"User-Account      : {context.User.GetAccount()}");
+
+            if (!string.IsNullOrEmpty(context.User.GetName()))
+                builder.AppendLine($"User-Name         : {context.User.GetName()}");
+
+            if (!string.IsNullOrEmpty(context.User.GetEmail()))
+                builder.AppendLine($"User-Email        : {context.User.GetEmail()}");
+
+            if (!string.IsNullOrEmpty(context.User.GetDocument()))
+                builder.AppendLine($"User-Document     : {context.User.GetDocument()}");
+        }
+        else
+        {
+            builder.AppendLine($"IsAuthenticated       : {false}");
+
+            if (!string.IsNullOrEmpty(context.Request.GetUserId()))
+                builder.AppendLine($"User-ID           : {context.Request.GetUserId()}");
+
+            if (!string.IsNullOrEmpty(context.Request.GetUserName()))
+                builder.AppendLine($"User-Name         : {context.Request.GetUserName()}");
+
+            if (!string.IsNullOrEmpty(context.Request.GetUserAccount()))
+                builder.AppendLine($"User-Account      : {context.Request.GetUserAccount()}");
+
+            if (!string.IsNullOrEmpty(context.Request.GetUserId()))
+                builder.AppendLine($"User-Document     : {context.Request.GetUserId()}");
+        }
 
         builder.AppendLine("====================================================================================================");
 

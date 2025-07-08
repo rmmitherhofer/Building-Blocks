@@ -13,6 +13,10 @@ public static class HttpRequestExtensions
     public const string USER_ID = "X-User-ID";
     /// <summary>X-User-Name header key.</summary>
     public const string USER_NAME = "X-User-Name";
+    /// <summary>X-User-Name header key.</summary>
+    public const string USER_ACCOUNT = "X-User-Account";
+    /// <summary>X-User-Name header key.</summary>
+    public const string USER_DOCUMENT = "X-User-Document";
     /// <summary>User-Agent header key.</summary>
     public const string USER_AGENT = "User-Agent";
     /// <summary>X-Forwarded-For header key.</summary>
@@ -40,6 +44,14 @@ public static class HttpRequestExtensions
     /// Gets the user name from the request header.
     /// </summary>
     public static string? GetUserName(this HttpRequest request) => request.GetHeader(USER_NAME);
+    /// <summary>
+    /// Gets the user account from the request header.
+    /// </summary>
+    public static string? GetUserAccount(this HttpRequest request) => request.GetHeader(USER_ACCOUNT);
+    /// <summary>
+    /// Gets the user document from the request header.
+    /// </summary>
+    public static string? GetUserDocument(this HttpRequest request) => request.GetHeader(USER_DOCUMENT);
 
     /// <summary>
     /// Gets the user agent string from the request header.

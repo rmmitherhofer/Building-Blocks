@@ -1,5 +1,6 @@
 ﻿using Common.Enums;
 using Common.Notifications.Messages;
+using System.Text.Json.Serialization;
 
 namespace Api.Responses;
 
@@ -11,23 +12,31 @@ public class IssuerResponse
     /// <summary>
     /// Gets the type of issue returned by the API (e.g., validation, error, not found).
     /// </summary>
-    public IssuerResponseType Type { get; private set; }
+
+    [JsonPropertyName("type")]
+    public IssuerResponseType Type { get; set; }
 
     /// <summary>
     /// Gets the description of the issue type, usually derived from an attribute or enum name.
     /// </summary>
-    public string DescriptionType { get; private set; }
+    [JsonPropertyName("descriptionType")]
+    public string DescriptionType { get; set; }
 
     /// <summary>
     /// Gets or sets the title that summarizes the issue.
     /// </summary>
-    public string Title { get; set; }
+    [JsonPropertyName("title")]
+    public string? Title { get; set; }
 
     /// <summary>
     /// Gets or sets the detailed list of notifications associated with the issue.
     /// </summary>
-    public IEnumerable<Notification>? Details { get; set; }
-
+    [JsonPropertyName("details")]
+    public IEnumerable<NotificationResponse>? Details { get; set; }
+    /// <summary>
+    /// Initializes a new instance of the <see cref="IssuerResponse"/> class.
+    /// </summary>
+    public IssuerResponse() { }
     /// <summary>
     /// Initializes a new instance of the <see cref="IssuerResponse"/> class using a specific issue type.
     /// </summary>

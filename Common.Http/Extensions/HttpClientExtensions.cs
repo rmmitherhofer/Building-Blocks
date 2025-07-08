@@ -166,6 +166,22 @@ public static class HttpClientExtensions
     }
 
     /// <summary>
+    /// Adds the User account from the current HTTP context to the headers
+    /// </summary>
+    /// <param name="client">HttpClient instance.</param>
+    public static void AddHeaderUserAccount(this HttpClient client)
+    {
+        ArgumentNullException.ThrowIfNull(client, nameof(HttpClient));
+
+        if (_accessor is null) return;
+
+        var userAccount = _accessor.HttpContext?.Request.GetUserAccount();
+
+        if (!string.IsNullOrEmpty(userAccount))
+            client.AddHeader(HttpRequestExtensions.USER_ACCOUNT, userAccount);
+    }
+
+    /// <summary>
     /// Adds default headers (IP, user ID, correlation ID, client ID, user agent, and server hostname).
     /// </summary>
     /// <param name="client">HttpClient instance.</param>
@@ -179,6 +195,7 @@ public static class HttpClientExtensions
         client.AddHeaderClientId();
         client.AddHeaderUserAgent();
         client.AddHeaderServerHostName();
+        client.AddHeaderUserAccount();
     }
 
     /// <summary>

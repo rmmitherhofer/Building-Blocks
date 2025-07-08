@@ -8,14 +8,13 @@
 		<Authors>Renato Mitherhofer</Authors>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<NoWarn>$(NoWarn);1591</NoWarn>
-		<Version>9.0.1</Version>
+		<Version>9.0.3</Version>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>
 		<PackageReference Include="MitherPack.Common.Exceptions" Version="9.0.1" />
-		<PackageReference Include="MitherPack.Common.Notifications" Version="9.0.2" />
-		<PackageReference Include="MitherPack.Common.User" Version="9.0.2" />
+		<PackageReference Include="MitherPack.Common.Notifications" Version="9.0.3" />
 	</ItemGroup>
 
 </Project>

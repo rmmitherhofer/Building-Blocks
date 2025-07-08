@@ -230,6 +230,22 @@ public static class HttpRequestMessageExtensions
     }
 
     /// <summary>
+    /// Adds the user account string from the current HTTP context to the HttpRequestMessage headers.
+    /// </summary>
+    /// <param name="request">HttpRequestMessage instance.</param>
+    public static void AddHeaderUserAccount(this HttpRequestMessage request)
+    {
+        ArgumentNullException.ThrowIfNull(request, nameof(HttpRequestMessage));
+
+        if (_accessor is null) return;
+
+        var userAccount = _accessor.HttpContext?.Request.GetUserAccount();
+
+        if (!string.IsNullOrEmpty(userAccount))
+            request.AddHeader(HttpRequestExtensions.USER_ACCOUNT, userAccount);
+    }
+
+    /// <summary>
     /// Adds all default headers (IP address, user ID, correlation ID, client ID, user agent, server hostname) to the HttpRequestMessage.
     /// </summary>
     /// <param name="request">HttpRequestMessage instance.</param>
@@ -243,6 +259,7 @@ public static class HttpRequestMessageExtensions
         request.AddHeaderClientId();
         request.AddHeaderUserAgent();
         request.AddHeaderServerHostName();
+        request.AddHeaderUserAccount();
     }
 
     /// <summary>

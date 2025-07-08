@@ -26,19 +26,37 @@ public class AspNetUser : IAspNetUser
     /// Gets the current user's identifier.
     /// </summary>
     /// <returns>User ID as string or null if not available.</returns>
-    public string? GetUserId() => _accessor.HttpContext.User.GetId();
+    public string? Id => _accessor.HttpContext.User.GetId();
+
+    /// <summary>
+    /// Gets the current user's account.
+    /// </summary>
+    /// <returns>User Account as string or null if not available.</returns>
+    public string? Account => _accessor.HttpContext.User.GetAccount();
+
+    /// <summary>
+    /// Gets the current user's document.
+    /// </summary>
+    /// <returns>User Document as string or null if not available.</returns>
+    public string? Document => _accessor.HttpContext.User.GetDocument();
+
+    /// <summary>
+    /// Gets the current user's departament.
+    /// </summary>
+    /// <returns>User departament as string or null if not available.</returns>
+    public string? Departament => _accessor.HttpContext.User.GetDepartment();
 
     /// <summary>
     /// Gets the current user's email.
     /// </summary>
     /// <returns>User email as string or null if not available.</returns>
-    public string? GetUserEmail() => _accessor.HttpContext.User.GetEmail();
+    public string? Email => _accessor.HttpContext.User.GetEmail();
 
     /// <summary>
     /// Checks if the current user is authenticated.
     /// </summary>
     /// <returns>True if authenticated; otherwise, false.</returns>
-    public bool IsAuthenticated() => _accessor.HttpContext.User.IsAuthenticated();
+    public bool IsAuthenticated => _accessor.HttpContext.User.IsAuthenticated();
 
     /// <summary>
     /// Checks if the current user is in the specified role.

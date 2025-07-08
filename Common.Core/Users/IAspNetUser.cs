@@ -16,19 +16,36 @@ public interface IAspNetUser
     /// Gets the current user's identifier.
     /// </summary>
     /// <returns>User ID as string.</returns>
-    string GetUserId();
+    string Id { get; }
 
     /// <summary>
     /// Gets the current user's email.
     /// </summary>
     /// <returns>User email as string.</returns>
-    string GetUserEmail();
+    string Email { get; }
+    /// <summary>
+    /// Gets the current user's account.
+    /// </summary>
+    /// <returns>User Account as string or null if not available.</returns>
+    string? Account { get; }
+
+    /// <summary>
+    /// Gets the current user's document.
+    /// </summary>
+    /// <returns>User Document as string or null if not available.</returns>
+    string? Document { get; }
+
+    /// <summary>
+    /// Gets the current user's departament.
+    /// </summary>
+    /// <returns>User departament as string or null if not available.</returns>
+    string? Departament { get; }
 
     /// <summary>
     /// Checks if the current user is authenticated.
     /// </summary>
     /// <returns>True if authenticated; otherwise, false.</returns>
-    bool IsAuthenticated();
+    bool IsAuthenticated { get; }
 
     /// <summary>
     /// Checks if the current user is in a specific role.

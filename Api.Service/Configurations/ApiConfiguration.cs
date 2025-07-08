@@ -1,5 +1,4 @@
 ﻿using Api.Service.Middleware;
-using Api.Swagger.Configurations;
 using Common.Extensions;
 using Common.Logs.Configurations;
 using Common.Notifications.Configurations;
@@ -8,8 +7,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using SnapTrace.Configurations;
-using SnapTrace.Formatters;
+using NedMonitor.Configurations;
+using NedMonitor.Formatters;
+using SwaggleBox.Configurations;
 using System.Text.Json.Serialization;
 
 namespace Api.Service.Configurations;
@@ -20,7 +20,7 @@ namespace Api.Service.Configurations;
 public static class ApiConfiguration
 {
     /// <summary>
-    /// Registers core services for the API, such as controllers, Swagger, SnapTrace, and custom configurations.
+    /// Registers core services for the API, such as controllers, Swagger, Tracezilla, and custom configurations.
     /// </summary>
     /// <param name="services">The service collection to add services to.</param>
     /// <param name="configuration">The application configuration.</param>
@@ -36,18 +36,15 @@ public static class ApiConfiguration
         configuration.Set(environment);
 
         services.AddControllers(options => options.EnableEndpointRouting = false)
-            .AddJsonOptions(options =>
-            {
-                options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-            });
+            .AddJsonOptions(options => options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull);
 
         services.AddNotificationConfig();
 
         services.AddEndpointsApiExplorer();
 
-        services.AddSwaggerConfig(configuration);
+        services.AddSwaggleBox(configuration);
 
-        services.AddSnapTrace(configuration, options =>
+        services.AddNedMonitor(configuration, options =>
         {
             options.Formatter = (args) =>
             {
@@ -75,7 +72,7 @@ public static class ApiConfiguration
 
         app.UseAuthorization();
 
-        app.UseSnapTrace();
+        app.UseNedMonitor();
 
         app.TryUseMiddleware<RequestIndetityMiddleware>();
 
@@ -85,7 +82,7 @@ public static class ApiConfiguration
 
         app.TryUseMiddleware<ExceptionMiddleware>();
 
-        app.UseSwaggerConfig(app.ApplicationServices.GetRequiredService<IApiVersionDescriptionProvider>());
+        app.UseSwaggleBox(app.ApplicationServices.GetRequiredService<IApiVersionDescriptionProvider>());
 
         app.UseEndpoints(endpoints => endpoints.MapControllers());
 

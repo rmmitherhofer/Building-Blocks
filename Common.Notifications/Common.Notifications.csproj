@@ -7,13 +7,13 @@
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<PackageId>MitherPack.Common.Notifications</PackageId>
 		<Authors>Renato Mitherhofer</Authors>
-		<Version>9.0.2</Version>
+		<Version>9.0.3</Version>
 		<NoWarn>$(NoWarn);1591</NoWarn>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="MitherPack.Common.Logs" Version="9.0.2" />
+	  <PackageReference Include="MitherPack.Common.Logs" Version="9.0.4" />
 	</ItemGroup>
 
 </Project>

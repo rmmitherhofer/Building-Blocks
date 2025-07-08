@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace Common.Extensions;
+namespace Common.Http.Extensions;
 
 public static partial class RouteTemplateExtensions
 {

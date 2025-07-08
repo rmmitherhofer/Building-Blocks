@@ -32,7 +32,7 @@ public abstract class NationalRegistry
     /// <param name="input">Input string.</param>
     /// <returns>Only digits from input.</returns>
     protected static string OnlyNumbers(string input)
-        => new string(input.Where(char.IsDigit).ToArray());
+        => new([.. input.Where(char.IsDigit)]);
 }
 
 /// <summary>

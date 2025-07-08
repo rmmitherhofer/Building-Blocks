@@ -1,4 +1,5 @@
 ﻿using Api.Responses;
+using Api.Responses.Factories;
 using Common.Exceptions;
 using Common.Extensions;
 using Common.Json;
@@ -15,7 +16,7 @@ namespace Api.Service.Middleware;
 /// </summary>
 public class ExceptionMiddleware
 {
-    public const string Name = "ExceptionMiddleware";
+    public const string Name = nameof(RequestIndetityMiddleware);
     private readonly RequestDelegate _next;
     private readonly ILogger<ExceptionMiddleware> _logger;
 
@@ -126,12 +127,21 @@ public class ExceptionMiddleware
         if (logLevel == LogLevel.Warning)
         {
             jsonResponse = statusCode == HttpStatusCode.NotFound
-                ? JsonExtensions.Serialize(new ApiResponse(new NotFoundResponse(exception.Message)) { CorrelationId = context.Request.GetCorrelationId() })
-                : JsonExtensions.Serialize(new ApiResponse(new ValidationResponse(notifications)) { CorrelationId = context.Request.GetCorrelationId() });
+                ? JsonExtensions.Serialize(new ApiResponse(new NotFoundResponse(exception.Message))
+                {
+                    CorrelationId = context.Request.GetCorrelationId()
+                })
+                : JsonExtensions.Serialize(new ApiResponse(new ValidationResponse(notifications.ToResponse()))
+                {
+                    CorrelationId = context.Request.GetCorrelationId()
+                });
         }
         else
         {
-            jsonResponse = JsonExtensions.Serialize(new ApiResponse(statusCode, new ValidationResponse(notifications)) { CorrelationId = context.Request.GetCorrelationId() });
+            jsonResponse = JsonExtensions.Serialize(new ApiResponse(statusCode, new ValidationResponse(notifications.ToResponse()))
+            {
+                CorrelationId = context.Request.GetCorrelationId()
+            });
         }
 
         await context.Response.WriteAsync(jsonResponse);
