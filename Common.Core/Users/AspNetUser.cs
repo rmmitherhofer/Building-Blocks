@@ -29,6 +29,12 @@ public class AspNetUser : IAspNetUser
     public string? Id => _accessor.HttpContext.User.GetId();
 
     /// <summary>
+    /// Gets the current user's account code.
+    /// </summary>
+    /// <returns>User Account as string or null if not available.</returns>
+    public string? AccountCode => _accessor.HttpContext.User.GetAccountCode();
+
+    /// <summary>
     /// Gets the current user's account.
     /// </summary>
     /// <returns>User Account as string or null if not available.</returns>

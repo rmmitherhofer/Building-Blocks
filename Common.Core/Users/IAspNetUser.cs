@@ -23,6 +23,12 @@ public interface IAspNetUser
     /// </summary>
     /// <returns>User email as string.</returns>
     string Email { get; }
+
+    /// <summary>
+    /// Gets the current user's account.
+    /// </summary>
+    /// <returns>User Account code as string or null if not available.</returns>
+    string? AccountCode { get; }
     /// <summary>
     /// Gets the current user's account.
     /// </summary>
