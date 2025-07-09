@@ -93,6 +93,9 @@ internal class LogDecoratorMiddleware
             if (!string.IsNullOrEmpty(context.User.GetId()))
                 builder.AppendLine($"User-ID           : {context.Request.GetUserId()}");
 
+            if (!string.IsNullOrEmpty(context.User.GetAccountCode()))
+                builder.AppendLine($"User-Account-Code : {context.User.GetAccountCode()}");
+
             if (!string.IsNullOrEmpty(context.User.GetAccount()))
                 builder.AppendLine($"User-Account      : {context.User.GetAccount()}");
 
@@ -112,11 +115,14 @@ internal class LogDecoratorMiddleware
             if (!string.IsNullOrEmpty(context.Request.GetUserId()))
                 builder.AppendLine($"User-ID           : {context.Request.GetUserId()}");
 
-            if (!string.IsNullOrEmpty(context.Request.GetUserName()))
-                builder.AppendLine($"User-Name         : {context.Request.GetUserName()}");
+            if (!string.IsNullOrEmpty(context.Request.GetUserAccountCode()))
+                builder.AppendLine($"User-Account-Code : {context.Request.GetUserAccountCode()}");
 
             if (!string.IsNullOrEmpty(context.Request.GetUserAccount()))
                 builder.AppendLine($"User-Account      : {context.Request.GetUserAccount()}");
+
+            if (!string.IsNullOrEmpty(context.Request.GetUserName()))
+                builder.AppendLine($"User-Name         : {context.Request.GetUserName()}");
 
             if (!string.IsNullOrEmpty(context.Request.GetUserId()))
                 builder.AppendLine($"User-Document     : {context.Request.GetUserId()}");

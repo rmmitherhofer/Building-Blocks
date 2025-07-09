@@ -7,7 +7,7 @@
 		<PackageId>MitherPack.Common.Logs</PackageId>
 		<Authors>Renato Mitherhofer</Authors>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<Version>9.0.5</Version>
+		<Version>9.0.6</Version>
 
 	</PropertyGroup>
 
@@ -19,7 +19,7 @@
 	<ItemGroup>
 		<None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\net9.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.7" />
-		<PackageReference Include="MitherPack.Common.Extensions" Version="9.0.11" />
-		<PackageReference Include="MitherPack.Common.User" Version="9.0.4" />
+		<PackageReference Include="MitherPack.Common.Extensions" Version="9.0.12" />
+		<PackageReference Include="MitherPack.Common.User" Version="9.0.5" />
 	</ItemGroup>
 </Project>
