@@ -8,7 +8,7 @@
 		<PackageId>MitherPack.Api.Core.Framework</PackageId>
 		<Title>Api Core</Title>
 		<Authors>Renato Mitherhofer</Authors>
-		<Version>9.0.4</Version>
+		<Version>9.0.5</Version>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -18,7 +18,7 @@
 
 	<ItemGroup>
 		<None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\net9.0" />
-		<PackageReference Include="MitherPack.Common.Core" Version="9.0.5" />
+		<PackageReference Include="MitherPack.Common.Core" Version="9.0.6" />
 	</ItemGroup>
 
 </Project>
