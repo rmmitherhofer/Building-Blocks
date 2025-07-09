@@ -7,7 +7,7 @@
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<PackageId>MitherPack.Common.Notifications</PackageId>
 		<Authors>Renato Mitherhofer</Authors>
-		<Version>9.0.4</Version>
+		<Version>9.0.5</Version>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -17,7 +17,7 @@
 
 	<ItemGroup>
 		<None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\net9.0" />
-		<PackageReference Include="MitherPack.Common.Logs" Version="9.0.5" />
+		<PackageReference Include="MitherPack.Common.Logs" Version="9.0.6" />
 	</ItemGroup>
 
 </Project>
