@@ -23,6 +23,8 @@ public static class ClaimsPrincipalExtensions
     public const string USER_ID = "userId";
     /// <summary>Claim key for user account.</summary>
     public const string USER_ACCOUNT= "userAccount";
+    /// <summary>Claim key for user account code.</summary>
+    public const string USER_ACCOUNT_CODE = "userAccountCode";
     /// <summary>Claim key for user document.</summary>
     public const string USER_DOCUMENT = "userDocument";
     /// <summary>Claim key for expiration timestamp.</summary>
@@ -285,4 +287,16 @@ public static class ClaimsPrincipalExtensions
     /// <param name="user">The ClaimsPrincipal instance.</param>
     /// <param name="value">Session Id value.</param>
     public static void AddAccount(this ClaimsPrincipal user, string value) => user.AddClaim(USER_ACCOUNT, value);
+    /// <summary>
+    /// Gets the user account code claim.
+    /// </summary>
+    /// <param name="user">The ClaimsPrincipal instance.</param>
+    /// <returns>Session Id claim value or null.</returns>
+    public static string? GetAccountCode(this ClaimsPrincipal user) => user.GetClaim(USER_ACCOUNT_CODE);
+    /// <summary>
+    /// Adds a user account code claim.
+    /// </summary>
+    /// <param name="user">The ClaimsPrincipal instance.</param>
+    /// <param name="value">Session Id value.</param>
+    public static void AddAccountCode(this ClaimsPrincipal user, string value) => user.AddClaim(USER_ACCOUNT_CODE, value);
 }
