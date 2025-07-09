@@ -5,7 +5,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 
-		<Version>9.0.7</Version>
+		<Version>9.0.8</Version>
 
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 
@@ -21,9 +21,9 @@
 
 	<ItemGroup>
 		<None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\net9.0" />
-		<PackageReference Include="MitherPack.Api.Responses" Version="9.0.5" />
+		<PackageReference Include="MitherPack.Api.Responses" Version="9.0.6" />
 		<PackageReference Include="MitherPack.Common.Json" Version="9.0.6" />
-		<PackageReference Include="MitherPack.Common.User" Version="9.0.4" />
+		<PackageReference Include="MitherPack.Common.User" Version="9.0.5" />
 	</ItemGroup>
 
 </Project>

@@ -10,12 +10,17 @@ using System.Diagnostics;
 using System.Net;
 
 namespace Common.Http;
+
 /// <summary>
-/// Base class for making HTTP requests with built-in logging, header configuration, and response validation.
-/// Supports synchronous and asynchronous operations for all main HTTP verbs.
+/// Abstract base class for making HTTP requests with integrated logging, header injection, 
+/// response validation, and support for both synchronous and asynchronous execution of all major HTTP verbs.
 /// </summary>
 public abstract class HttpService
 {
+    /// <summary>
+    /// Stores the URI template used to identify the logical route in logs.
+    /// </summary>
+    private string _templateUri = string.Empty;
     /// <summary>
     /// Logger for logging request and response inf
     /// </summary>
@@ -29,7 +34,7 @@ public abstract class HttpService
     /// </summary>
     private Stopwatch _stopwatch;
     /// <summary>
-    /// Flag indicating whether to log headers and body content.
+    /// Indicates whether detailed request and response logging (headers and body) is enabled.
     /// </summary>
     private bool IsDetailedLoggingEnabled = false;
     /// <summary>
@@ -40,9 +45,9 @@ public abstract class HttpService
     /// <summary>
     /// Initializes a new instance of the <see cref="HttpService"/> class.
     /// </summary>
-    /// <param name="httpClient">HttpClient to be used for requests.</param>
-    /// <param name="notification">Notification handler for storing notifications.</param>
-    /// <param name="logger">Logger instance for logging request and response details.</param>
+    /// <param name="httpClient">An <see cref="HttpClient"/> instance used to send HTTP requests.</param>
+    /// <param name="notification">An implementation of <see cref="INotificationHandler"/> for recording errors and issues.</param>
+    /// <param name="logger">An <see cref="ILogger"/> instance for writing logs related to requests and responses.</param>
     protected HttpService(HttpClient httpClient, INotificationHandler notification, ILogger logger)
     {
         ArgumentNullException.ThrowIfNull(httpClient, nameof(HttpClient));
@@ -51,6 +56,21 @@ public abstract class HttpService
         _httpClient = httpClient;
         _notification = notification;
         _logger = logger;
+    }
+
+    #region GET
+    /// <summary>
+    /// Sends an asynchronous GET request to the specified URI and sets a template identifier for contextual logging.
+    /// </summary>
+    /// <param name="uri">A tuple containing the template identifier and the request URI.</param>
+    /// <returns>The HTTP response message.</returns>
+
+    protected Task<HttpResponseMessage> GetAsync((string template, string uri) uri)
+    {
+        _templateUri = uri.template;
+        _httpClient.AddHeaderRequestTemplate(uri.template);
+
+        return GetAsync(uri.uri);
     }
 
     /// <summary>
@@ -68,6 +88,17 @@ public abstract class HttpService
 
         return response;
     }
+    /// <summary>
+    /// Sends a synchronous GET request to the specified URI and sets a template identifier for contextual logging.
+    /// </summary>
+
+    protected HttpResponseMessage Get((string template, string uri) uri)
+    {
+        _templateUri = uri.template;
+        _httpClient.AddHeaderRequestTemplate(uri.template);
+
+        return Get(uri.uri);
+    }
 
     /// <summary>
     /// Sends a GET request synchronously to the specified URI.
@@ -83,6 +114,21 @@ public abstract class HttpService
         LogResponse(response);
 
         return response;
+    }
+    #endregion
+
+    #region POST
+    /// <summary>
+    /// Sends an asynchronous POST request to the specified URI and sets a template identifier for contextual logging.
+    /// </summary>
+    /// <param name="uri">A tuple containing the template identifier and the request URI.</param>
+    /// <returns>The HTTP response message.</returns>
+    protected Task<HttpResponseMessage> PostAsync((string template, string uri) uri, HttpContent content)
+    {
+        _templateUri = uri.template;
+        _httpClient.AddHeaderRequestTemplate(uri.template);
+
+        return PostAsync(uri.uri, content);
     }
 
     /// <summary>
@@ -100,7 +146,16 @@ public abstract class HttpService
 
         return response;
     }
+    /// <summary>
+    /// Sends a synchronous POST request to the specified URI and sets a template identifier for contextual logging.
+    /// </summary>
+    protected HttpResponseMessage Post((string template, string uri) uri, HttpContent content)
+    {
+        _templateUri = uri.template;
+        _httpClient.AddHeaderRequestTemplate(uri.template);
 
+        return Post(uri.uri, content);
+    }
     /// <summary>
     /// Sends a POST request synchronously to the specified URI with the provided content.
     /// </summary>
@@ -115,6 +170,21 @@ public abstract class HttpService
         LogResponse(response);
 
         return response;
+    }
+    #endregion
+
+    #region PUT
+    /// <summary>
+    /// Sends an asynchronous PUT request to the specified URI and sets a template identifier for contextual logging.
+    /// </summary>
+    /// <param name="uri">A tuple containing the template identifier and the request URI.</param>
+    /// <returns>The HTTP response message.</returns>
+    protected Task<HttpResponseMessage> PutAsync((string template, string uri) uri, HttpContent content)
+    {
+        _templateUri = uri.template;
+        _httpClient.AddHeaderRequestTemplate(uri.template);
+
+        return PutAsync(uri.uri, content);
     }
 
     /// <summary>
@@ -131,6 +201,16 @@ public abstract class HttpService
         LogResponse(response.Result);
 
         return response;
+    }
+    /// <summary>
+    /// Sends a synchronous PUT request to the specified URI and sets a template identifier for contextual logging.
+    /// </summary>
+    protected HttpResponseMessage Put((string template, string uri) uri, HttpContent content)
+    {
+        _templateUri = uri.template;
+        _httpClient.AddHeaderRequestTemplate(uri.template);
+
+        return Put(uri.uri, content);
     }
 
     /// <summary>
@@ -149,6 +229,22 @@ public abstract class HttpService
         return response;
     }
 
+    #endregion
+
+    #region PATCH
+    /// <summary>
+    /// Sends an asynchronous PATCH request to the specified URI and sets a template identifier for contextual logging.
+    /// </summary>
+    /// <param name="uri">A tuple containing the template identifier and the request URI.</param>
+    /// <returns>The HTTP response message.</returns>
+    protected Task<HttpResponseMessage> PatchAsync((string template, string uri) uri, HttpContent content)
+    {
+        _templateUri = uri.template;
+        _httpClient.AddHeaderRequestTemplate(uri.template);
+
+        return PatchAsync(uri.uri, content);
+    }
+
     /// <summary>
     /// Sends a PATCH request asynchronously to the specified URI with the provided content.
     /// </summary>
@@ -164,7 +260,16 @@ public abstract class HttpService
 
         return response;
     }
+    /// <summary>
+    /// Sends a synchronous PATCH request to the specified URI and sets a template identifier for contextual logging.
+    /// </summary>
+    protected HttpResponseMessage Patch((string template, string uri) uri, HttpContent content)
+    {
+        _templateUri = uri.template;
+        _httpClient.AddHeaderRequestTemplate(uri.template);
 
+        return Patch(uri.uri, content);
+    }
     /// <summary>
     /// Sends a PATCH request synchronously to the specified URI with the provided content.
     /// </summary>
@@ -179,6 +284,21 @@ public abstract class HttpService
         LogResponse(response);
 
         return response;
+    }
+    #endregion
+
+    #region DELETE
+    /// <summary>
+    /// Sends an asynchronous DELETE request to the specified URI and sets a template identifier for contextual logging.
+    /// </summary>
+    /// <param name="uri">A tuple containing the template identifier and the request URI.</param>
+    /// <returns>The HTTP response message.</returns>
+    protected Task<HttpResponseMessage> DeleteAsync((string template, string uri) uri)
+    {
+        _templateUri = uri.template;
+        _httpClient.AddHeaderRequestTemplate(uri.template);
+
+        return DeleteAsync(uri.uri);
     }
 
     /// <summary>
@@ -195,6 +315,16 @@ public abstract class HttpService
         LogResponse(response.Result);
 
         return response;
+    }
+    /// <summary>
+    /// Sends a synchronous DELETE request to the specified URI and sets a template identifier for contextual logging.
+    /// </summary>
+    protected HttpResponseMessage Delete((string template, string uri) uri)
+    {
+        _templateUri = uri.template;
+        _httpClient.AddHeaderRequestTemplate(uri.template);
+
+        return Delete(uri.uri);
     }
 
     /// <summary>
@@ -213,14 +343,16 @@ public abstract class HttpService
         return response;
     }
 
+    #endregion
+
     #region Validation
 
     /// <summary>
-    /// Validates the HTTP response and deserializes its content to the specified response type.
+    /// Validates the HTTP response and deserializes its content to a specified type if no critical errors are found.
     /// </summary>
-    /// <typeparam name="TResponse">The expected response type.</typeparam>
-    /// <param name="response">The HTTP response message to validate and read.</param>
-    /// <returns>The deserialized response object.</returns>
+    /// <typeparam name="TResponse">The type to deserialize the HTTP response content into.</typeparam>
+    /// <param name="response">The HTTP response message to validate and process.</param>
+    /// <returns>The deserialized response object, or null if response is empty.</returns>
     protected async Task<TResponse?> ValidateAndReturn<TResponse>(HttpResponseMessage response)
     {
         await ValidateResponse(response);
@@ -270,7 +402,7 @@ public abstract class HttpService
     #endregion
 
     /// <summary>
-    /// Enables logging of HTTP headers and body content for all requests and responses.
+    /// Enables verbose logging of HTTP request and response, including headers and body content.
     /// </summary>
     protected void EnableLogHeadersAndBody() => IsDetailedLoggingEnabled = true;
 
@@ -279,7 +411,7 @@ public abstract class HttpService
     /// <summary>
     /// Logs the start of an HTTP request including method, URI, headers, and optional content.
     /// </summary>
-    private void LogRequest(string httpMehod, Uri uri, HttpContent? content = null)
+    protected void LogRequest(string httpMehod, Uri uri, HttpContent? content = null)
     {
         _stopwatch = new();
         _stopwatch.Start();
@@ -293,17 +425,17 @@ public abstract class HttpService
             if (content is not null)
                 contentJson = $"|Content:{content.ReadAsStringAsync().Result}";
         }
-        _logger.LogInfo($"Start processing HTTP request {httpMehod} {uri}{headersJson}{contentJson}");
+        _logger.LogInfo($"Start processing HTTP request {httpMehod} {(string.IsNullOrEmpty(_templateUri) ? uri : _httpClient.BaseAddress + _templateUri)}{headersJson}{contentJson}");
     }
 
     /// <summary>
     /// Logs the end of an HTTP request including method, URI, elapsed time and response status.
     /// </summary>
-    private void LogResponse(HttpResponseMessage response)
+    protected void LogResponse(HttpResponseMessage response)
     {
         _stopwatch.Stop();
 
-        string message = $"End processing HTTP request {response?.RequestMessage?.Method} {response?.RequestMessage?.RequestUri} after {_stopwatch.GetTime()} - {response.StatusCode}";
+        string message = $"End processing HTTP request {response?.RequestMessage?.Method} {(string.IsNullOrEmpty(_templateUri) ? response?.RequestMessage?.RequestUri : _httpClient.BaseAddress + _templateUri)} after {_stopwatch.GetTime()} - {response.StatusCode}";
 
         switch (response.StatusCode)
         {

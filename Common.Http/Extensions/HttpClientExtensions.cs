@@ -8,8 +8,17 @@ using System.Reflection;
 
 namespace Common.Http.Extensions;
 
+/// <summary>
+/// Extension methods for HttpClient to simplify header management and logging,
+/// leveraging the current HTTP context via IHttpContextAccessor.
+/// </summary>
 public static class HttpClientExtensions
 {
+    /// <summary>
+    /// The header key used to store the original request template.
+    /// </summary>
+    public static string X_REQUEST_TEMPLATE = "X-Request-Template";
+
     /// <summary>
     /// IHttpContextAccessor instance used to access the current HTTP context.
     /// </summary>
@@ -208,5 +217,21 @@ public static class HttpClientExtensions
         ArgumentNullException.ThrowIfNull(client, nameof(HttpClient));
 
         return JsonExtensions.Serialize(client.DefaultRequestHeaders.ToDictionary(h => h.Key, h => h.Value.ToArray()));
+    }
+
+    /// <summary>
+    /// Adds the route template used in the request as a custom header (X-Request-Template).
+    /// Useful for logging or tracing the original endpoint pattern.
+    /// </summary>
+    /// <param name="client">HttpClient instance.</param>
+    /// <param name="template">The original route template.</param>
+    public static void AddHeaderRequestTemplate(this HttpClient client, string template)
+    {
+        ArgumentNullException.ThrowIfNull(client, nameof(HttpClient));
+
+        if (_accessor is null) return;
+
+        if (!string.IsNullOrEmpty(template))
+            client.AddOrUpdateHeader(X_REQUEST_TEMPLATE, template);
     }
 }
