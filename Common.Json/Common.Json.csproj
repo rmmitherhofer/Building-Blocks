@@ -5,15 +5,21 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 
-		<NoWarn>$(NoWarn);1591</NoWarn>
-
-		<Version>9.0.5</Version>
+		<Version>9.0.6</Version>
 
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 
 		<Authors>Renato Mitherhofer</Authors>
 
 		<PackageId>MitherPack.Common.Json</PackageId>
-		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
+
+	<PropertyGroup>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\net9.0" />
+	</ItemGroup>
 </Project>

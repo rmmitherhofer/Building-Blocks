@@ -45,23 +45,16 @@ internal class LogDecoratorMiddleware
         Stopwatch diagnostic = new();
         diagnostic.Start();
 
-        if (!context.Request.Path.Value.Contains("swagger"))
-        {
-            HeaderRequest(context);
-            _logger.LogInfo($"Request:{context.Request.GetFullUrl()}");
-        }
+        HeaderRequest(context);
+        _logger.LogInfo($"Request:{context.Request.GetFullUrl()}");
 
         await _next(context);
 
         diagnostic.Stop();
 
-        if (!context.Request.Path.Value.Contains("swagger"))
-        {
-            _logger.LogInfo(
-                $"Response:{context.Request.GetFullUrl()} - Timer request: {diagnostic.GetTime()} - " +
-                $"Status code: {context.Response.StatusCode} - {(HttpStatusCode)context.Response.StatusCode}");
-
-        }
+        _logger.LogInfo(
+            $"Response:{context.Request.GetFullUrl()} - Timer request: {diagnostic.GetTime()} - " +
+            $"Status code: {context.Response.StatusCode} - {(HttpStatusCode)context.Response.StatusCode}");
     }
 
     /// <summary>

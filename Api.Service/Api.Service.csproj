@@ -7,17 +7,22 @@
 		<PackageId>MitherPack.Api.Service.Framework</PackageId>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Authors>Renato Mitherhofer</Authors>
-		<NoWarn>$(NoWarn);1591</NoWarn>
-		<Version>9.0.6</Version>
+		<Version>9.0.8</Version>
+	</PropertyGroup>
+	
+	<PropertyGroup>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);1591</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
+		<None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\net9.0" />
 		<PackageReference Include="FluentValidation" Version="12.0.0" />
-		<PackageReference Include="MitherPack.Api.Requests" Version="9.0.1" />
-		<PackageReference Include="MitherPack.Common.Core" Version="9.0.3" />
-		<PackageReference Include="NedMonitor" Version="9.0.1" />
-		<PackageReference Include="SwaggleBox" Version="9.0.0" />
+		<PackageReference Include="MitherPack.Api.Requests" Version="9.0.3" />
+		<PackageReference Include="MitherPack.Api.Responses" Version="9.0.5" />
+		<PackageReference Include="MitherPack.Common.Core" Version="9.0.5" />
+		<PackageReference Include="NedMonitor" Version="9.0.3" />
+		<PackageReference Include="SwaggleBox" Version="9.0.2" />
 	</ItemGroup>
 
 </Project>

@@ -7,8 +7,16 @@
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<PackageId>MitherPack.Api.Requests</PackageId>
 		<Authors>Renato Mitherhofer</Authors>
-		<Version>9.0.1</Version>
-		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<Version>9.0.3</Version>
 	</PropertyGroup>
+
+	<PropertyGroup>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\net9.0" />
+	</ItemGroup>
 
 </Project>
