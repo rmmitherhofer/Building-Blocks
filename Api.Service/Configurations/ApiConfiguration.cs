@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using NedMonitor.Configurations;
-using NedMonitor.Formatters;
+using NedMonitor.Core.Formatters;
 using SwaggleBox.Configurations;
 using System.Text.Json.Serialization;
 

@@ -37,8 +37,6 @@ public class ExceptionMiddleware
     /// <param name="context">The current HTTP context.</param>
     public async Task InvokeAsync(HttpContext context)
     {
-        Exception exception = null;
-
         try
         {
             context.Response.SetCorrelationId();
@@ -55,22 +53,15 @@ public class ExceptionMiddleware
         }
         catch (CustomHttpRequestException ex)
         {
-            exception = ex;
             await HandleRequestExceptionAsync(context, ex, HttpStatusCode.BadGateway);
         }
         catch (UnauthorizedAccessException ex)
         {
-            exception = ex;
             await HandleRequestExceptionAsync(context, ex, HttpStatusCode.Unauthorized);
         }
         catch (Exception ex)
         {
-            exception = ex;
             await HandleRequestExceptionAsync(context, ex, HttpStatusCode.InternalServerError);
-        }
-        finally
-        {
-            context.Items["Exception"] = exception;
         }
     }
 
