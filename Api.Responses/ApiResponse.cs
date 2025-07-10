@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Text.Json.Serialization;
 
 namespace Api.Responses;
 
@@ -10,17 +11,25 @@ public class ApiResponse : Response
     /// <summary>
     /// Gets the HTTP status code associated with the response.
     /// </summary>
-    public HttpStatusCode StatusCode { get; private set; }
+    [JsonPropertyName("statusCode")]
+    public HttpStatusCode StatusCode { get; set; }
 
     /// <summary>
     /// Gets or sets the correlation identifier used for request tracking.
     /// </summary>
+    [JsonPropertyName("correlationId")]
     public string CorrelationId { get; set; }
 
     /// <summary>
     /// Gets the list of issues returned in the response.
     /// </summary>
-    public IEnumerable<IssuerResponse> Issues { get; private set; }
+    [JsonPropertyName("issues")]
+    public IEnumerable<IssuerResponse> Issues { get; set; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ApiResponse"/> class.
+    /// </summary>
+    public ApiResponse() { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ApiResponse"/> class from a not found response.
@@ -34,7 +43,9 @@ public class ApiResponse : Response
             new(IssuerResponseType.NotFound)
             {
                 Title = response.Title,
-                Details =  [new(response.Detail)]
+                Details =  [new(){
+                    Value = response.Detail
+                }]
             }
         ];
     }
@@ -85,7 +96,9 @@ public class ApiResponse : Response
             new(IssuerResponseType.Error)
             {
                 Title = "An error occurred",
-                Details = [new(response.Message)]
+                Details = [new(){
+                    Value = response.Message
+                }]
             }
         ];
     }

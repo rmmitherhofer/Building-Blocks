@@ -19,6 +19,8 @@ public static class NotificationConfiguration
     /// <returns>The updated <see cref="IServiceCollection"/>.</returns>
     public static IServiceCollection AddNotificationConfig(this IServiceCollection services)
     {
+        ArgumentNullException.ThrowIfNull(services, nameof(IServiceCollection));
+
         services.AddConsoleLogExtensionConfig();
 
         services.TryAddScoped<INotificationHandler, NotificationHandler>();
@@ -33,6 +35,8 @@ public static class NotificationConfiguration
     /// <returns>The updated <see cref="IApplicationBuilder"/>.</returns>
     public static IApplicationBuilder UseNotificationConfig(this IApplicationBuilder app)
     {
+        ArgumentNullException.ThrowIfNull(app, nameof(IApplicationBuilder));
+
         app.UseConsoleLogExtensionConfig();
 
         return app;

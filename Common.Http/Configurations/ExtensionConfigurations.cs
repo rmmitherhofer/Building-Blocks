@@ -31,8 +31,12 @@ public static class ExtensionConfigurations
     {
         ArgumentNullException.ThrowIfNull(app, nameof(IApplicationBuilder));
 
-        HttpClientExtensions.Configure(app.ApplicationServices.GetRequiredService<IHttpContextAccessor>());
-        HttpRequestMessageExtensions.Configure(app.ApplicationServices.GetRequiredService<IHttpContextAccessor>());
+        var httpContextAccessor = app.ApplicationServices.GetService<IHttpContextAccessor>()
+            ?? throw new InvalidOperationException("IHttpContextAccessor is not registered. Make sure to call AddHttpConfig.");
+
+        HttpClientExtensions.Configure(httpContextAccessor);
+
+        HttpRequestMessageExtensions.Configure(httpContextAccessor);
 
         return app;
     }

@@ -9,7 +9,7 @@ namespace Api.Service.Middleware;
 /// </summary>
 public class RequestIndetityMiddleware
 {
-    public const string Name = "RequestIndetityMiddleware";
+    public const string Name = nameof(RequestIndetityMiddleware);
     private readonly RequestDelegate _next;
 
     /// <summary>

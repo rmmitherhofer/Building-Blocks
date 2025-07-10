@@ -7,14 +7,19 @@
 		<PackageId>MitherPack.Api.Responses</PackageId>
 		<Authors>Renato Mitherhofer</Authors>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-		<Version>9.0.1</Version>
+		<Version>9.0.6</Version>
+	</PropertyGroup>
+
+	<PropertyGroup>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);1591</NoWarn>
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MitherPack.Common.Enums" Version="9.0.1" />
-		<PackageReference Include="MitherPack.Common.Exceptions" Version="9.0.1" />
-		<PackageReference Include="MitherPack.Common.Notifications" Version="9.0.2" />
+		<None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\net9.0" />
+		<PackageReference Include="MitherPack.Common.Enums" Version="9.0.2" />
+		<PackageReference Include="MitherPack.Common.Exceptions" Version="9.0.2" />
+		<PackageReference Include="MitherPack.Common.Notifications" Version="9.0.5" />
 	</ItemGroup>
 
 </Project>

@@ -1,5 +1,4 @@
-﻿using Common.Notifications.Messages;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Serialization;
 
 namespace Api.Responses;
 
@@ -12,12 +11,17 @@ public class ValidationResponse
     /// Gets the list of validation notifications returned by the API.
     /// </summary>
     [JsonPropertyName("validations")]
-    public IEnumerable<Notification> Validations { get; private set; }
+    public IEnumerable<NotificationResponse> Validations { get; set; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ValidationResponse"/> class.
+    /// </summary>
+    public ValidationResponse() { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ValidationResponse"/> class with the specified notifications.
     /// </summary>
     /// <param name="notifications">The collection of validation notifications.</param>
-    public ValidationResponse(IEnumerable<Notification> notifications)
+    public ValidationResponse(IEnumerable<NotificationResponse> notifications)
         => Validations = notifications;
 }

@@ -8,8 +8,17 @@ using System.Text.Json;
 
 namespace Common.Http.Extensions;
 
+/// <summary>
+/// Extension methods for <see cref="HttpRequestMessage"/> to simplify header manipulation,
+/// content serialization, and integration with <see cref="IHttpContextAccessor"/> for enriched logging.
+/// </summary>
 public static class HttpRequestMessageExtensions
 {
+    /// <summary>
+    /// The header key used to store the original request template.
+    /// </summary>
+    public static string X_REQUEST_TEMPLATE = "X-Request-Template";
+
     /// <summary>
     /// IHttpContextAccessor instance used to access the current HTTP context.
     /// </summary>
@@ -230,6 +239,48 @@ public static class HttpRequestMessageExtensions
     }
 
     /// <summary>
+    /// Adds the user account string from the current HTTP context to the HttpRequestMessage headers.
+    /// </summary>
+    /// <param name="request">HttpRequestMessage instance.</param>
+    public static void AddHeaderUserAccount(this HttpRequestMessage request)
+    {
+        ArgumentNullException.ThrowIfNull(request, nameof(HttpRequestMessage));
+
+        if (_accessor is null) return;
+
+        var userAccount = _accessor.HttpContext?.Request.GetUserAccount();
+
+        if (!string.IsNullOrEmpty(userAccount))
+            request.AddHeader(HttpRequestExtensions.USER_ACCOUNT, userAccount);
+    }
+    /// <summary>
+    /// Adds the route template used in the request as a custom header (X-Request-Template).
+    /// Useful for logging or tracing the original endpoint pattern.
+    /// </summary>
+    /// <param name="request">HttpRequestMessage instance.</param>
+    /// <param name="template">The original route template.</param>
+    public static void AddHeaderRequestTemplate(this HttpRequestMessage request, string template)
+    {
+        ArgumentNullException.ThrowIfNull(request, nameof(HttpRequestMessage));
+
+        if (_accessor is null) return;
+
+        if (!string.IsNullOrEmpty(template))
+            request.AddOrUpdateHeader(X_REQUEST_TEMPLATE, template);
+    }
+    /// <summary>
+    /// Retrieves the X-Request-Template header value from the HttpRequestMessage.
+    /// </summary>
+    /// <param name="request">HttpRequestMessage instance.</param>
+    /// <returns>The route template if present; otherwise, null.</returns>
+    public static string? GetHeaderRequestTemplate(this HttpRequestMessage request)
+    {
+        ArgumentNullException.ThrowIfNull(request, nameof(HttpRequestMessage));
+
+        return request.GetHeader(X_REQUEST_TEMPLATE);
+    }
+
+    /// <summary>
     /// Adds all default headers (IP address, user ID, correlation ID, client ID, user agent, server hostname) to the HttpRequestMessage.
     /// </summary>
     /// <param name="request">HttpRequestMessage instance.</param>
@@ -243,6 +294,7 @@ public static class HttpRequestMessageExtensions
         request.AddHeaderClientId();
         request.AddHeaderUserAgent();
         request.AddHeaderServerHostName();
+        request.AddHeaderUserAccount();
     }
 
     /// <summary>

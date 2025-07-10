@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Text.Json.Serialization;
 
 namespace Api.Responses;
 
@@ -10,12 +11,19 @@ public class ErrorResponse
     /// <summary>
     /// Gets the HTTP status code associated with the error.
     /// </summary>
-    public HttpStatusCode StatusCode { get; private set; }
+    [JsonPropertyName("statusCode")]
+    public HttpStatusCode StatusCode { get; set; }
 
     /// <summary>
     /// Gets the message that describes the error.
     /// </summary>
-    public string Message { get; private set; }
+    [JsonPropertyName("message")]
+    public string Message { get; set; }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ErrorResponse"/> class.
+    /// </summary>
+    public ErrorResponse() { }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ErrorResponse"/> class with the specified status code and error message.

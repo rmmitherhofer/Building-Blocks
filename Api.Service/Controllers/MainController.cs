@@ -1,4 +1,5 @@
 ﻿using Api.Responses;
+using Api.Responses.Factories;
 using Common.Extensions;
 using Common.Notifications.Interfaces;
 using Common.Notifications.Messages;
@@ -40,16 +41,18 @@ public abstract class MainController(INotificationHandler notification) : Contro
             return Ok(result);
 
         if (_notification.Get().Select(v => v.LogLevel).Contains(LogLevel.Error))
+        {
             return StatusCode((int)HttpStatusCode.InternalServerError,
-                new ApiResponse(HttpStatusCode.InternalServerError, new ValidationResponse(_notification.Get().Where(v => v.LogLevel == LogLevel.Error)))
+                new ApiResponse(HttpStatusCode.InternalServerError, new ValidationResponse(_notification.Get().Where(v => v.LogLevel == LogLevel.Error).ToResponse()))
                 {
                     CorrelationId = HttpContext.Request.GetCorrelationId()
                 });
+        }
 
-        return BadRequest(new ApiResponse(new ValidationResponse(_notification.Get()))
+        return BadRequest(new ApiResponse(new ValidationResponse(_notification.Get().ToResponse()))
         {
             CorrelationId = HttpContext.Request.GetCorrelationId()
-        });
+        });;
     }
 
     /// <summary>
