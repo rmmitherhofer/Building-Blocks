@@ -82,6 +82,8 @@ public static class ApiConfiguration
 
         app.TryUseMiddleware<ExceptionMiddleware>();
 
+        app.UseNedMonitorMiddleware();
+
         app.UseSwaggleBox(app.ApplicationServices.GetRequiredService<IApiVersionDescriptionProvider>());
 
         app.UseEndpoints(endpoints => endpoints.MapControllers());

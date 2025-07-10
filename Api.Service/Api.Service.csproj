@@ -7,7 +7,7 @@
 		<PackageId>MitherPack.Api.Service.Framework</PackageId>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Authors>Renato Mitherhofer</Authors>
-		<Version>9.0.9</Version>
+		<Version>9.0.10</Version>
 	</PropertyGroup>
 	
 	<PropertyGroup>
@@ -21,7 +21,7 @@
 		<PackageReference Include="MitherPack.Api.Requests" Version="9.0.3" />
 		<PackageReference Include="MitherPack.Api.Responses" Version="9.0.6" />
 		<PackageReference Include="MitherPack.Common.Core" Version="9.0.6" />
-		<PackageReference Include="NedMonitor" Version="9.0.9" />
+		<PackageReference Include="NedMonitor" Version="9.0.10" />
 		<PackageReference Include="SwaggleBox" Version="9.0.2" />
 	</ItemGroup>
 
