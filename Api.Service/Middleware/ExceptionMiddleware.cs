@@ -2,6 +2,7 @@
 using Api.Responses.Factories;
 using Common.Exceptions;
 using Common.Extensions;
+using Common.Http.Exceptions;
 using Common.Json;
 using Common.Logs.Extensions;
 using Common.Notifications.Messages;

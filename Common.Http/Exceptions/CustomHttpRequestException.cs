@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace Common.Exceptions;
+namespace Common.Http.Exceptions;
 
 /// <summary>
 /// Represents errors that occur during HTTP requests with an associated HTTP status code.
