@@ -1,4 +1,4 @@
-﻿using Common.Exceptions;
+﻿using Common.Http.Exceptions;
 using Common.Json;
 using System.Net;
 using System.Text.Json;

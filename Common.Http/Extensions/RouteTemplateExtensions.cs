@@ -67,11 +67,27 @@ public static partial class RouteTemplateExtensions
         ArgumentException.ThrowIfNullOrEmpty(template, nameof(template));
         ArgumentNullException.ThrowIfNull(parameters, nameof(parameters));
 
-        var dict = parameters.GetType()
-            .GetProperties()
-            .ToDictionary(p => p.Name.ToLowerInvariant(), p => p.GetValue(parameters));
+        var type = parameters.GetType();
 
-        return template.FormatRoute(dict);
+        if (Type.GetTypeCode(type) != TypeCode.Object || type == typeof(Guid))
+        {
+            var match = Placeholder().Matches(template).FirstOrDefault();
+            if (match is not null)
+            {
+                var key = match.Groups[1].Value.ToLowerInvariant();
+                var dict = new Dictionary<string, object?> { [key] = parameters };
+                return template.FormatRoute(dict);
+            }
+            else
+            {
+                return template;
+            }
+        }
+
+        var properties = type.GetProperties();
+        var dictionary = properties.ToDictionary(p => p.Name.ToLowerInvariant(), p => p.GetValue(parameters));
+
+        return template.FormatRoute(dictionary);
     }
 
     /// <summary>

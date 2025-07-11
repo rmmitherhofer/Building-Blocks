@@ -1,6 +1,6 @@
 ﻿using Api.Responses;
-using Common.Exceptions;
 using Common.Extensions;
+using Common.Http.Exceptions;
 using Common.Http.Extensions;
 using Common.Logs.Extensions;
 using Common.Notifications.Interfaces;
@@ -435,7 +435,7 @@ public abstract class HttpService
     {
         _stopwatch.Stop();
 
-        string message = $"End processing HTTP request {response?.RequestMessage?.Method} {(string.IsNullOrEmpty(_templateUri) ? response?.RequestMessage?.RequestUri : _httpClient.BaseAddress + _templateUri)} after {_stopwatch.GetTime()} - {response.StatusCode}";
+        string message = $"End processing HTTP request {response?.RequestMessage?.Method} {(string.IsNullOrEmpty(_templateUri) ? response?.RequestMessage?.RequestUri : _httpClient.BaseAddress + _templateUri)} after {_stopwatch.GetTime()} - {(int)response.StatusCode}-{response.StatusCode}";
 
         switch (response.StatusCode)
         {

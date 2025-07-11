@@ -1,4 +1,5 @@
 ﻿using Common.Exceptions;
+using Common.Http.Exceptions;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net;
 

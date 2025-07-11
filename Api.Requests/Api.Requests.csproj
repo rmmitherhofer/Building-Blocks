@@ -1,13 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net9.0</TargetFramework>
+		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<PackageId>MitherPack.Api.Requests</PackageId>
 		<Authors>Renato Mitherhofer</Authors>
-		<Version>9.0.3</Version>
+		<Version>9.1.0</Version>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -17,6 +17,8 @@
 
 	<ItemGroup>
 		<None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\net9.0" />
+		<None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\net8.0" />
 	</ItemGroup>
+
 
 </Project>

@@ -232,6 +232,6 @@ public static class HttpClientExtensions
         if (_accessor is null) return;
 
         if (!string.IsNullOrEmpty(template))
-            client.AddOrUpdateHeader(X_REQUEST_TEMPLATE, template);
+            client.AddOrUpdateHeader(X_REQUEST_TEMPLATE, client.BaseAddress + template);
     }
 }
