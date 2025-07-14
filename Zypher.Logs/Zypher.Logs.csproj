@@ -1,0 +1,39 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>		
+		<PackageId>Zypher.Logs</PackageId>
+		<Authors>Renato Mitherhofer</Authors>
+		<Company>Zypher</Company>
+		<Version>1.0.0</Version>
+		<PackageDescription>Logging utilities, extensions, and middleware to facilitate application logging with extensibility.</PackageDescription>
+		<PackageTags>logging;logs;middleware;extensions;zypher</PackageTags>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+	</PropertyGroup>
+	<ItemGroup>
+		<None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\net9.0" />
+		<None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\net8.0" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.3" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
+		<PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.7" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="Zypher.Enums" Version="1.0.0" />
+	  <PackageReference Include="Zypher.Extensions.Core" Version="1.0.0" />
+	  <PackageReference Include="Zypher.User" Version="1.0.0" />
+	</ItemGroup>
+</Project>

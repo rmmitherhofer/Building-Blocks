@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+		<!-- Versão do pacote -->
+		<Version>1.0.1</Version>
+		<PackageId>Zypher.Http</PackageId>
+		<Title>Zypher HTTP</Title>
+		<Authors>Renato Mitherhofer</Authors>
+		<Company>Zypher</Company>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
+		<!-- Metadados para o NuGet -->
+		<Description>Base classes and extensions to simplify HTTP client usage, request customization, and standardized error handling.</Description>
+		<PackageTags>zypher;http;httpclient;apis;exceptions;middleware;logging</PackageTags>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<Copyright>© 2025 Renato Mitherhofer</Copyright>
+
+		<!-- Geração de XML para documentação -->
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\net9.0" />
+		<None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\net8.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Zypher.Json" Version="1.0.0" />
+		<PackageReference Include="Zypher.Responses" Version="1.0.0" />
+		<PackageReference Include="Zypher.User" Version="1.0.0" />
+	</ItemGroup>
+
+</Project>

@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<PackageId>Zypher.Domain.Exceptions</PackageId>
+		<Authors>Renato Mitherhofer</Authors>
+		<Version>1.0.0</Version>
+
+
+		<Company>Zypher</Company>
+		<PackageDescription>Provides custom exception classes such as DomainException and NotFoundException to improve error handling across layers.</PackageDescription>
+		<PackageTags>exceptions;domain;error-handling;zypher</PackageTags>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\net9.0" />
+		<None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\net8.0" />
+	</ItemGroup>
+
+</Project>

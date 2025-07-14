@@ -3,33 +3,33 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34902.65
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api.Core", "Api.Core\Api.Core.csproj", "{CCAABBCB-878E-489C-8E5C-61307FEFBD47}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zypher.Persistence.Abstractions", "Zypher.Persistence.Abstractions\Zypher.Persistence.Abstractions.csproj", "{CCAABBCB-878E-489C-8E5C-61307FEFBD47}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api.Data", "Api.Data\Api.Data.csproj", "{3463CA83-641C-4142-91B1-229AFF85197F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zypher.Api.Data", "Zypher.Api.Data\Zypher.Api.Data.csproj", "{3463CA83-641C-4142-91B1-229AFF85197F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api.Requests", "Api.Requests\Api.Requests.csproj", "{697B568E-1302-47A7-BBB1-ED7AD5FBEF60}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zypher.Requests", "Zypher.Requests\Zypher.Requests.csproj", "{697B568E-1302-47A7-BBB1-ED7AD5FBEF60}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api.Responses", "Api.Responses\Api.Responses.csproj", "{04FA17DC-C995-41D4-AD26-978F4FC1C3C4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zypher.Responses", "Zypher.Responses\Zypher.Responses.csproj", "{04FA17DC-C995-41D4-AD26-978F4FC1C3C4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Api.Service", "Api.Service\Api.Service.csproj", "{7B6D167D-6300-4ABA-B6A8-922A67C1D287}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zypher.Api.Foundation", "Zypher.Api.Foundation\Zypher.Api.Foundation.csproj", "{7B6D167D-6300-4ABA-B6A8-922A67C1D287}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Core", "Common.Core\Common.Core.csproj", "{D106505A-05CE-4D56-AE0E-ADA5CBA4C621}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zypher.Domain.Core", "Zypher.Domain.Core\Zypher.Domain.Core.csproj", "{D106505A-05CE-4D56-AE0E-ADA5CBA4C621}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Exceptions", "Common.Exceptions\Common.Exceptions.csproj", "{0C6CD539-C239-433F-9D4A-A6BED773A2A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zypher.Domain.Exceptions", "Zypher.Domain.Exceptions\Zypher.Domain.Exceptions.csproj", "{0C6CD539-C239-433F-9D4A-A6BED773A2A9}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Extensions", "Common.Extensions\Common.Extensions.csproj", "{80E95E39-3D4A-4FCC-A496-894B021644CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zypher.Extensions.Core", "Zypher.Extensions.Core\Zypher.Extensions.Core.csproj", "{80E95E39-3D4A-4FCC-A496-894B021644CD}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Logs", "Common.Logs\Common.Logs.csproj", "{F81AFDB2-BB18-422E-A502-053A37E49C8B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zypher.Logs", "Zypher.Logs\Zypher.Logs.csproj", "{F81AFDB2-BB18-422E-A502-053A37E49C8B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Notifications", "Common.Notifications\Common.Notifications.csproj", "{915839FA-F199-45EF-95F9-7DFF55977F4F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zypher.Notifications", "Zypher.Notifications\Zypher.Notifications.csproj", "{915839FA-F199-45EF-95F9-7DFF55977F4F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common.Http", "Common.Http\Common.Http.csproj", "{E30443DA-1DD5-4683-9355-A289C27A3C9D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zypher.Http", "Zypher.Http\Zypher.Http.csproj", "{E30443DA-1DD5-4683-9355-A289C27A3C9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Enums", "Common.Enums\Common.Enums.csproj", "{FB82465E-7825-449D-A210-D8808A67DD61}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zypher.Enums", "Zypher.Enums\Zypher.Enums.csproj", "{FB82465E-7825-449D-A210-D8808A67DD61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Json", "Common.Json\Common.Json.csproj", "{228B8C4F-3933-463C-B542-261EF7524B9D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zypher.Json", "Zypher.Json\Zypher.Json.csproj", "{228B8C4F-3933-463C-B542-261EF7524B9D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.User", "Common.User\Common.User.csproj", "{5C0FE105-309F-4FB1-8C4F-CD979349653B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zypher.User", "Zypher.User\Zypher.User.csproj", "{5C0FE105-309F-4FB1-8C4F-CD979349653B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

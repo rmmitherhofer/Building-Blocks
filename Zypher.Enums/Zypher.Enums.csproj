@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+		<Version>1.0.0</Version>
+
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+
+		<Authors>Renato Mitherhofer</Authors>
+
+		<PackageId>Zypher.Enums</PackageId>
+		<Company>Zypher</Company>
+		
+		<PackageTags>enum;extension;description;resolver;attribute;zypher</PackageTags>		
+		<PackageDescription>Provides utilities and resolvers for working with .NET enums using Description, Display, EnumMember attributes and composite fallback strategies.</PackageDescription>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	</PropertyGroup>
+
+	<PropertyGroup>		
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="mbtsacjf.pyt~" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\net9.0" />
+		<None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\net8.0" />
+	</ItemGroup>
+</Project>
