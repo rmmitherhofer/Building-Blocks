@@ -1,0 +1,48 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+
+		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageId>Zypher.Notifications</PackageId>
+		<Version>1.0.0</Version>
+
+		<Authors>Renato Mitherhofer</Authors>
+		<Company>Renato Mitherhofer</Company>
+
+		<Description>Library for handling notifications with logging support in Zypher ecosystem.</Description>
+		<PackageTags>notifications;logging;zypher;dotnet;aspnetcore</PackageTags>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+
+		<RepositoryUrl>https://github.com/renatomitherhofer/zypher</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+
+		<PackageProjectUrl>https://github.com/renatomitherhofer/zypher</PackageProjectUrl>
+
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+
+		<!-- <PackageIcon>icon.png</PackageIcon> -->
+		<!-- <IncludePackageIcon>true</IncludePackageIcon> -->
+
+		<PackageReleaseNotes>Initial release of Zypher.Notifications.</PackageReleaseNotes>
+
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <None Remove="Handlers\NotificationHandler.cs~RF1059e357.TMP" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\net9.0" />
+		<None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\net8.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Zypher.Logs" Version="1.0.0" />
+	</ItemGroup>
+
+</Project>

@@ -1,0 +1,37 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+		<PackageId>Zypher.Api.Foundation</PackageId>
+		<Version>1.0.0</Version>
+		<Authors>Renato Mitherhofer</Authors>
+		<Title>Zypher API Foundation</Title>
+		<Description>Core API building blocks and configuration utilities for Zypher-based APIs.</Description>
+		<PackageTags>Zypher;API;Foundation;Configuration;Boilerplate;Startup;Extensions</PackageTags>
+
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+		<GenerateDocumentationFile>True</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<Copyright>© 2025 Renato Mitherhofer</Copyright>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\net9.0" />
+		<None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\net8.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="FluentValidation" Version="12.0.0" />
+		<PackageReference Include="NedMonitor" Version="1.0.0" />
+		<PackageReference Include="SwaggleBox" Version="1.0.0" />
+		<PackageReference Include="Zypher.Domain.Core" Version="1.0.0" />
+		<PackageReference Include="Zypher.Requests" Version="1.0.0" />
+		<PackageReference Include="Zypher.Responses" Version="1.0.0" />
+	</ItemGroup>
+
+</Project>

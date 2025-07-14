@@ -1,0 +1,31 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+
+		<Version>1.0.0</Version>
+
+		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+
+		<Authors>Renato Mitherhofer</Authors>
+
+		<PackageId>Zypher.User</PackageId>
+		<Company>Zypher</Company>
+		<PackageTags>user;claims;identity;extensions;auth;zypher</PackageTags>
+		<PackageDescription>Provides extensions for accessing claims and user information from ClaimsPrincipal.</PackageDescription>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\net9.0" />
+		<None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\net8.0" />
+	</ItemGroup>
+</Project>
