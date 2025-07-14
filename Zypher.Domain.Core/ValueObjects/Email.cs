@@ -1,7 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using Zypher.Domain.Exceptions;
 
-namespace Common.Core.ValueObjects;
+namespace Zypher.Domain.Core.ValueObjects;
 
 /// <summary>
 /// Represents an email address with validation.
