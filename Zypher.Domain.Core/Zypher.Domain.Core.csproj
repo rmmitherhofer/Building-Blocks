@@ -7,7 +7,7 @@
 
 		<PackageId>Zypher.Domain.Core</PackageId>
 		<Title>Zypher Domain Core</Title>
-		<Version>1.0.1</Version>
+		<Version>1.0.2</Version>
 		<Authors>Renato Mitherhofer</Authors>
 		<Company>Zypher</Company>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -17,6 +17,8 @@
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<Copyright>© 2025 Renato Mitherhofer</Copyright>
 
+		<PackageIcon>assets/icon.png</PackageIcon>
+		<IncludePackageIcon>true</IncludePackageIcon>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<NoWarn>$(NoWarn);1591</NoWarn>
 	</PropertyGroup>
@@ -27,8 +29,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Zypher.Domain.Exceptions" Version="1.0.0" />
-		<PackageReference Include="Zypher.Notifications" Version="1.0.0" />
+		<PackageReference Include="Zypher.Domain.Exceptions" Version="1.0.1" />
+		<PackageReference Include="Zypher.Notifications" Version="1.0.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="assets/icon.png" Pack="true" PackagePath="assets/" />
 	</ItemGroup>
 
 </Project>

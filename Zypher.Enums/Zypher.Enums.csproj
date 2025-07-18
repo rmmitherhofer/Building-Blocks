@@ -5,7 +5,7 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 
-		<Version>1.0.0</Version>
+		<Version>1.0.1</Version>
 
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 
@@ -16,6 +16,8 @@
 		
 		<PackageTags>enum;extension;description;resolver;attribute;zypher</PackageTags>		
 		<PackageDescription>Provides utilities and resolvers for working with .NET enums using Description, Display, EnumMember attributes and composite fallback strategies.</PackageDescription>
+		<PackageIcon>assets/icon.png</PackageIcon>
+		<IncludePackageIcon>true</IncludePackageIcon>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>
 
@@ -31,5 +33,9 @@
 	<ItemGroup>
 		<None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\net9.0" />
 		<None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\net8.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="assets/icon.png" Pack="true" PackagePath="assets/" />
 	</ItemGroup>
 </Project>

@@ -7,7 +7,7 @@
 
 		<PackageId>Zypher.Persistence.Abstractions</PackageId>
 		<Title>Persistence Contracts and Abstractions for Clean Architecture</Title>
-		<Version>1.0.1</Version>
+		<Version>1.0.2</Version>
 		<Authors>Renato Mitherhofer</Authors>
 		<Company>Zypher</Company>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -16,6 +16,9 @@
 		<PackageTags>zypher;persistence;repository;unitofwork;abstractions;ddd;architecture</PackageTags>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<Copyright>© 2025 Renato Mitherhofer</Copyright>
+
+		<PackageIcon>assets/icon.png</PackageIcon>
+		<IncludePackageIcon>true</IncludePackageIcon>
 
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<NoWarn>$(NoWarn);1591</NoWarn>
@@ -28,7 +31,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Zypher.Domain.Core" Version="1.0.1" />
+		<PackageReference Include="Zypher.Domain.Core" Version="1.0.2" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="assets/icon.png" Pack="true" PackagePath="assets/" />
 	</ItemGroup>
 
 </Project>

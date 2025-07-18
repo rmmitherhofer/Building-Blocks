@@ -3,6 +3,7 @@ using System.Net;
 using System.Reflection;
 using System.Text.Json;
 using Zypher.Extensions.Core;
+using Zypher.Http.Attributes;
 using Zypher.Json;
 using Zypher.User.Extensions;
 
@@ -307,5 +308,23 @@ public static class HttpRequestMessageExtensions
         ArgumentNullException.ThrowIfNull(request, nameof(HttpRequestMessage));
 
         return JsonExtensions.Serialize(request.Headers.ToDictionary(h => h.Key, h => h.Value.ToArray()));
+    }
+
+    /// <summary>
+    /// Appends query string parameters to the <see cref="HttpRequestMessage.RequestUri"/> 
+    /// based on the non-null public properties of the provided object.
+    /// </summary>
+    /// <param name="request">The <see cref="HttpRequestMessage"/> to modify.</param>
+    /// <param name="queryParams">
+    /// An object containing properties to be converted into query string parameters.
+    /// Custom names can be specified using <see cref="QueryStringPropertyAttribute"/>.
+    /// </param>
+    public static void AddQueryString(this HttpRequestMessage request, object queryParams)
+    {
+        var uri = request.RequestUri;
+        if (uri == null) return;
+
+        var newUri = uri.AddQueryString(queryParams);
+        request.RequestUri = newUri;
     }
 }
