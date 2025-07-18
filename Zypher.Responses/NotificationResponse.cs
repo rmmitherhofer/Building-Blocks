@@ -13,20 +13,20 @@ public class NotificationResponse : MessageResponse
     /// </summary>
 
     [JsonPropertyName("id")]
-    public Guid Id { get; set; }
+    public Guid? Id { get; set; }
 
     /// <summary>
     /// Gets or sets the UTC timestamp when the notification was generated.
     /// </summary>
     [JsonPropertyName("timestamp")]
-    public DateTime Timestamp { get; set; }
+    public DateTime? Timestamp { get; set; }
 
     /// <summary>
     /// Gets or sets the log level that describes the severity of the notification.
     /// </summary>
 
     [JsonPropertyName("logLevel")]
-    public LogLevel LogLevel { get; set; }
+    public LogLevel? LogLevel { get; set; }
 
     /// <summary>
     /// Gets or sets an optional key used to categorize or identify the message.
@@ -39,11 +39,11 @@ public class NotificationResponse : MessageResponse
     /// Gets or sets the main message value or content.
     /// </summary>
     [JsonPropertyName("value")]
-    public string Value { get; set; }
+    public string? Value { get; set; }
 
     /// <summary>
     /// Gets or sets additional detailed information associated with the notification.
     /// </summary>
     [JsonPropertyName("detail")]
-    public string Detail { get; set; }
+    public string? Detail { get; set; }
 }
