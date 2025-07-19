@@ -17,5 +17,5 @@ public abstract class MessageResponse
     /// Gets or sets the aggregate root identifier related to the message context.
     /// </summary>
     [JsonPropertyName("aggregateId")]
-    public Guid AggregateId { get; set; }
+    public Guid? AggregateId { get; set; }
 }
