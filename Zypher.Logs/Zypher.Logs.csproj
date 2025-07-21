@@ -8,10 +8,12 @@
 		<PackageId>Zypher.Logs</PackageId>
 		<Authors>Renato Mitherhofer</Authors>
 		<Company>Zypher</Company>
-		<Version>1.0.0</Version>
+		<Version>1.0.1</Version>
 		<PackageDescription>Logging utilities, extensions, and middleware to facilitate application logging with extensibility.</PackageDescription>
 		<PackageTags>logging;logs;middleware;extensions;zypher</PackageTags>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<PackageIcon>assets/icon.png</PackageIcon>
+		<IncludePackageIcon>true</IncludePackageIcon>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -32,8 +34,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <PackageReference Include="Zypher.Enums" Version="1.0.0" />
-	  <PackageReference Include="Zypher.Extensions.Core" Version="1.0.0" />
-	  <PackageReference Include="Zypher.User" Version="1.0.0" />
+	  <PackageReference Include="Zypher.Enums" Version="1.0.1" />
+	  <PackageReference Include="Zypher.Extensions.Core" Version="1.1.0" />
+	  <PackageReference Include="Zypher.User" Version="1.0.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="assets/icon.png" Pack="true" PackagePath="assets/" />
 	</ItemGroup>
 </Project>

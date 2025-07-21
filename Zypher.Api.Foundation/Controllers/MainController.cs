@@ -37,6 +37,7 @@ public abstract class MainController(INotificationHandler notification) : Contro
                     return CustomResponse(result as ValidationResult);
             }
         }
+
         if (IsValid())
             return Ok(result);
 
@@ -49,10 +50,10 @@ public abstract class MainController(INotificationHandler notification) : Contro
                 });
         }
 
-        return BadRequest(new ApiResponse(new ValidationResponse(_notification.Get().ToResponse()))
+        return BadRequest(new ApiResponse(new ValidationResponse(_notification.Get().Where(v => v.LogLevel == LogLevel.Warning).ToResponse()))
         {
             CorrelationId = HttpContext.Request.GetCorrelationId()
-        });;
+        });
     }
 
     /// <summary>

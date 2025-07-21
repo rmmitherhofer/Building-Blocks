@@ -26,7 +26,7 @@ public static class ApiConfiguration
     /// <param name="configuration">The application configuration.</param>
     /// <param name="environment">The hosting environment.</param>
     /// <returns>The updated service collection.</returns>
-    public static IServiceCollection AddCoreApiConfig(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
+    public static IServiceCollection AddZypherApiFoundation(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
     {
         ArgumentNullException.ThrowIfNull(services, nameof(IServiceCollection));
         ArgumentNullException.ThrowIfNull(configuration, nameof(IConfiguration));
@@ -64,7 +64,7 @@ public static class ApiConfiguration
     /// </summary>
     /// <param name="app">The application builder.</param>
     /// <returns>The updated application builder.</returns>
-    public static IApplicationBuilder UseCoreApiConfig(this IApplicationBuilder app)
+    public static IApplicationBuilder UseZypherApiFoundation(this IApplicationBuilder app)
     {
         ArgumentNullException.ThrowIfNull(app, nameof(IApplicationBuilder));
 

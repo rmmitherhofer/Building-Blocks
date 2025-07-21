@@ -6,7 +6,7 @@
 		<Nullable>enable</Nullable>
 
 		<PackageId>Zypher.Api.Foundation</PackageId>
-		<Version>1.0.1</Version>
+		<Version>1.0.7</Version>
 		<Authors>Renato Mitherhofer</Authors>
 		<Title>Zypher API Foundation</Title>
 		<Description>Core API building blocks and configuration utilities for Zypher-based APIs.</Description>
@@ -16,6 +16,8 @@
 		<GenerateDocumentationFile>True</GenerateDocumentationFile>
 		<NoWarn>$(NoWarn);1591</NoWarn>
 
+		<PackageIcon>assets/icon.png</PackageIcon>
+		<IncludePackageIcon>true</IncludePackageIcon>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 		<Copyright>© 2025 Renato Mitherhofer</Copyright>
 	</PropertyGroup>
@@ -27,11 +29,15 @@
 
 	<ItemGroup>
 		<PackageReference Include="FluentValidation" Version="12.0.0" />
-		<PackageReference Include="NedMonitor" Version="1.0.1" />
-		<PackageReference Include="SwaggleBox" Version="1.0.0" />
-		<PackageReference Include="Zypher.Domain.Core" Version="1.0.1" />
-		<PackageReference Include="Zypher.Requests" Version="1.0.0" />
-		<PackageReference Include="Zypher.Responses" Version="1.0.0" />
+		<PackageReference Include="NedMonitor" Version="1.0.5" />
+		<PackageReference Include="SwaggleBox" Version="1.0.3" />
+		<PackageReference Include="Zypher.Domain.Core" Version="1.0.2" />
+		<PackageReference Include="Zypher.Requests" Version="1.0.1" />
+		<PackageReference Include="Zypher.Responses" Version="1.0.3" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="assets/icon.png" Pack="true" PackagePath="assets/" />
 	</ItemGroup>
 
 </Project>

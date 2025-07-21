@@ -12,7 +12,7 @@ public static class CoreConfiguration
     /// </summary>
     /// <param name="services">The IServiceCollection to add services to.</param>
     /// <returns>The updated IServiceCollection.</returns>
-    public static IServiceCollection AddCoreConfig(this IServiceCollection services)
+    public static IServiceCollection AddDomainCoreServices(this IServiceCollection services)
     {
         ArgumentNullException.ThrowIfNull(services, nameof(IServiceCollection));
 

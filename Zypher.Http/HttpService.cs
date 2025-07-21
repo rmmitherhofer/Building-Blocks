@@ -376,7 +376,7 @@ public abstract class HttpService
                 if (issue.Details?.Any() != true) continue;
 
                 foreach (var error in issue.Details)
-                    _notification.Notify(new Notification(error.LogLevel, error.Type, error.Key, error.Value, error.Detail));
+                    _notification.Notify(new Notification(error.LogLevel ?? LogLevel.None, error.Type, error.Key, error.Value, error.Detail));
             }
 
             switch (response.StatusCode)

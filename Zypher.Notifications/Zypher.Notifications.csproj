@@ -8,7 +8,7 @@
 
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>Zypher.Notifications</PackageId>
-		<Version>1.0.0</Version>
+		<Version>1.0.1</Version>
 
 		<Authors>Renato Mitherhofer</Authors>
 		<Company>Renato Mitherhofer</Company>
@@ -25,8 +25,8 @@
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<NoWarn>$(NoWarn);1591</NoWarn>
 
-		<!-- <PackageIcon>icon.png</PackageIcon> -->
-		<!-- <IncludePackageIcon>true</IncludePackageIcon> -->
+		<PackageIcon>assets/icon.png</PackageIcon>
+		<IncludePackageIcon>true</IncludePackageIcon>
 
 		<PackageReleaseNotes>Initial release of Zypher.Notifications.</PackageReleaseNotes>
 
@@ -42,7 +42,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Zypher.Logs" Version="1.0.0" />
+		<PackageReference Include="Zypher.Logs" Version="1.0.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="assets/icon.png" Pack="true" PackagePath="assets/" />
 	</ItemGroup>
 
 </Project>
