@@ -61,7 +61,28 @@ public class ApiResponse : Response
         [
             new(IssuerResponseType.Validation)
             {
-                Details = response.Validations,
+                Details = [.. response.Validations],
+            }
+        ];
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="ApiResponse"/> class
+    /// using a validation response and a custom title.
+    /// Sets the status code to 400 (Bad Request) and populates the issues
+    /// with validation details.
+    /// </summary>
+    /// <param name="response">The validation response containing validation errors.</param>
+    /// <param name="title">A custom title describing the validation issue.</param>
+    public ApiResponse(ValidationResponse response, string title)
+    {
+        StatusCode = HttpStatusCode.BadRequest;
+        Issues =
+        [
+            new(IssuerResponseType.Validation)
+            {
+                Title = title,
+                Details = [.. response.Validations],
             }
         ];
     }
@@ -79,7 +100,7 @@ public class ApiResponse : Response
             new(IssuerResponseType.Error)
             {
                 Title = "An error occurred",
-                Details = response.Validations,
+                Details = [..response.Validations],
             }
         ];
     }

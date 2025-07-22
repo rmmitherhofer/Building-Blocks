@@ -31,7 +31,7 @@ public class IssuerResponse
     /// Gets or sets the detailed list of notifications associated with the issue.
     /// </summary>
     [JsonPropertyName("details")]
-    public IEnumerable<NotificationResponse>? Details { get; set; }
+    public List<NotificationResponse>? Details { get; set; }
     /// <summary>
     /// Initializes a new instance of the <see cref="IssuerResponse"/> class.
     /// </summary>

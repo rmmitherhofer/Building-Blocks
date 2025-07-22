@@ -11,7 +11,7 @@ public class ValidationResponse
     /// Gets the list of validation notifications returned by the API.
     /// </summary>
     [JsonPropertyName("validations")]
-    public IEnumerable<NotificationResponse> Validations { get; set; }
+    public List<NotificationResponse> Validations { get; set; }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="ValidationResponse"/> class.
@@ -23,5 +23,5 @@ public class ValidationResponse
     /// </summary>
     /// <param name="notifications">The collection of validation notifications.</param>
     public ValidationResponse(IEnumerable<NotificationResponse> notifications)
-        => Validations = notifications;
+        => Validations = [.. notifications];
 }

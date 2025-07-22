@@ -1,8 +1,9 @@
 ﻿using System.Reflection;
 using System.Text;
 using System.Web;
+using Zypher.Http.Attributes;
 
-namespace Zypher.Http.Attributes;
+namespace Zypher.Http.Extensions;
 
 /// <summary>
 /// Provides extension methods for converting objects and dictionaries into query string representations.
@@ -94,7 +95,7 @@ public static class QueryStringExtensions
             type == typeof(decimal) ||
             type == typeof(DateTime) ||
             type == typeof(Guid) ||
-            (Nullable.GetUnderlyingType(type) != null && IsSimpleType(Nullable.GetUnderlyingType(type)!));
+            Nullable.GetUnderlyingType(type) != null && IsSimpleType(Nullable.GetUnderlyingType(type)!);
     }
 
     /// <summary>
