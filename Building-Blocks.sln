@@ -31,6 +31,20 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zypher.Json", "Zypher.Json\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zypher.User", "Zypher.User\Zypher.User.csproj", "{5C0FE105-309F-4FB1-8C4F-CD979349653B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "security", "security", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zypher.Security.Jwt.Core", "security\Zypher.Security.Jwt.Core\Zypher.Security.Jwt.Core.csproj", "{81183364-9989-3D63-8ADD-926069EF4CDC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zypher.Security.JwtExtensions", "security\Zypher.Security.JwtExtensions\Zypher.Security.JwtExtensions.csproj", "{98209725-D708-AD46-68EE-50BA3BF1A50F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zypher.Security.JwtSigningCredentials.AspNetCore", "security\Zypher.Security.JwtSigningCredentials.AspNetCore\Zypher.Security.JwtSigningCredentials.AspNetCore.csproj", "{5A0F7547-02D7-A701-A991-6B7828FF5694}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zypher.Security.JwtSigningCredentials.Store.EntityFrameworkCore", "security\Zypher.JwtSigningCredentials.Store.EntityFrameworkCore\Zypher.Security.JwtSigningCredentials.Store.EntityFrameworkCore.csproj", "{D0EAB078-9283-7A73-5D7E-1F31CC94AA85}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zypher.Security.JwtSigningCredentials", "security\Zypher.Security.JwtSigningCredentials\Zypher.Security.JwtSigningCredentials.csproj", "{7D00FB34-001C-198F-8F8C-A494D19E33DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zypher.Secutiry.JwtSigningCredentials.Store.FileSystem", "security\Zypher.Secutiry.JwtSigningCredentialsStore.FileSystem\Zypher.Secutiry.JwtSigningCredentials.Store.FileSystem.csproj", "{31186BFA-D4BC-A77C-9FB6-CE539F5E40B0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -93,9 +107,41 @@ Global
 		{5C0FE105-309F-4FB1-8C4F-CD979349653B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C0FE105-309F-4FB1-8C4F-CD979349653B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C0FE105-309F-4FB1-8C4F-CD979349653B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{81183364-9989-3D63-8ADD-926069EF4CDC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{81183364-9989-3D63-8ADD-926069EF4CDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{81183364-9989-3D63-8ADD-926069EF4CDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{81183364-9989-3D63-8ADD-926069EF4CDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98209725-D708-AD46-68EE-50BA3BF1A50F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98209725-D708-AD46-68EE-50BA3BF1A50F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98209725-D708-AD46-68EE-50BA3BF1A50F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98209725-D708-AD46-68EE-50BA3BF1A50F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A0F7547-02D7-A701-A991-6B7828FF5694}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A0F7547-02D7-A701-A991-6B7828FF5694}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A0F7547-02D7-A701-A991-6B7828FF5694}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A0F7547-02D7-A701-A991-6B7828FF5694}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0EAB078-9283-7A73-5D7E-1F31CC94AA85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0EAB078-9283-7A73-5D7E-1F31CC94AA85}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0EAB078-9283-7A73-5D7E-1F31CC94AA85}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D0EAB078-9283-7A73-5D7E-1F31CC94AA85}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D00FB34-001C-198F-8F8C-A494D19E33DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D00FB34-001C-198F-8F8C-A494D19E33DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D00FB34-001C-198F-8F8C-A494D19E33DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D00FB34-001C-198F-8F8C-A494D19E33DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31186BFA-D4BC-A77C-9FB6-CE539F5E40B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31186BFA-D4BC-A77C-9FB6-CE539F5E40B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31186BFA-D4BC-A77C-9FB6-CE539F5E40B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31186BFA-D4BC-A77C-9FB6-CE539F5E40B0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{81183364-9989-3D63-8ADD-926069EF4CDC} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{98209725-D708-AD46-68EE-50BA3BF1A50F} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{5A0F7547-02D7-A701-A991-6B7828FF5694} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{D0EAB078-9283-7A73-5D7E-1F31CC94AA85} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{7D00FB34-001C-198F-8F8C-A494D19E33DA} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{31186BFA-D4BC-A77C-9FB6-CE539F5E40B0} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {57937EE9-4641-4E7B-AD91-C8E4CD2EF1A2}
