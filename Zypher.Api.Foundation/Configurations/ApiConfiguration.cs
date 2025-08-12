@@ -68,10 +68,6 @@ public static class ApiConfiguration
     {
         ArgumentNullException.ThrowIfNull(app, nameof(IApplicationBuilder));
 
-        app.UseRouting();
-
-        app.UseAuthorization();
-
         app.UseNedMonitor();
 
         app.TryUseMiddleware<RequestIndetityMiddleware>();
@@ -87,6 +83,17 @@ public static class ApiConfiguration
         app.UseSwaggleBox(app.ApplicationServices.GetRequiredService<IApiVersionDescriptionProvider>());
 
         app.UseEndpoints(endpoints => endpoints.MapControllers());
+
+        return app;
+    }
+
+    /// <summary>
+    /// Configures the application to use authentication and authorization middleware.
+    /// </summary>
+    public static IApplicationBuilder UseUseAuthenticationFoundation(this IApplicationBuilder app)
+    {
+        app.UseAuthentication();
+        app.UseAuthorization();
 
         return app;
     }

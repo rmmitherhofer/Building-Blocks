@@ -61,7 +61,7 @@ public static class ClaimsPrincipalExtensions
     /// <param name="user">The ClaimsPrincipal instance.</param>
     /// <param name="key">Claim type/key.</param>
     /// <param name="value">Claim value.</param>
-    public static void AddClaim(this ClaimsPrincipal user, string key, string value)
+    public static ClaimsPrincipal AddClaim(this ClaimsPrincipal user, string key, string value)
     {
         ArgumentNullException.ThrowIfNull(user, nameof(ClaimsPrincipal));
         ArgumentException.ThrowIfNullOrEmpty(key, nameof(key));
@@ -72,6 +72,8 @@ public static class ClaimsPrincipalExtensions
             if (!identity.HasClaim(c => c.Type == key && c.Value == value))
                 identity.AddClaim(new Claim(key, value));
         }
+
+        return user;
     }
     /// <summary>
     /// Adds a claim or updates its value if it already exists.
@@ -79,7 +81,7 @@ public static class ClaimsPrincipalExtensions
     /// <param name="user">The ClaimsPrincipal instance.</param>
     /// <param name="key">Claim type/key.</param>
     /// <param name="value">Claim value.</param>
-    public static void AddOrUpdateClaim(this ClaimsPrincipal user, string key, string value)
+    public static ClaimsPrincipal AddOrUpdateClaim(this ClaimsPrincipal user, string key, string value)
     {
         ArgumentNullException.ThrowIfNull(user, nameof(ClaimsPrincipal));
         ArgumentException.ThrowIfNullOrEmpty(key, nameof(key));
@@ -92,13 +94,15 @@ public static class ClaimsPrincipalExtensions
 
             identity.AddClaim(new Claim(key, value));
         }
+
+        return user;
     }
     /// <summary>
     /// Removes all claims matching the specified key.
     /// </summary>
     /// <param name="user">The ClaimsPrincipal instance.</param>
     /// <param name="key">Claim type/key.</param>
-    public static void RemoveClaim(this ClaimsPrincipal user, string key)
+    public static ClaimsPrincipal RemoveClaim(this ClaimsPrincipal user, string key)
     {
         ArgumentNullException.ThrowIfNull(user, nameof(ClaimsPrincipal));
         ArgumentException.ThrowIfNullOrEmpty(key, nameof(key));
@@ -108,6 +112,8 @@ public static class ClaimsPrincipalExtensions
             foreach (var claim in identity.FindAll(key).ToList())
                 identity.TryRemoveClaim(claim);
         }
+
+        return user;
     }
     /// <summary>
     /// Gets the user's identifier claim.
@@ -120,7 +126,7 @@ public static class ClaimsPrincipalExtensions
     /// </summary>
     /// <param name="user">The ClaimsPrincipal instance.</param>
     /// <param name="value">User Id value.</param>
-    public static void AddId(this ClaimsPrincipal user, string value) => user.AddClaim(ClaimTypes.NameIdentifier, value);
+    public static ClaimsPrincipal AddId(this ClaimsPrincipal user, string value) => user.AddClaim(ClaimTypes.NameIdentifier, value);
     /// <summary>
     /// Gets the user's name claim.
     /// </summary>
@@ -132,7 +138,7 @@ public static class ClaimsPrincipalExtensions
     /// </summary>
     /// <param name="user">The ClaimsPrincipal instance.</param>
     /// <param name="value">Name value.</param>
-    public static void AddName(this ClaimsPrincipal user, string value) => user.AddClaim(ClaimTypes.Name, value);
+    public static ClaimsPrincipal AddName(this ClaimsPrincipal user, string value) => user.AddClaim(ClaimTypes.Name, value);
     /// <summary>
     /// Gets the user's email claim.
     /// </summary>
@@ -144,7 +150,7 @@ public static class ClaimsPrincipalExtensions
     /// </summary>
     /// <param name="user">The ClaimsPrincipal instance.</param>
     /// <param name="value">Email value.</param>
-    public static void AddEmail(this ClaimsPrincipal user, string value) => user.AddClaim(ClaimTypes.Email, value);
+    public static ClaimsPrincipal AddEmail(this ClaimsPrincipal user, string value) => user.AddClaim(ClaimTypes.Email, value);
     /// <summary>
     /// Gets the list of role claims.
     /// </summary>
@@ -160,7 +166,7 @@ public static class ClaimsPrincipalExtensions
     /// </summary>
     /// <param name="user">The ClaimsPrincipal instance.</param>
     /// <param name="value">Role value.</param>
-    public static void AddRole(this ClaimsPrincipal user, string value) => user.AddClaim(ClaimTypes.Role, value);
+    public static ClaimsPrincipal AddRole(this ClaimsPrincipal user, string value) => user.AddClaim(ClaimTypes.Role, value);
     /// <summary>
     /// Gets the authentication type.
     /// </summary>
@@ -182,7 +188,7 @@ public static class ClaimsPrincipalExtensions
     /// </summary>
     /// <param name="user">The ClaimsPrincipal instance.</param>
     /// <param name="value">Tenant Id value.</param>
-    public static void AddTenantId(this ClaimsPrincipal user, string value) => user.AddClaim(TENANT_ID, value);
+    public static ClaimsPrincipal AddTenantId(this ClaimsPrincipal user, string value) => user.AddClaim(TENANT_ID, value);
     /// <summary>
     /// Gets the company identifier claim.
     /// </summary>
@@ -194,7 +200,7 @@ public static class ClaimsPrincipalExtensions
     /// </summary>
     /// <param name="user">The ClaimsPrincipal instance.</param>
     /// <param name="value">Company Id value.</param>
-    public static void AddCompanyId(this ClaimsPrincipal user, string value) => user.AddClaim(COMPANY_ID, value);
+    public static ClaimsPrincipal AddCompanyId(this ClaimsPrincipal user, string value) => user.AddClaim(COMPANY_ID, value);
     /// <summary>
     /// Gets the department claim.
     /// </summary>
@@ -206,7 +212,7 @@ public static class ClaimsPrincipalExtensions
     /// </summary>
     /// <param name="user">The ClaimsPrincipal instance.</param>
     /// <param name="value">Department value.</param>
-    public static void AddDepartment(this ClaimsPrincipal user, string value) => user.AddClaim(DEPARTMENT, value);
+    public static ClaimsPrincipal AddDepartment(this ClaimsPrincipal user, string value) => user.AddClaim(DEPARTMENT, value);
     /// <summary>
     /// Gets the profile claim.
     /// </summary>
@@ -218,7 +224,7 @@ public static class ClaimsPrincipalExtensions
     /// </summary>
     /// <param name="user">The ClaimsPrincipal instance.</param>
     /// <param name="value">Profile value.</param>
-    public static void AddProfile(this ClaimsPrincipal user, string value) => user.AddClaim(PROFILE, value);
+    public static ClaimsPrincipal AddProfile(this ClaimsPrincipal user, string value) => user.AddClaim(PROFILE, value);
     /// <summary>
     /// Gets the locale or language claim.
     /// </summary>
@@ -230,7 +236,7 @@ public static class ClaimsPrincipalExtensions
     /// </summary>
     /// <param name="user">The ClaimsPrincipal instance.</param>
     /// <param name="value">Locale value.</param>
-    public static void AddLocale(this ClaimsPrincipal user, string value) => user.AddClaim(LOCALE, value);
+    public static ClaimsPrincipal AddLocale(this ClaimsPrincipal user, string value) => user.AddClaim(LOCALE, value);
     /// <summary>
     /// Gets the expiration date/time claim as a UTC DateTime.
     /// </summary>
@@ -250,7 +256,7 @@ public static class ClaimsPrincipalExtensions
     /// </summary>
     /// <param name="user">The ClaimsPrincipal instance.</param>
     /// <param name="value">Expiration value as string.</param>
-    public static void AddExpiration(this ClaimsPrincipal user, string value) => user.AddClaim(EXPIRATION, value);
+    public static ClaimsPrincipal AddExpiration(this ClaimsPrincipal user, string value) => user.AddClaim(EXPIRATION, value);
     /// <summary>
     /// Gets the session identifier claim.
     /// </summary>
@@ -262,7 +268,7 @@ public static class ClaimsPrincipalExtensions
     /// </summary>
     /// <param name="user">The ClaimsPrincipal instance.</param>
     /// <param name="value">Session Id value.</param>
-    public static void AddSessionId(this ClaimsPrincipal user, string value) => user.AddClaim(SESSION_ID, value);
+    public static ClaimsPrincipal AddSessionId(this ClaimsPrincipal user, string value) => user.AddClaim(SESSION_ID, value);
     /// <summary>
     /// Gets the user document claim.
     /// </summary>
@@ -274,7 +280,7 @@ public static class ClaimsPrincipalExtensions
     /// </summary>
     /// <param name="user">The ClaimsPrincipal instance.</param>
     /// <param name="value">Session Id value.</param>
-    public static void AddDocument(this ClaimsPrincipal user, string value) => user.AddClaim(USER_DOCUMENT, value);
+    public static ClaimsPrincipal AddDocument(this ClaimsPrincipal user, string value) => user.AddClaim(USER_DOCUMENT, value);
     /// <summary>
     /// Gets the user account claim.
     /// </summary>
@@ -286,7 +292,7 @@ public static class ClaimsPrincipalExtensions
     /// </summary>
     /// <param name="user">The ClaimsPrincipal instance.</param>
     /// <param name="value">Session Id value.</param>
-    public static void AddAccount(this ClaimsPrincipal user, string value) => user.AddClaim(USER_ACCOUNT, value);
+    public static ClaimsPrincipal AddAccount(this ClaimsPrincipal user, string value) => user.AddClaim(USER_ACCOUNT, value);
     /// <summary>
     /// Gets the user account code claim.
     /// </summary>
@@ -298,5 +304,5 @@ public static class ClaimsPrincipalExtensions
     /// </summary>
     /// <param name="user">The ClaimsPrincipal instance.</param>
     /// <param name="value">Session Id value.</param>
-    public static void AddAccountCode(this ClaimsPrincipal user, string value) => user.AddClaim(USER_ACCOUNT_CODE, value);
+    public static ClaimsPrincipal AddAccountCode(this ClaimsPrincipal user, string value) => user.AddClaim(USER_ACCOUNT_CODE, value);
 }
