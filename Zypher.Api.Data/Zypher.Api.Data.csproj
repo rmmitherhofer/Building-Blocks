@@ -7,7 +7,7 @@
 
 		<PackageId>Zypher.Api.Data</PackageId>
 		<Title>EF Core Utilities and Extensions for API</Title>
-		<Version>1.0.1</Version>
+		<Version>1.0.2</Version>
 		<Authors>Renato Mitherhofer</Authors>
 		<Company>Zypher</Company>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -30,30 +30,30 @@
 
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.18" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="8.0.18" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.18">
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="8.0.20" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="8.0.20" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.20">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.18" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.18" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.18">
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="8.0.20" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="8.0.20" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.20">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">
-		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.7" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="9.0.7" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.7">
+		<PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.9" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Abstractions" Version="9.0.9" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.9">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.7" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.7" />
-		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.7">
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="9.0.9" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.9" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="9.0.9">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>

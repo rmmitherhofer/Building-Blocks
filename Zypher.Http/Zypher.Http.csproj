@@ -6,7 +6,7 @@
 		<Nullable>enable</Nullable>
 
 		<!-- Versão do pacote -->
-		<Version>1.2.0</Version>
+		<Version>1.3.0</Version>
 		<PackageId>Zypher.Http</PackageId>
 		<Title>Zypher HTTP</Title>
 		<Authors>Renato Mitherhofer</Authors>
@@ -33,8 +33,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Zypher.Json" Version="1.0.1" />
-		<PackageReference Include="Zypher.Responses" Version="1.0.4" />
-		<PackageReference Include="Zypher.User" Version="1.0.1" />
+		<PackageReference Include="Zypher.Responses" Version="1.0.5" />
 	</ItemGroup>
 	<ItemGroup>
 		<None Include="assets/icon.png" Pack="true" PackagePath="assets/" />

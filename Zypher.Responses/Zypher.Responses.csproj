@@ -7,7 +7,7 @@
 
 		<!-- Pacote NuGet -->
 		<PackageId>Zypher.Responses</PackageId>
-		<Version>1.0.4</Version>
+		<Version>1.0.5</Version>
 		<Authors>Renato Mitherhofer</Authors>
 		<Company>Zypher</Company>
 		
@@ -32,7 +32,7 @@
 	
 	<ItemGroup>
 		<PackageReference Include="Zypher.Enums" Version="1.0.1" />
-		<PackageReference Include="Zypher.Notifications" Version="1.0.1" />
+		<PackageReference Include="Zypher.Notifications" Version="1.0.2" />
 	</ItemGroup>
 
 	<ItemGroup>
