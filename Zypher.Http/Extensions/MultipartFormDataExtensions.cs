@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Collections;
+using System.ComponentModel;
 using System.Net.Http.Headers;
 using System.Reflection;
 using Zypher.Http.Attributes;
@@ -118,17 +119,5 @@ public static class MultipartFormDataExtensions
     /// </summary>
     /// <param name="type">The type to check.</param>
     /// <returns>True if the type is simple; otherwise, false.</returns>
-    private static bool IsSimpleType(Type type)
-    {
-        return
-            type.IsPrimitive ||
-            type.IsEnum ||
-            type.Equals(typeof(string)) ||
-            type.Equals(typeof(decimal)) ||
-            type.Equals(typeof(DateOnly)) ||
-            type.Equals(typeof(DateTime)) ||
-            type.Equals(typeof(Guid)) ||
-            Nullable.GetUnderlyingType(type)?.IsEnum == true ||
-            Nullable.GetUnderlyingType(type)?.IsPrimitive == true;
-    }
+    private static bool IsSimpleType(Type type) => type.IsSimpleType();
 }
