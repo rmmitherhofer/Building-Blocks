@@ -5,6 +5,8 @@ namespace Zypher.Extensions.Core;
 
 public static class StringExtensions
 {
+    private static readonly CultureInfo Brazil = CultureInfo.GetCultureInfo("pt-BR");
+
     /// <summary>
     /// Applies the standard CPF or CNPJ mask to the input string.
     /// </summary>
@@ -206,5 +208,87 @@ public static class StringExtensions
     public static string RemoveSpaces(this string text)
     {
         return string.IsNullOrEmpty(text) ? string.Empty : text.Replace(" ", "");
+    }
+    /// <summary>
+    /// Attempts to parse the input string as a Brazilian-style currency (e.g., “R$ 35.000,00”) and outputs the <see cref="decimal"/> value if successful.
+    /// </summary>
+    /// <param name="input">The string containing a Brazilian currency value (may include symbol “R$”, thousand separators, spaces).</param>
+    /// <param name="value">When this method returns, contains the parsed decimal value if the parse succeeded; otherwise 0.</param>
+    /// <returns><c>true</c> if parsing succeeded; otherwise <c>false</c>.</returns>
+    public static bool TryParseBrazilianCurrency(this string? input, out decimal value)
+    {
+        value = 0m;
+        if (string.IsNullOrWhiteSpace(input))
+            return false;
+
+        string cleaned = input.Replace("R$", string.Empty, StringComparison.OrdinalIgnoreCase)
+                              .Replace(".", string.Empty)
+                              .Replace(" ", string.Empty)
+                              .Trim();
+
+        var styles = NumberStyles.AllowCurrencySymbol | NumberStyles.Number;
+
+        return decimal.TryParse(cleaned, styles, Brazil, out value);
+    }
+    /// <summary>
+    /// Parses the input string as a Brazilian-style currency (e.g., “R$ 35.000,00”) and returns the <see cref="decimal"/> value.
+    /// </summary>
+    /// <param name="input">The string containing a Brazilian currency value.</param>
+    /// <returns>The <see cref="decimal"/> value represented by the string.</returns>
+    /// <exception cref="FormatException">Thrown if the input string is not in a valid Brazilian currency format.</exception>
+    public static decimal? ParseBrazilianCurrency(this string? input)
+    {
+        if (input.TryParseBrazilianCurrency(out decimal value))
+            return value;
+
+        throw new FormatException($"String '{input}' não estava em um formato de moeda brasileiro válido.");
+    }
+
+
+    public static string ToBrazilianCurrencyString(this decimal? value)
+    {
+        if(!value.HasValue) return "R$ ";
+
+        return value.Value.ToString("C", Brazil);
+    }
+
+    /// <summary>
+    /// Determines whether the specified string is <c>null</c> or an empty string ("").
+    /// </summary>
+    /// <param name="input">The string to evaluate.</param>
+    /// <returns><c>true</c> if the input is <c>null</c> or empty; otherwise, <c>false</c>.</returns>
+    public static bool IsNullOrEmpty(this string? input) => string.IsNullOrEmpty(input);
+    /// <summary>
+    /// Determines whether the specified string is <c>null</c>, empty, or consists only of white-space characters.
+    /// </summary>
+    /// <param name="input">The string to evaluate.</param>
+    /// <returns><c>true</c> if the input is <c>null</c>, empty, or consists exclusively of white-space characters; otherwise, <c>false</c>.</returns>
+    public static bool IsNullOrWhiteSpace(this string? input) => string.IsNullOrWhiteSpace(input);
+
+    /// <summary>
+    /// Generates an alias from a full name by taking the uppercase initials of
+    /// the first and last word. If only one word is present, returns only its initial.
+    /// Returns an empty string if the input is null, whitespace or empty.
+    /// </summary>
+    public static string ToInitialsAlias(this string fullName)
+    {
+        if (string.IsNullOrWhiteSpace(fullName))
+            return string.Empty;
+
+        var parts = fullName
+            .Trim()
+            .Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+        if (parts.Length == 0)
+            return string.Empty;
+
+        char firstInitial = char.ToUpper(parts[0][0]);
+
+        if (parts.Length == 1)
+            return firstInitial.ToString();
+
+        char lastInitial = char.ToUpper(parts[^1][0]);
+
+        return $"{firstInitial}{lastInitial}";
     }
 }

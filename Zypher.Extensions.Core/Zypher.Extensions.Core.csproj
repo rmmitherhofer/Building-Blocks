@@ -9,7 +9,7 @@
 		<Company>Zypher</Company>
 		<Authors>Renato Mitherhofer</Authors>
 		<Description>Extensões utilitárias para tipos comuns do .NET.</Description>
-		<Version>1.1.1</Version>
+		<Version>1.1.4</Version>
 
 		<PackageIcon>assets/icon.png</PackageIcon>
 	</PropertyGroup>
@@ -27,11 +27,11 @@
 
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net8.0'">
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.20" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.21" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'net9.0'">		
-		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.9" />
+		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.10" />
 	</ItemGroup>
 
 </Project>

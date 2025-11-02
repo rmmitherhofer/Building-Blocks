@@ -33,6 +33,22 @@ public static class ClaimsPrincipalExtensions
     public const string LANGUAGE = "lang";
     /// <summary>Claim key for subject identifier.</summary>
     public const string SUB = "sub";
+    /// <summary>
+    /// The claim type key for the access (JWT) token.
+    /// </summary>
+    public const string JWT = "jwt";
+    /// <summary>
+    /// The claim type key for the refresh token.
+    /// </summary>
+    public const string RT = "rt";
+    /// <summary>
+    /// The claim type key for the refresh token expiration timestamp.
+    /// </summary>
+    public const string RT_EXP = "rt_exp";
+    /// <summary>
+    /// The claim type key for the fingerprint identifier.
+    /// </summary>
+    public const string FP = "fp";
 
     /// <summary>
     /// Checks if the user is authenticated.
@@ -305,4 +321,56 @@ public static class ClaimsPrincipalExtensions
     /// <param name="user">The ClaimsPrincipal instance.</param>
     /// <param name="value">Session Id value.</param>
     public static ClaimsPrincipal AddAccountCode(this ClaimsPrincipal user, string value) => user.AddClaim(USER_ACCOUNT_CODE, value);
+    /// <summary>
+    /// Retrieves the access token claim value from the specified <see cref="ClaimsPrincipal"/>.
+    /// </summary>
+    /// <param name="user">The <see cref="ClaimsPrincipal"/> instance.</param>
+    /// <returns>The access token string if present; otherwise <c>null</c>.</returns>
+    public static string? GetToken(this ClaimsPrincipal user) => user.GetClaim(JWT);
+    /// <summary>
+    /// Adds or replaces the access token claim value in the specified <see cref="ClaimsPrincipal"/>.
+    /// </summary>
+    /// <param name="user">The <see cref="ClaimsPrincipal"/> instance.</param>
+    /// <param name="value">The access token value to add.</param>
+    /// <returns>The updated <see cref="ClaimsPrincipal"/> with the claim added.</returns>
+    public static ClaimsPrincipal AddToken(this ClaimsPrincipal user, string value) => user.AddClaim(JWT, value);
+    /// <summary>
+    /// Retrieves the refresh token claim value from the specified <see cref="ClaimsPrincipal"/>.
+    /// </summary>
+    /// <param name="user">The <see cref="ClaimsPrincipal"/> instance.</param>
+    /// <returns>The refresh token string if present; otherwise <c>null</c>.</returns>
+    public static string? GetRefreshToken(this ClaimsPrincipal user) => user.GetClaim(RT);
+    /// <summary>
+    /// Adds or replaces the refresh token claim value in the specified <see cref="ClaimsPrincipal"/>.
+    /// </summary>
+    /// <param name="user">The <see cref="ClaimsPrincipal"/> instance.</param>
+    /// <param name="value">The refresh token value to add.</param>
+    /// <returns>The updated <see cref="ClaimsPrincipal"/> with the claim added.</returns>
+    public static ClaimsPrincipal AddRefreshToken(this ClaimsPrincipal user, string value) => user.AddClaim(RT, value);
+    /// <summary>
+    /// Retrieves the refresh token expiration claim value from the specified <see cref="ClaimsPrincipal"/>.
+    /// </summary>
+    /// <param name="user">The <see cref="ClaimsPrincipal"/> instance.</param>
+    /// <returns>The refresh token expiration timestamp/string if present; otherwise <c>null</c>.</returns>
+    public static string? GetRefreshExpires(this ClaimsPrincipal user) => user.GetClaim(RT_EXP);
+    /// <summary>
+    /// Adds or replaces the refresh token expiration claim value in the specified <see cref="ClaimsPrincipal"/>.
+    /// </summary>
+    /// <param name="user">The <see cref="ClaimsPrincipal"/> instance.</param>
+    /// <param name="value">The expiration value for the refresh token to add.</param>
+    /// <returns>The updated <see cref="ClaimsPrincipal"/> with the claim added.</returns>
+    public static ClaimsPrincipal AddRefreshExpires(this ClaimsPrincipal user, string value) => user.AddClaim(RT_EXP, value);
+    /// <summary>
+    /// Retrieves the fingerprint claim value from the specified <see cref="ClaimsPrincipal"/>.
+    /// </summary>
+    /// <param name="user">The <see cref="ClaimsPrincipal"/> instance.</param>
+    /// <returns>The fingerprint string if present; otherwise <c>null</c>.</returns>
+    public static string? GetFingerprint(this ClaimsPrincipal user) => user.GetClaim(FP);
+    /// <summary>
+    /// Adds or replaces the fingerprint claim value in the specified <see cref="ClaimsPrincipal"/>.
+    /// </summary>
+    /// <param name="user">The <see cref="ClaimsPrincipal"/> instance.</param>
+    /// <param name="value">The fingerprint value to add.</param>
+    /// <returns>The updated <see cref="ClaimsPrincipal"/> with the claim added.</returns>
+    public static ClaimsPrincipal AddFingerprint(this ClaimsPrincipal user, string value) => user.AddClaim(FP, value);
 }

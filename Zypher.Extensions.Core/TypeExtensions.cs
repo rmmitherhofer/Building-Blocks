@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 
-namespace Zypher.Http.Extensions;
+namespace Zypher.Extensions.Core;
 
 /// <summary>
 /// Provides extension methods for working with <see cref="Type"/> objects.
@@ -54,7 +54,7 @@ public static class TypeExtensions
 
         var underlying = Nullable.GetUnderlyingType(type);
 
-        if (underlying != null) return IsSimpleType(underlying);
+        if (underlying != null) return underlying.IsSimpleType();
 
         if (_primitiveTypes.Contains(type)) return true;
 

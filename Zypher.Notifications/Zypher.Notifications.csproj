@@ -8,7 +8,7 @@
 
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>Zypher.Notifications</PackageId>
-		<Version>1.0.2</Version>
+		<Version>1.0.3</Version>
 
 		<Authors>Renato Mitherhofer</Authors>
 		<Company>Renato Mitherhofer</Company>
@@ -42,7 +42,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Zypher.Logs" Version="1.0.2" />
+		<PackageReference Include="Zypher.Logs" Version="1.0.4" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -91,7 +91,7 @@ internal class LogDecoratorMiddleware
             builder.AppendLine($"IsAuthenticated       : {true}");
 
             if (!string.IsNullOrEmpty(context.User.GetId()))
-                builder.AppendLine($"User-ID               : {context.Request.GetUserId()}");
+                builder.AppendLine($"User-ID               : {context.User.GetId()}");
 
             if (!string.IsNullOrEmpty(context.User.GetAccountCode()))
                 builder.AppendLine($"User-Account-Code     : {context.User.GetAccountCode()}");
