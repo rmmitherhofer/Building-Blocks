@@ -68,6 +68,8 @@ public static class ApiConfiguration
     {
         ArgumentNullException.ThrowIfNull(app, nameof(IApplicationBuilder));
 
+        app.UseRouting();
+
         app.UseNedMonitor();
 
         app.TryUseMiddleware<RequestIndetityMiddleware>();
@@ -81,6 +83,8 @@ public static class ApiConfiguration
         app.UseNedMonitorMiddleware();
 
         app.UseSwaggleBox(app.ApplicationServices.GetRequiredService<IApiVersionDescriptionProvider>());
+
+        app.UseEndpoints(endpoints => endpoints.MapControllers());
 
         app.UseEndpoints(endpoints => endpoints.MapControllers());
 

@@ -21,10 +21,10 @@ public static class MultipartFormDataExtensions
     /// </summary>
     /// <param name="obj">The object to convert.</param>
     /// <returns>A <see cref="MultipartFormDataContent"/> representing the serialized object.</returns>
-    public static MultipartFormDataContent ToMultipartFormDataContent(this object obj)
+    public static MultipartFormDataContent ToMultipartFormDataContent(this object obj, string fieldName = "file")
     {
         var content = new MultipartFormDataContent();
-        AddObjectToContent(content, obj, prefix: string.Empty);
+        AddObjectToContent(content, obj, fieldName);
         return content;
     }
 
