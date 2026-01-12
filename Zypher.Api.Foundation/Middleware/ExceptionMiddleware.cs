@@ -113,6 +113,7 @@ public class ExceptionMiddleware
 
         context.Response.StatusCode = (int)statusCode;
         context.Response.ContentType = "application/json";
+        context.Response.Headers["X-Original-Status-Code"] = statusCode.ToString();
 
         string jsonResponse;
 
