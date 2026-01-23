@@ -65,6 +65,12 @@ public static class MultipartFormDataExtensions
             return;
         }
 
+        if (IsSimpleType(type))
+        {
+            content.Add(new StringContent(obj.ToString() ?? ""), prefix);
+            return;
+        }
+
         foreach (var prop in type.GetProperties(BindingFlags.Instance | BindingFlags.Public))
         {
             var value = prop.GetValue(obj);

@@ -21,10 +21,19 @@ public static class UrlExtensions
     {
         if (string.IsNullOrWhiteSpace(url)) return url;
 
+        var fragmentIndex = url.IndexOf('#');
+        var fragment = fragmentIndex >= 0 ? url[fragmentIndex..] : string.Empty;
+        var baseUrl = fragmentIndex >= 0 ? url[..fragmentIndex] : url;
+
         var query = queryParams.ToQueryString();
         if (string.IsNullOrEmpty(query)) return url;
 
-        return url.Contains("?") ? url + "&" + query.TrimStart('?') : url + query;
+        if (!baseUrl.Contains("?")) return baseUrl + query + fragment;
+
+        if (baseUrl.EndsWith("?", StringComparison.Ordinal) || baseUrl.EndsWith("&", StringComparison.Ordinal))
+            return baseUrl + query.TrimStart('?') + fragment;
+
+        return baseUrl + "&" + query.TrimStart('?') + fragment;
     }
 
     /// <summary>
@@ -44,10 +53,15 @@ public static class UrlExtensions
 
         if (string.IsNullOrEmpty(query)) return uri;
 
-        if (!string.IsNullOrWhiteSpace(builder.Query))
-            builder.Query = builder.Query.TrimStart('?') + "&" + query.TrimStart('?');
+        var existingQuery = builder.Query.TrimStart('?');
+        var incomingQuery = query.TrimStart('?');
+
+        if (string.IsNullOrWhiteSpace(existingQuery))
+            builder.Query = incomingQuery;
+        else if (existingQuery.EndsWith("&", StringComparison.Ordinal))
+            builder.Query = existingQuery + incomingQuery;
         else
-            builder.Query = query.TrimStart('?');
+            builder.Query = existingQuery + "&" + incomingQuery;
 
         return builder.Uri;
     }

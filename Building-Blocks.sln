@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.9.34902.65
+# Visual Studio Version 18
+VisualStudioVersion = 18.2.11415.280 d18.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zypher.Persistence.Abstractions", "Zypher.Persistence.Abstractions\Zypher.Persistence.Abstractions.csproj", "{CCAABBCB-878E-489C-8E5C-61307FEFBD47}"
 EndProject
@@ -25,6 +25,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zypher.Notifications", "Zyp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zypher.Http", "Zypher.Http\Zypher.Http.csproj", "{E30443DA-1DD5-4683-9355-A289C27A3C9D}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zypher.Http.Tests", "Zypher.Http.Tests\Zypher.Http.Tests.csproj", "{D27649CF-014D-4BD5-9BD7-1F0D3728E5F0}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zypher.Enums", "Zypher.Enums\Zypher.Enums.csproj", "{FB82465E-7825-449D-A210-D8808A67DD61}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zypher.Json", "Zypher.Json\Zypher.Json.csproj", "{228B8C4F-3933-463C-B542-261EF7524B9D}"
@@ -44,6 +46,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zypher.Security.JwtSigningCredentials", "security\Zypher.Security.JwtSigningCredentials\Zypher.Security.JwtSigningCredentials.csproj", "{7D00FB34-001C-198F-8F8C-A494D19E33DA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zypher.Secutiry.JwtSigningCredentials.Store.FileSystem", "security\Zypher.Secutiry.JwtSigningCredentialsStore.FileSystem\Zypher.Secutiry.JwtSigningCredentials.Store.FileSystem.csproj", "{31186BFA-D4BC-A77C-9FB6-CE539F5E40B0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{5D09E503-C0FC-47AB-9F46-328CDA698A53}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -95,6 +99,10 @@ Global
 		{E30443DA-1DD5-4683-9355-A289C27A3C9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E30443DA-1DD5-4683-9355-A289C27A3C9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E30443DA-1DD5-4683-9355-A289C27A3C9D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D27649CF-014D-4BD5-9BD7-1F0D3728E5F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D27649CF-014D-4BD5-9BD7-1F0D3728E5F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D27649CF-014D-4BD5-9BD7-1F0D3728E5F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D27649CF-014D-4BD5-9BD7-1F0D3728E5F0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FB82465E-7825-449D-A210-D8808A67DD61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FB82465E-7825-449D-A210-D8808A67DD61}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FB82465E-7825-449D-A210-D8808A67DD61}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -136,6 +144,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{D27649CF-014D-4BD5-9BD7-1F0D3728E5F0} = {5D09E503-C0FC-47AB-9F46-328CDA698A53}
 		{81183364-9989-3D63-8ADD-926069EF4CDC} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{98209725-D708-AD46-68EE-50BA3BF1A50F} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{5A0F7547-02D7-A701-A991-6B7828FF5694} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
