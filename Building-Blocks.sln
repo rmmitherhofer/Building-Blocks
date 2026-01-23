@@ -71,9 +71,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zypher.Security.JwtExtensio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zypher.Security.JwtSigningCredentials.AspNetCore", "security\Zypher.Security.JwtSigningCredentials.AspNetCore\Zypher.Security.JwtSigningCredentials.AspNetCore.csproj", "{5A0F7547-02D7-A701-A991-6B7828FF5694}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zypher.Security.JwtSigningCredentials.AspNetCore.Tests", "tests\Zypher.Security.JwtSigningCredentials.AspNetCore.Tests\Zypher.Security.JwtSigningCredentials.AspNetCore.Tests.csproj", "{1DE3C785-63A7-4ABD-98E8-EF83C100BE76}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zypher.Security.JwtSigningCredentials.Store.EntityFrameworkCore", "security\Zypher.JwtSigningCredentials.Store.EntityFrameworkCore\Zypher.Security.JwtSigningCredentials.Store.EntityFrameworkCore.csproj", "{D0EAB078-9283-7A73-5D7E-1F31CC94AA85}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zypher.Security.JwtSigningCredentials", "security\Zypher.Security.JwtSigningCredentials\Zypher.Security.JwtSigningCredentials.csproj", "{7D00FB34-001C-198F-8F8C-A494D19E33DA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zypher.Security.JwtSigningCredentials.Tests", "tests\Zypher.Security.JwtSigningCredentials.Tests\Zypher.Security.JwtSigningCredentials.Tests.csproj", "{D3589257-6710-4EBA-AE0A-8A1699EB7257}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zypher.Secutiry.JwtSigningCredentials.Store.FileSystem", "security\Zypher.Secutiry.JwtSigningCredentialsStore.FileSystem\Zypher.Secutiry.JwtSigningCredentials.Store.FileSystem.csproj", "{31186BFA-D4BC-A77C-9FB6-CE539F5E40B0}"
 EndProject
@@ -217,6 +221,10 @@ Global
 		{5A0F7547-02D7-A701-A991-6B7828FF5694}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5A0F7547-02D7-A701-A991-6B7828FF5694}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5A0F7547-02D7-A701-A991-6B7828FF5694}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1DE3C785-63A7-4ABD-98E8-EF83C100BE76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1DE3C785-63A7-4ABD-98E8-EF83C100BE76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1DE3C785-63A7-4ABD-98E8-EF83C100BE76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1DE3C785-63A7-4ABD-98E8-EF83C100BE76}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D0EAB078-9283-7A73-5D7E-1F31CC94AA85}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D0EAB078-9283-7A73-5D7E-1F31CC94AA85}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0EAB078-9283-7A73-5D7E-1F31CC94AA85}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -225,6 +233,10 @@ Global
 		{7D00FB34-001C-198F-8F8C-A494D19E33DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D00FB34-001C-198F-8F8C-A494D19E33DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7D00FB34-001C-198F-8F8C-A494D19E33DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3589257-6710-4EBA-AE0A-8A1699EB7257}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3589257-6710-4EBA-AE0A-8A1699EB7257}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3589257-6710-4EBA-AE0A-8A1699EB7257}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3589257-6710-4EBA-AE0A-8A1699EB7257}.Release|Any CPU.Build.0 = Release|Any CPU
 		{31186BFA-D4BC-A77C-9FB6-CE539F5E40B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{31186BFA-D4BC-A77C-9FB6-CE539F5E40B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31186BFA-D4BC-A77C-9FB6-CE539F5E40B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -253,8 +265,10 @@ Global
 		{98209725-D708-AD46-68EE-50BA3BF1A50F} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{7335013A-F7DD-4C93-83C9-313B3927D50F} = {5D09E503-C0FC-47AB-9F46-328CDA698A53}
 		{5A0F7547-02D7-A701-A991-6B7828FF5694} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{1DE3C785-63A7-4ABD-98E8-EF83C100BE76} = {5D09E503-C0FC-47AB-9F46-328CDA698A53}
 		{D0EAB078-9283-7A73-5D7E-1F31CC94AA85} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{7D00FB34-001C-198F-8F8C-A494D19E33DA} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{D3589257-6710-4EBA-AE0A-8A1699EB7257} = {5D09E503-C0FC-47AB-9F46-328CDA698A53}
 		{31186BFA-D4BC-A77C-9FB6-CE539F5E40B0} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
