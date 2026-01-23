@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zypher.Domain.Core", "Zyphe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zypher.Domain.Exceptions", "Zypher.Domain.Exceptions\Zypher.Domain.Exceptions.csproj", "{0C6CD539-C239-433F-9D4A-A6BED773A2A9}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zypher.Domain.Exceptions.Tests", "tests\Zypher.Domain.Exceptions.Tests\Zypher.Domain.Exceptions.Tests.csproj", "{023425A7-2C7B-4F2C-989F-8A8D749D0C61}"
+EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zypher.Extensions.Core", "Zypher.Extensions.Core\Zypher.Extensions.Core.csproj", "{80E95E39-3D4A-4FCC-A496-894B021644CD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zypher.Extensions.Core.Tests", "tests\Zypher.Extensions.Core.Tests\Zypher.Extensions.Core.Tests.csproj", "{4F6EAD8D-7B59-4914-9C58-19D1A9ACFA4C}"
@@ -89,6 +91,10 @@ Global
 		{0C6CD539-C239-433F-9D4A-A6BED773A2A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0C6CD539-C239-433F-9D4A-A6BED773A2A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0C6CD539-C239-433F-9D4A-A6BED773A2A9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{023425A7-2C7B-4F2C-989F-8A8D749D0C61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{023425A7-2C7B-4F2C-989F-8A8D749D0C61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{023425A7-2C7B-4F2C-989F-8A8D749D0C61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{023425A7-2C7B-4F2C-989F-8A8D749D0C61}.Release|Any CPU.Build.0 = Release|Any CPU
 		{80E95E39-3D4A-4FCC-A496-894B021644CD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{80E95E39-3D4A-4FCC-A496-894B021644CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80E95E39-3D4A-4FCC-A496-894B021644CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -162,6 +168,7 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
+		{023425A7-2C7B-4F2C-989F-8A8D749D0C61} = {5D09E503-C0FC-47AB-9F46-328CDA698A53}
 		{4F6EAD8D-7B59-4914-9C58-19D1A9ACFA4C} = {5D09E503-C0FC-47AB-9F46-328CDA698A53}
 		{B8307A77-5E48-49BB-A14E-E86197FBA4E3} = {5D09E503-C0FC-47AB-9F46-328CDA698A53}
 		{DBC2FD3F-6083-409C-B3C1-EA798637702F} = {5D09E503-C0FC-47AB-9F46-328CDA698A53}
