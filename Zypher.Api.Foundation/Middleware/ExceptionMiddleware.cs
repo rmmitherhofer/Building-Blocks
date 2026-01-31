@@ -52,6 +52,10 @@ public class ExceptionMiddleware
         {
             await HandleRequestExceptionAsync(context, ex, HttpStatusCode.NotFound);
         }
+        catch (HttpRequestException ex)
+        {
+            await HandleRequestExceptionAsync(context, ex, HttpStatusCode.BadGateway);
+        }
         catch (CustomHttpRequestException ex)
         {
             await HandleRequestExceptionAsync(context, ex, HttpStatusCode.BadGateway);
