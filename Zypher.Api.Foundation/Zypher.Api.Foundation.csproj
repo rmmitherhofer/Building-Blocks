@@ -30,12 +30,8 @@
 
 	<ItemGroup>
 		<PackageReference Include="FluentValidation" Version="12.1.1" />
-		<PackageReference Include="NedMonitor" Version="2.0.0" />
+		<PackageReference Include="NedMonitor" Version="2.0.2" />
 		<PackageReference Include="SwaggleBox" Version="1.0.8" />
-		<PackageReference Include="Zypher.Domain.Core" Version="1.0.5" />
-		<PackageReference Include="Zypher.Http" Version="1.3.3" />
-		<PackageReference Include="Zypher.Requests" Version="1.0.2" />
-		<PackageReference Include="Zypher.Responses" Version="1.0.7" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -46,5 +42,12 @@
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
 			<_Parameter1>Zypher.Api.Foundation.Tests</_Parameter1>
 		</AssemblyAttribute>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Zypher.Domain.Core\Zypher.Domain.Core.csproj" />
+	  <ProjectReference Include="..\Zypher.Extensions.Core\Zypher.Extensions.Core.csproj" />
+	  <ProjectReference Include="..\Zypher.Http\Zypher.Http.csproj" />
+	  <ProjectReference Include="..\Zypher.User\Zypher.User.csproj" />
 	</ItemGroup>
 </Project>

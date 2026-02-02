@@ -9,8 +9,10 @@ using SwaggleBox.Configurations;
 using System.Text.Json.Serialization;
 using Zypher.Api.Foundation.Middleware;
 using Zypher.Extensions.Core;
+using Zypher.Http.Configurations;
 using Zypher.Logs.Configurations;
 using Zypher.Notifications.Configurations;
+using Zypher.User.Configurations;
 
 namespace Zypher.Api.Foundation.Configurations;
 
@@ -38,9 +40,15 @@ public static class ApiConfiguration
         services.AddControllers(options => options.EnableEndpointRouting = false)
             .AddJsonOptions(options => options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull);
 
-        services.AddNotificationConfig();
+        services.AddZypherNotification();
+
+        services.AddAspNetUser();
 
         services.AddEndpointsApiExplorer();
+
+        services.AddZypherLog();
+
+        services.AddZypherHttp();
 
         services.AddSwaggleBox(configuration);
 
@@ -74,9 +82,11 @@ public static class ApiConfiguration
 
         app.TryUseMiddleware<RequestIndetityMiddleware>();
 
-        app.UseNotificationConfig();
+        app.UseZypherLog();
 
-        app.UseLogDecoratorConfig();
+        app.UseZypherLogDecorator();
+
+        app.UseZypherHttp();
 
         app.TryUseMiddleware<ExceptionMiddleware>();
 

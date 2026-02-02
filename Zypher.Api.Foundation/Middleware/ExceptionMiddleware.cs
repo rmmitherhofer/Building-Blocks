@@ -1,14 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using System.Net;
-using Zypher.Domain.Exceptions;
+using Zypher.Api.Foundation.Factories;
+using Zypher.Domain.Core.Exceptions;
 using Zypher.Extensions.Core;
 using Zypher.Http.Exceptions;
 using Zypher.Json;
 using Zypher.Logs.Extensions;
 using Zypher.Notifications.Messages;
 using Zypher.Responses;
-using Zypher.Responses.Factories;
 
 namespace Zypher.Api.Foundation.Middleware;
 
