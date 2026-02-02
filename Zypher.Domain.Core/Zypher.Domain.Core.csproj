@@ -28,12 +28,7 @@
 		<None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\net9.0" />
 		<None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\net8.0" />
 	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Zypher.Domain.Exceptions" Version="1.0.2" />
-		<PackageReference Include="Zypher.Notifications" Version="1.0.5" />
-	</ItemGroup>
-
+	
 	<ItemGroup>
 		<None Include="assets/icon.png" Pack="true" PackagePath="assets/" />
 	</ItemGroup>

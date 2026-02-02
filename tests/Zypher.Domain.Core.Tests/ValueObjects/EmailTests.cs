@@ -1,8 +1,8 @@
 using System;
 using FluentAssertions;
 using Xunit;
+using Zypher.Domain.Core.Exceptions;
 using Zypher.Domain.Core.ValueObjects;
-using Zypher.Domain.Exceptions;
 
 namespace Zypher.Domain.Core.Tests.ValueObjects;
 
