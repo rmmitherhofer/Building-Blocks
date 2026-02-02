@@ -5,7 +5,7 @@ namespace Zypher.Responses;
 /// <summary>
 /// Represents the base class for paginated API responses, including metadata such as total records and navigation pages.
 /// </summary>
-public abstract class PaginatedResponse : Response
+public abstract class PaginatedResponse
 {
     /// <summary>
     /// Gets the total number of records returned by the query (not just on the current page).
