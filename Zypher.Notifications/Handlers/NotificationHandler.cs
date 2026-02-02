@@ -8,22 +8,16 @@ namespace Zypher.Notifications.Handlers;
 /// <summary>
 /// Handles application notifications by storing them in the current HTTP context and logging them.
 /// </summary>
-public class NotificationHandler : INotificationHandler
+/// <remarks>
+/// Initializes a new instance of the <see cref="NotificationHandler"/> class.
+/// </remarks>
+/// <param name="httpContextAccessor">The HTTP context accessor.</param>
+/// <param name="logger">The logger instance.</param>
+public class NotificationHandler(IHttpContextAccessor httpContextAccessor, ILogger<NotificationHandler> logger) : INotificationHandler
 {
-    private readonly IHttpContextAccessor _httpContextAccessor;
-    private readonly ILogger<NotificationHandler> _logger;
+    private readonly IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
+    private readonly ILogger<NotificationHandler> _logger = logger;
     private const string NotificationsKey = "__Notifications__";
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="NotificationHandler"/> class.
-    /// </summary>
-    /// <param name="httpContextAccessor">The HTTP context accessor.</param>
-    /// <param name="logger">The logger instance.</param>
-    public NotificationHandler(IHttpContextAccessor httpContextAccessor, ILogger<NotificationHandler> logger)
-    {
-        _httpContextAccessor = httpContextAccessor;
-        _logger = logger;
-    }
 
     /// <summary>
     /// Adds a single notification to the current HTTP context and logs it.
