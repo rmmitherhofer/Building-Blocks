@@ -117,7 +117,7 @@ public class LogConfigurationsTests
         //Given
         var provider = new ServiceCollection().BuildServiceProvider();
         var app = new ApplicationBuilder(provider);
-        var key = typeof(Zypher.Logs.Middlewares.LogDecoratorMiddleware).FullName!;
+        var key = typeof(Logs.Middlewares.LogDecoratorMiddleware).FullName!;
 
         //When
         app.UseLogDecoratorConfig();

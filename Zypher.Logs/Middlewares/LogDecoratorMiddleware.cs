@@ -3,9 +3,7 @@ using Microsoft.Extensions.Logging;
 using System.Diagnostics;
 using System.Net;
 using System.Text;
-using Zypher.Extensions.Core;
 using Zypher.Logs.Extensions;
-using Zypher.User.Extensions;
 
 namespace Zypher.Logs.Middlewares;
 
@@ -13,26 +11,19 @@ namespace Zypher.Logs.Middlewares;
 /// Middleware that decorates HTTP requests and responses with detailed logging information.
 /// Logs request and response details including timing, status codes, and correlation identifiers.
 /// </summary>
-internal class LogDecoratorMiddleware
+/// <remarks>
+/// Initializes a new instance of the <see cref="LogDecoratorMiddleware"/> class.
+/// </remarks>
+/// <param name="logger">Logger instance for logging information.</param>
+/// <param name="next">Next middleware delegate in the pipeline.</param>
+internal class LogDecoratorMiddleware(ILogger<LogDecoratorMiddleware> logger, RequestDelegate next)
 {
     /// <summary>
     /// Middleware identifier name.
     /// </summary>
-    public const string Name = nameof(LogDecoratorMiddleware);
-
-    private readonly ILogger<LogDecoratorMiddleware> _logger;
-    private readonly RequestDelegate _next;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="LogDecoratorMiddleware"/> class.
-    /// </summary>
-    /// <param name="logger">Logger instance for logging information.</param>
-    /// <param name="next">Next middleware delegate in the pipeline.</param>
-    public LogDecoratorMiddleware(ILogger<LogDecoratorMiddleware> logger, RequestDelegate next)
-    {
-        _logger = logger;
-        _next = next;
-    }
+    internal const string Name = nameof(LogDecoratorMiddleware);
+    private readonly ILogger<LogDecoratorMiddleware> _logger = logger;
+    private readonly RequestDelegate _next = next;
 
     /// <summary>
     /// Invokes the middleware to process the HTTP context asynchronously.

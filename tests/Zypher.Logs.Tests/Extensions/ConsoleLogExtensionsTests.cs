@@ -4,7 +4,6 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Xunit;
-using Zypher.Extensions.Core;
 using Zypher.Logs.Extensions;
 
 namespace Zypher.Logs.Tests.Extensions;

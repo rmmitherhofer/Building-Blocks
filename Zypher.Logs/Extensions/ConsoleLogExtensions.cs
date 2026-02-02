@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
-using Zypher.Extensions.Core;
 
 namespace Zypher.Logs.Extensions;
 
