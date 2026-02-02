@@ -22,7 +22,7 @@ public class NotificationConfigurationTests
         services.AddLogging();
 
         //When
-        services.AddNotification();
+        services.AddZypherNotification();
         var provider = services.BuildServiceProvider();
 
         //Then
@@ -42,7 +42,7 @@ public class NotificationConfigurationTests
         IServiceCollection? services = null;
 
         //When
-        Action action = () => services!.AddNotification();
+        Action action = () => services!.AddZypherNotification();
 
         //Then
         action.Should().Throw<ArgumentNullException>();

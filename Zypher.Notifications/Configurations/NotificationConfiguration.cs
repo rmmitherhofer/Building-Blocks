@@ -15,7 +15,7 @@ public static class NotificationConfiguration
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection"/> to add services to.</param>
     /// <returns>The updated <see cref="IServiceCollection"/>.</returns>
-    public static IServiceCollection AddNotification(this IServiceCollection services)
+    public static IServiceCollection AddZypherNotification(this IServiceCollection services)
     {
         ArgumentNullException.ThrowIfNull(services, nameof(IServiceCollection));
 

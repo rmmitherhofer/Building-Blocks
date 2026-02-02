@@ -1,11 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System.Net;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text.Json;
-using Zypher.Extensions.Core;
-using Zypher.Http.Attributes;
 using Zypher.Json;
-using Zypher.User.Extensions;
 
 namespace Zypher.Http.Extensions;
 
@@ -56,7 +54,7 @@ public static class HttpRequestMessageExtensions
         ArgumentNullException.ThrowIfNull(request, nameof(HttpRequestMessage));
 
         if (!request.Headers.Contains(key))
-            request.Headers.Add(key, value);
+            request.Headers.TryAddWithoutValidation(key, value);
     }
 
     /// <summary>
@@ -72,7 +70,7 @@ public static class HttpRequestMessageExtensions
         if (request.Headers.Contains(key))
             request.Headers.Remove(key);
 
-        request.Headers.Add(key, value);
+        request.Headers.TryAddWithoutValidation(key, value);
     }
 
     /// <summary>
@@ -326,5 +324,19 @@ public static class HttpRequestMessageExtensions
 
         var newUri = uri.AddQueryString(queryParams);
         request.RequestUri = newUri;
+    }
+
+    /// <summary>
+    /// Applies custom header configuration to the request if provided.
+    /// </summary>
+    /// <param name="request">HTTP request message.</param>
+    /// <param name="configure">
+    /// Delegate used to modify request headers.
+    /// </param>
+    public static void ConfigureHeaders(this HttpRequestMessage request, Action<HttpRequestHeaders>? configure)
+    {
+        if (configure is null) return;
+
+        configure(request.Headers);
     }
 }

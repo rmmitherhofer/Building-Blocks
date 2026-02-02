@@ -1,12 +1,8 @@
-using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Text;
-using System.Text.Json;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
+using System.Text;
+using System.Text.Json;
 using Xunit;
-using Zypher.Extensions.Core;
 using Zypher.Http.Extensions;
 
 namespace Zypher.Http.Tests.Extensions;

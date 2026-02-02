@@ -16,7 +16,7 @@ public static class LogConfigurations
     /// </summary>
     /// <param name="services">The IServiceCollection to add services to.</param>
     /// <returns>The updated IServiceCollection.</returns>
-    public static IServiceCollection AddConsoleLogExtensionConfig(this IServiceCollection services)
+    public static IServiceCollection AddZypherLog(this IServiceCollection services)
     {
         ArgumentNullException.ThrowIfNull(services, nameof(IServiceCollection));
 
@@ -30,7 +30,7 @@ public static class LogConfigurations
     /// </summary>
     /// <param name="app">The IApplicationBuilder instance.</param>
     /// <returns>The updated IApplicationBuilder.</returns>
-    public static IApplicationBuilder UseLogDecoratorConfig(this IApplicationBuilder app)
+    public static IApplicationBuilder UseZypherLogDecorator(this IApplicationBuilder app)
     {
         ArgumentNullException.ThrowIfNull(app, nameof(IApplicationBuilder));
 
@@ -44,7 +44,7 @@ public static class LogConfigurations
     /// </summary>
     /// <param name="app">The IApplicationBuilder instance.</param>
     /// <returns>The updated IApplicationBuilder.</returns>
-    public static IApplicationBuilder UseConsoleLogExtensionConfig(this IApplicationBuilder app)
+    public static IApplicationBuilder UseZypherLog(this IApplicationBuilder app)
     {
         ArgumentNullException.ThrowIfNull(app, nameof(IApplicationBuilder));
 

@@ -39,4 +39,10 @@
 	<ItemGroup>
 		<None Include="assets/icon.png" Pack="true" PackagePath="assets/" />
 	</ItemGroup>
+
+	<ItemGroup>
+		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+			<_Parameter1>Zypher.Enums.Tests</_Parameter1>
+		</AssemblyAttribute>
+	</ItemGroup>
 </Project>

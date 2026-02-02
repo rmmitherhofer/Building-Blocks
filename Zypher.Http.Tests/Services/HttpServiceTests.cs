@@ -85,15 +85,10 @@ public class HttpServiceTests
 
         public Task<HttpResponseMessage> GetAsyncPublic((string template, string uri) uri) => GetAsync(uri);
         public Task<HttpResponseMessage> GetAsyncPublic(string uri) => GetAsync(uri);
-        public HttpResponseMessage GetPublic(string uri) => Get(uri);
         public Task<HttpResponseMessage> PostAsyncPublic(string uri, HttpContent content) => PostAsync(uri, content);
-        public HttpResponseMessage PostPublic(string uri, HttpContent content) => Post(uri, content);
         public Task<HttpResponseMessage> PutAsyncPublic(string uri, HttpContent content) => PutAsync(uri, content);
-        public HttpResponseMessage PutPublic(string uri, HttpContent content) => Put(uri, content);
         public Task<HttpResponseMessage> PatchAsyncPublic(string uri, HttpContent content) => PatchAsync(uri, content);
-        public HttpResponseMessage PatchPublic(string uri, HttpContent content) => Patch(uri, content);
         public Task<HttpResponseMessage> DeleteAsyncPublic(string uri) => DeleteAsync(uri);
-        public HttpResponseMessage DeletePublic(string uri) => Delete(uri);
         public void EnableDetailedLoggingPublic() => EnableLogHeadersAndBody();
 
         public Task<TResponse?> ValidateAndReturnPublic<TResponse>(HttpResponseMessage response)
@@ -291,29 +286,19 @@ public class HttpServiceTests
 
         //When
         await service.GetAsyncPublic("users");
-        service.GetPublic("users");
         await service.PostAsyncPublic("users", content);
-        service.PostPublic("users", content);
         await service.PutAsyncPublic("users/1", content);
-        service.PutPublic("users/1", content);
         await service.PatchAsyncPublic("users/1", content);
-        service.PatchPublic("users/1", content);
         await service.DeleteAsyncPublic("users/1");
-        service.DeletePublic("users/1");
 
         //Then
         handler.Methods.Should().BeEquivalentTo(new[]
         {
             HttpMethod.Get,
-            HttpMethod.Get,
-            HttpMethod.Post,
             HttpMethod.Post,
             HttpMethod.Put,
-            HttpMethod.Put,
-            HttpMethod.Patch,
             HttpMethod.Patch,
             HttpMethod.Delete,
-            HttpMethod.Delete
         }, options => options.WithStrictOrdering());
     }
 
