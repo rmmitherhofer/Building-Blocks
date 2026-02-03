@@ -1,13 +1,11 @@
-using System.IO;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
+using System.Net;
+using System.Text;
 using Xunit;
 using Zypher.Api.Foundation.Middleware;
-using Zypher.Domain.Exceptions;
+using Zypher.Domain.Core.Exceptions;
 using Zypher.Http.Exceptions;
 
 namespace Zypher.Api.Foundation.Tests.Middleware;

@@ -1,13 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using FluentAssertions;
 using Xunit;
 using Zypher.Domain.Core.Data;
 using Zypher.Domain.Core.DomainObjects;
 using Zypher.Domain.Core.Enums;
 
-namespace Zypher.Persistence.Abstractions.Tests.Data;
+namespace Zypher.Domain.Core.Tests.Data;
 
 public class IRepositoryTests
 {

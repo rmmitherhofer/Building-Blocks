@@ -1,13 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Net;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Net;
 using Xunit;
 using Zypher.Api.Foundation.Filters;
-using Zypher.Domain.Exceptions;
+using Zypher.Domain.Core.Exceptions;
 using Zypher.Http.Exceptions;
 
 namespace Zypher.Api.Foundation.Tests.Filters;

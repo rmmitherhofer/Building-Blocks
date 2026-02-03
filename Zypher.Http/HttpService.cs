@@ -99,7 +99,7 @@ public abstract class HttpService
         using var request = new HttpRequestMessage(HttpMethod.Get, uri.uri);
 
         request.Options.Set(TemplateKey, uri.template);
-        request.AddHeaderRequestTemplate(uri.template);
+        request.AddHeaderRequestTemplate(_httpClient.BaseAddress + uri.template);
 
         return SendAsync(request, configureHeaders, completionOption, cancellationToken);
     }
@@ -140,13 +140,13 @@ public abstract class HttpService
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         CancellationToken cancellationToken = default)
     {
-        using var request = new HttpRequestMessage(HttpMethod.Post, uri.uri)
+        var request = new HttpRequestMessage(HttpMethod.Post, uri.uri)
         {
             Content = content
         };
 
         request.Options.Set(TemplateKey, uri.template);
-        request.AddHeaderRequestTemplate(uri.template);
+        request.AddHeaderRequestTemplate(_httpClient.BaseAddress + uri.template);
 
         return SendAsync(request, configureHeaders, completionOption, cancellationToken);
     }
@@ -197,7 +197,7 @@ public abstract class HttpService
         };
 
         request.Options.Set(TemplateKey, uri.template);
-        request.AddHeaderRequestTemplate(uri.template);
+        request.AddHeaderRequestTemplate(_httpClient.BaseAddress + uri.template);
 
         return SendAsync(request, configureHeaders, completionOption, cancellationToken);
 
@@ -249,7 +249,7 @@ public abstract class HttpService
         };
 
         request.Options.Set(TemplateKey, uri.template);
-        request.AddHeaderRequestTemplate(uri.template);
+        request.AddHeaderRequestTemplate(_httpClient.BaseAddress + uri.template);
 
         return SendAsync(request, configureHeaders, completionOption, cancellationToken);
 
@@ -296,7 +296,7 @@ public abstract class HttpService
         using var request = new HttpRequestMessage(HttpMethod.Delete, uri.uri);
 
         request.Options.Set(TemplateKey, uri.template);
-        request.AddHeaderRequestTemplate(uri.template);
+        request.AddHeaderRequestTemplate(_httpClient.BaseAddress + uri.template);
 
         return SendAsync(request, configureHeaders, completionOption, cancellationToken);
 
@@ -444,7 +444,7 @@ public abstract class HttpService
 
         request.Options.TryGetValue(TemplateKey, out var template);
 
-        string message = $"End processing HTTP request {response?.RequestMessage?.Method} {(string.IsNullOrEmpty(template) ? response?.RequestMessage?.RequestUri : _httpClient.BaseAddress + template)} after {stopwatch.GetFormattedTime()} - {(int)response.StatusCode}-{response.StatusCode}";
+        string message = $"End processing HTTP request {response?.RequestMessage?.Method} {(string.IsNullOrEmpty(template) ? response?.RequestMessage?.RequestUri : _httpClient.BaseAddress + template)} after {stopwatch.GetFormattedTime()} - {(int)response.StatusCode} - {response.StatusCode}";
 
         switch (response.StatusCode)
         {

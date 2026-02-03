@@ -142,9 +142,9 @@ public static class ConsoleLogExtensions
         if (string.IsNullOrEmpty(message)) return;
 
         if (_accessor?.HttpContext is not null && _accessor.HttpContext?.Request?.GetCorrelationId() is not null)
-            logger.LogError($"{DateTime.Now.ToPtBrDateTime()}|CRIT|{_accessor.HttpContext?.Request?.GetCorrelationId()}|{message}", args);
+            logger.LogCritical($"{DateTime.Now.ToPtBrDateTime()}|CRIT|{_accessor.HttpContext?.Request?.GetCorrelationId()}|{message}", args);
         else
-            logger.LogError($"{DateTime.Now.ToPtBrDateTime()}|CRIT|{message}", args);
+            logger.LogCritical($"{DateTime.Now.ToPtBrDateTime()}|CRIT|{message}", args);
     }
 
     /// <summary>

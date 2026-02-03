@@ -6,7 +6,7 @@
 		<Nullable>enable</Nullable>
 
 		<PackageId>Zypher.Api.Foundation</PackageId>
-		<Version>1.0.19</Version>
+		<Version>2.0.0</Version>
 		<Authors>Renato Mitherhofer</Authors>
 		<Title>Zypher API Foundation</Title>
 		<Description>Core API building blocks and configuration utilities for Zypher-based APIs.</Description>
@@ -30,8 +30,13 @@
 
 	<ItemGroup>
 		<PackageReference Include="FluentValidation" Version="12.1.1" />
-		<PackageReference Include="NedMonitor" Version="2.0.2" />
-		<PackageReference Include="SwaggleBox" Version="1.0.8" />
+		<PackageReference Include="NedMonitor" Version="2.0.4" />
+		<PackageReference Include="SwaggleBox" Version="2.0.0" />
+		<PackageReference Include="Zypher.Domain.Core" Version="2.0.0" />
+		<PackageReference Include="Zypher.Extensions.Core" Version="2.0.0" />
+		<PackageReference Include="Zypher.Http" Version="2.0.1" />
+		<PackageReference Include="Zypher.Requests" Version="2.0.0" />
+		<PackageReference Include="Zypher.User" Version="2.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -42,12 +47,5 @@
 		<AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
 			<_Parameter1>Zypher.Api.Foundation.Tests</_Parameter1>
 		</AssemblyAttribute>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <ProjectReference Include="..\Zypher.Domain.Core\Zypher.Domain.Core.csproj" />
-	  <ProjectReference Include="..\Zypher.Extensions.Core\Zypher.Extensions.Core.csproj" />
-	  <ProjectReference Include="..\Zypher.Http\Zypher.Http.csproj" />
-	  <ProjectReference Include="..\Zypher.User\Zypher.User.csproj" />
 	</ItemGroup>
 </Project>

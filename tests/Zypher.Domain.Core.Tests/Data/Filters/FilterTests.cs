@@ -1,9 +1,8 @@
-using System.Threading.Tasks;
 using FluentAssertions;
 using Xunit;
 using Zypher.Domain.Core.Data.Filters;
 
-namespace Zypher.Persistence.Abstractions.Tests.Data.Filters;
+namespace Zypher.Domain.Core.Tests.Data.Filters;
 
 public class FilterTests
 {

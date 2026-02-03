@@ -1,4 +1,6 @@
-﻿namespace Zypher.Persistence.Abstractions.Data;
+﻿using Zypher.Domain.Core.Enums;
+
+namespace Zypher.Domain.Core.Data;
 
 /// <summary>
 /// Defines a unit of work contract for managing transaction consistency.
