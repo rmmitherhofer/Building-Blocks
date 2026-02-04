@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http.Headers;
 using Zypher.Http.Exceptions;
@@ -96,10 +97,10 @@ public abstract class HttpService
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         CancellationToken cancellationToken = default)
     {
-        using var request = new HttpRequestMessage(HttpMethod.Get, uri.uri);
+        var request = CreateRequestMessage(HttpMethod.Get, CreateUri(uri.uri));
 
-        request.Options.Set(TemplateKey, uri.template);
-        request.AddHeaderRequestTemplate(_httpClient.BaseAddress + uri.template);
+        request.Options.Set(TemplateKey, uri.template.TrimStart('/'));
+        request.AddHeaderRequestTemplate(_httpClient.BaseAddress + uri.template.TrimStart('/'));
 
         return SendAsync(request, configureHeaders, completionOption, cancellationToken);
     }
@@ -112,12 +113,12 @@ public abstract class HttpService
     /// <param name="completionOption">Completion behavior.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The HTTP response.</returns>
-    protected Task<HttpResponseMessage> GetAsync(string uri,
+    protected Task<HttpResponseMessage> GetAsync([StringSyntax(StringSyntaxAttribute.Uri)] string uri,
         Action<HttpRequestHeaders>? configureHeaders = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         CancellationToken cancellationToken = default)
     {
-        using var request = new HttpRequestMessage(HttpMethod.Get, uri);
+        var request = CreateRequestMessage(HttpMethod.Get, CreateUri(uri));
 
         return SendAsync(request, configureHeaders, completionOption, cancellationToken);
 
@@ -134,19 +135,17 @@ public abstract class HttpService
     /// <param name="completionOption">Completion behavior.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The HTTP response.</returns>
-    protected Task<HttpResponseMessage> PostAsync((string template, string uri) uri, 
+    protected Task<HttpResponseMessage> PostAsync((string template, string uri) uri,
         HttpContent content,
         Action<HttpRequestHeaders>? configureHeaders = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         CancellationToken cancellationToken = default)
     {
-        var request = new HttpRequestMessage(HttpMethod.Post, uri.uri)
-        {
-            Content = content
-        };
+        var request = CreateRequestMessage(HttpMethod.Post, CreateUri(uri.uri));
+        request.Content = content;
 
-        request.Options.Set(TemplateKey, uri.template);
-        request.AddHeaderRequestTemplate(_httpClient.BaseAddress + uri.template);
+        request.Options.Set(TemplateKey, uri.template.TrimStart('/'));
+        request.AddHeaderRequestTemplate(_httpClient.BaseAddress + uri.template.TrimStart('/'));
 
         return SendAsync(request, configureHeaders, completionOption, cancellationToken);
     }
@@ -160,16 +159,14 @@ public abstract class HttpService
     /// <param name="completionOption">Completion behavior.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The HTTP response.</returns>
-    protected Task<HttpResponseMessage> PostAsync(string uri, 
+    protected Task<HttpResponseMessage> PostAsync([StringSyntax(StringSyntaxAttribute.Uri)] string uri,
         HttpContent content,
         Action<HttpRequestHeaders>? configureHeaders = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         CancellationToken cancellationToken = default)
     {
-        using var request = new HttpRequestMessage(HttpMethod.Post, uri)
-        {
-            Content = content
-        };
+        var request = CreateRequestMessage(HttpMethod.Post, CreateUri(uri));
+        request.Content = content;
 
         return SendAsync(request, configureHeaders, completionOption, cancellationToken);
     }
@@ -185,19 +182,17 @@ public abstract class HttpService
     /// <param name="completionOption">Completion behavior.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The HTTP response.</returns>
-    protected Task<HttpResponseMessage> PutAsync((string template, string uri) uri, 
+    protected Task<HttpResponseMessage> PutAsync((string template, string uri) uri,
         HttpContent content,
         Action<HttpRequestHeaders>? configureHeaders = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         CancellationToken cancellationToken = default)
     {
-        using var request = new HttpRequestMessage(HttpMethod.Put, uri.uri)
-        {
-            Content = content
-        };
+        var request = CreateRequestMessage(HttpMethod.Put, CreateUri(uri.uri));
+        request.Content = content;
 
-        request.Options.Set(TemplateKey, uri.template);
-        request.AddHeaderRequestTemplate(_httpClient.BaseAddress + uri.template);
+        request.Options.Set(TemplateKey, uri.template.TrimStart('/'));
+        request.AddHeaderRequestTemplate(_httpClient.BaseAddress + uri.template.TrimStart('/'));
 
         return SendAsync(request, configureHeaders, completionOption, cancellationToken);
 
@@ -212,16 +207,15 @@ public abstract class HttpService
     /// <param name="completionOption">Completion behavior.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The HTTP response.</returns>
-    protected Task<HttpResponseMessage> PutAsync(string uri, 
+    protected Task<HttpResponseMessage> PutAsync([StringSyntax(StringSyntaxAttribute.Uri)] string uri,
         HttpContent content,
         Action<HttpRequestHeaders>? configureHeaders = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         CancellationToken cancellationToken = default)
     {
-        using var request = new HttpRequestMessage(HttpMethod.Put, uri)
-        {
-            Content = content
-        };
+        var request = CreateRequestMessage(HttpMethod.Put, CreateUri(uri));
+        request.Content = content;
+
         return SendAsync(request, configureHeaders, completionOption, cancellationToken);
 
     }
@@ -237,19 +231,17 @@ public abstract class HttpService
     /// <param name="completionOption">Completion behavior.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The HTTP response.</returns>
-    protected Task<HttpResponseMessage> PatchAsync((string template, string uri) uri, 
+    protected Task<HttpResponseMessage> PatchAsync((string template, string uri) uri,
         HttpContent content,
         Action<HttpRequestHeaders>? configureHeaders = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         CancellationToken cancellationToken = default)
     {
-        using var request = new HttpRequestMessage(HttpMethod.Patch, uri.uri)
-        {
-            Content = content
-        };
+        var request = CreateRequestMessage(HttpMethod.Patch, CreateUri(uri.uri));
+        request.Content = content;
 
-        request.Options.Set(TemplateKey, uri.template);
-        request.AddHeaderRequestTemplate(_httpClient.BaseAddress + uri.template);
+        request.Options.Set(TemplateKey, uri.template.TrimStart('/'));
+        request.AddHeaderRequestTemplate(_httpClient.BaseAddress + uri.template.TrimStart('/'));
 
         return SendAsync(request, configureHeaders, completionOption, cancellationToken);
 
@@ -264,16 +256,14 @@ public abstract class HttpService
     /// <param name="completionOption">Completion behavior.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The HTTP response.</returns>
-    protected Task<HttpResponseMessage> PatchAsync(string uri, 
+    protected Task<HttpResponseMessage> PatchAsync([StringSyntax(StringSyntaxAttribute.Uri)] string uri,
         HttpContent content,
         Action<HttpRequestHeaders>? configureHeaders = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         CancellationToken cancellationToken = default)
     {
-        using var request = new HttpRequestMessage(HttpMethod.Patch, uri)
-        {
-            Content = content
-        };
+        var request = CreateRequestMessage(HttpMethod.Patch, CreateUri(uri));
+        request.Content = content;
 
         return SendAsync(request, configureHeaders, completionOption, cancellationToken);
     }
@@ -293,10 +283,10 @@ public abstract class HttpService
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         CancellationToken cancellationToken = default)
     {
-        using var request = new HttpRequestMessage(HttpMethod.Delete, uri.uri);
+        var request = CreateRequestMessage(HttpMethod.Delete, CreateUri(uri.uri));
 
-        request.Options.Set(TemplateKey, uri.template);
-        request.AddHeaderRequestTemplate(_httpClient.BaseAddress + uri.template);
+        request.Options.Set(TemplateKey, uri.template.TrimStart('/'));
+        request.AddHeaderRequestTemplate(_httpClient.BaseAddress + uri.template.TrimStart('/'));
 
         return SendAsync(request, configureHeaders, completionOption, cancellationToken);
 
@@ -310,12 +300,12 @@ public abstract class HttpService
     /// <param name="completionOption">Completion behavior.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>The HTTP response.</returns>
-    protected Task<HttpResponseMessage> DeleteAsync(string uri,
+    protected Task<HttpResponseMessage> DeleteAsync([StringSyntax(StringSyntaxAttribute.Uri)] string uri,
         Action<HttpRequestHeaders>? configureHeaders = null,
         HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
         CancellationToken cancellationToken = default)
     {
-        using var request = new HttpRequestMessage(HttpMethod.Delete, uri);
+        var request = CreateRequestMessage(HttpMethod.Delete, CreateUri(uri));
 
         return SendAsync(request, configureHeaders, completionOption, cancellationToken);
     }
@@ -348,6 +338,16 @@ public abstract class HttpService
 
         return response;
     }
+
+    private static Uri? CreateUri(string? uri) 
+        => string.IsNullOrEmpty(uri) ? null : new Uri(uri.TrimStart('/'), UriKind.RelativeOrAbsolute);
+
+    private HttpRequestMessage CreateRequestMessage(HttpMethod method, Uri? uri) =>
+        new(method, uri)
+        {
+            Version = HttpVersion.Version11,
+            VersionPolicy = HttpVersionPolicy.RequestVersionOrLower
+        };
     #region Validation
 
     /// <summary>
@@ -432,7 +432,7 @@ public abstract class HttpService
             if (request?.Content is not null)
                 contentJson = $"|Content:{await request.Content.ReadAsStringAsync()}";
         }
-        _logger.LogInfo($"Start processing HTTP request {request?.Method.Method} {(string.IsNullOrEmpty(template) ? request?.RequestUri! : _httpClient.BaseAddress + template)}{headersJson}{contentJson}");
+        _logger.LogInfo($"Start processing HTTP request {request?.Method.Method} {(string.IsNullOrEmpty(template) ? _httpClient.BaseAddress + request?.RequestUri!.OriginalString : _httpClient.BaseAddress + template)}{headersJson}{contentJson}");
     }
 
     /// <summary>

@@ -6,7 +6,7 @@
 		<Nullable>enable</Nullable>
 
 		<!-- Versão do pacote -->
-		<Version>2.0.1</Version>
+		<Version>2.0.2</Version>
 		<PackageId>Zypher.Http</PackageId>
 		<Title>Zypher HTTP</Title>
 		<Authors>Renato Mitherhofer</Authors>
