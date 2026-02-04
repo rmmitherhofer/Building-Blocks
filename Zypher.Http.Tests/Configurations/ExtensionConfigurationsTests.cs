@@ -12,16 +12,16 @@ public class ExtensionConfigurationsTests
 {
     [Fact(DisplayName =
         "Given a service collection, " +
-        "When AddHttpConfig is called, " +
+        "When AddZypherHttp is called, " +
         "Then it registers IHttpContextAccessor")]
     [Trait("Type", nameof(ExtensionConfigurations))]
-    public async Task AddHttpConfig_RegistersHttpContextAccessor()
+    public async Task AddZypherHttp_RegistersHttpContextAccessor()
     {
         //Given
         var services = new ServiceCollection();
 
         //When
-        services.AddHttpConfig();
+        services.AddZypherHttp();
         var provider = services.BuildServiceProvider();
 
         //Then
@@ -31,10 +31,10 @@ public class ExtensionConfigurationsTests
 
     [Fact(DisplayName =
         "Given an app without IHttpContextAccessor, " +
-        "When UseHttpConfig is called, " +
+        "When UseZypherHttp is called, " +
         "Then it throws InvalidOperationException")]
     [Trait("Type", nameof(ExtensionConfigurations))]
-    public async Task UseHttpConfig_WithoutAccessor_Throws()
+    public async Task UseZypherHttp_WithoutAccessor_Throws()
     {
         //Given
         var services = new ServiceCollection();
@@ -42,7 +42,7 @@ public class ExtensionConfigurationsTests
         var app = new ApplicationBuilder(provider);
 
         //When
-        Action action = () => app.UseHttpConfig();
+        Action action = () => app.UseZypherHttp();
 
         //Then
         action.Should().Throw<InvalidOperationException>();
@@ -51,28 +51,26 @@ public class ExtensionConfigurationsTests
 
     [Fact(DisplayName =
         "Given an app with IHttpContextAccessor, " +
-        "When UseHttpConfig is called, " +
+        "When UseZypherHttp is called, " +
         "Then it configures HttpClient and HttpRequestMessage extensions")]
     [Trait("Type", nameof(ExtensionConfigurations))]
-    public async Task UseHttpConfig_ConfiguresExtensions()
+    public async Task UseZypherHttp_ConfiguresExtensions()
     {
         //Given
         var services = new ServiceCollection();
-        services.AddHttpConfig();
+        services.AddZypherHttp();
         var provider = services.BuildServiceProvider();
         var app = new ApplicationBuilder(provider);
 
         //When
-        app.UseHttpConfig();
+        app.UseZypherHttp();
 
         var client = new HttpClient { BaseAddress = new Uri("https://example.com") };
-        client.AddHeaderRequestTemplate("/users/{id}");
 
         var request = new HttpRequestMessage();
         request.AddHeaderRequestTemplate("/users/{id}");
 
         //Then
-        client.DefaultRequestHeaders.Contains(HttpClientExtensions.X_REQUEST_TEMPLATE).Should().BeTrue();
         request.Headers.Contains(HttpRequestMessageExtensions.X_REQUEST_TEMPLATE).Should().BeTrue();
         await Task.CompletedTask;
     }

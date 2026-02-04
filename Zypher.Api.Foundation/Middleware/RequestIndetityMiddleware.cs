@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Zypher.Domain.Core.Users;
+using Zypher.User.Users;
 
 namespace Zypher.Api.Foundation.Middleware;
 

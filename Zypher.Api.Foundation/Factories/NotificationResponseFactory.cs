@@ -1,6 +1,7 @@
 ﻿using Zypher.Notifications.Messages;
+using Zypher.Responses;
 
-namespace Zypher.Responses.Factories;
+namespace Zypher.Api.Foundation.Factories;
 
 /// <summary>
 /// Provides factory methods to convert <see cref="Notification"/> domain entities 

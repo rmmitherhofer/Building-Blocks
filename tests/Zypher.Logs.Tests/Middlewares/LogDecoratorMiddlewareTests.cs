@@ -6,6 +6,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Xunit;
+using Zypher.Logs.Extensions;
 using Zypher.Logs.Middlewares;
 
 namespace Zypher.Logs.Tests.Middlewares;
@@ -147,8 +148,11 @@ public class LogDecoratorMiddlewareTests
         context.Request.Scheme = "https";
         context.Request.Host = new HostString("example.com");
         context.Request.Path = "/test";
-        context.Request.Headers[Zypher.Extensions.Core.HttpRequestExtensions.USER_ID] = "user-1";
-        context.Request.Headers[Zypher.Extensions.Core.HttpRequestExtensions.USER_ACCOUNT] = "account-1";
+
+        context.Request.Headers[HttpRequestExtensions.USER_ID] = "user-1";
+        context.Request.Headers[HttpRequestExtensions.USER_ACCOUNT] = "account-1";
+        context.Request.Headers[HttpRequestExtensions.USER_ID] = "user-1";
+        context.Request.Headers[HttpRequestExtensions.USER_ACCOUNT] = "account-1";
 
         var middleware = new LogDecoratorMiddleware(new TestLogger(), next);
 

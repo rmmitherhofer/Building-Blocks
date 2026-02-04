@@ -1,11 +1,10 @@
-using System;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
-using Zypher.Domain.Core.Configurations;
-using Zypher.Domain.Core.Users;
+using Zypher.User.Configurations;
+using Zypher.User.Users;
 
-namespace Zypher.Domain.Core.Tests.Configurations;
+namespace Zypher.User.Tests.Configurations;
 
 public class CoreConfigurationTests
 {
@@ -25,16 +24,16 @@ public class CoreConfigurationTests
 
     [Fact(DisplayName =
         "Given a service collection, " +
-        "When AddDomainCoreServices is called, " +
+        "When AddAspNetUser is called, " +
         "Then it registers core services")]
-    [Trait("Type", nameof(CoreConfiguration))]
-    public async Task AddDomainCoreServices_RegistersServices()
+    [Trait("Type", nameof(UserConfiguration))]
+    public async Task AddAspNetUser_RegistersServices()
     {
         //Given
         var services = new ServiceCollection();
 
         //When
-        services.AddDomainCoreServices();
+        services.AddAspNetUser();
         var provider = services.BuildServiceProvider();
 
         //Then
@@ -45,16 +44,16 @@ public class CoreConfigurationTests
 
     [Fact(DisplayName =
         "Given a null service collection, " +
-        "When AddDomainCoreServices is called, " +
+        "When AddAspNetUser is called, " +
         "Then it throws ArgumentNullException")]
-    [Trait("Type", nameof(CoreConfiguration))]
-    public async Task AddDomainCoreServices_NullServices_Throws()
+    [Trait("Type", nameof(UserConfiguration))]
+    public async Task AddAspNetUser_NullServices_Throws()
     {
         //Given
         IServiceCollection? services = null;
 
         //When
-        Action action = () => services!.AddDomainCoreServices();
+        Action action = () => services!.AddAspNetUser();
 
         //Then
         action.Should().Throw<ArgumentNullException>();
@@ -63,17 +62,17 @@ public class CoreConfigurationTests
 
     [Fact(DisplayName =
         "Given an existing IAspNetUser registration, " +
-        "When AddDomainCoreServices is called, " +
+        "When AddAspNetUser is called, " +
         "Then it does not replace the registration")]
-    [Trait("Type", nameof(CoreConfiguration))]
-    public async Task AddDomainCoreServices_DoesNotReplaceExisting()
+    [Trait("Type", nameof(UserConfiguration))]
+    public async Task AddAspNetUser_DoesNotReplaceExisting()
     {
         //Given
         var services = new ServiceCollection();
         services.AddScoped<IAspNetUser, FakeAspNetUser>();
 
         //When
-        services.AddDomainCoreServices();
+        services.AddAspNetUser();
         var provider = services.BuildServiceProvider();
 
         //Then

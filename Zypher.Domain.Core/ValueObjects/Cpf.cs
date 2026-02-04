@@ -1,4 +1,4 @@
-﻿using Zypher.Domain.Exceptions;
+﻿using Zypher.Domain.Core.Exceptions;
 
 namespace Zypher.Domain.Core.ValueObjects;
 

@@ -2,20 +2,18 @@
 using System.Security.Claims;
 using Zypher.User.Extensions;
 
-namespace Zypher.Domain.Core.Users;
+namespace Zypher.User.Users;
 
 /// <summary>
 /// Implementation of <see cref="IAspNetUser"/> that retrieves user information from the current HTTP context.
 /// </summary>
-public class AspNetUser : IAspNetUser
+/// <remarks>
+/// Initializes a new instance of the <see cref="AspNetUser"/> class.
+/// </remarks>
+/// <param name="accessor">HTTP context accessor to access the current user.</param>
+internal class AspNetUser(IHttpContextAccessor accessor) : IAspNetUser
 {
-    private readonly IHttpContextAccessor _accessor;
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="AspNetUser"/> class.
-    /// </summary>
-    /// <param name="accessor">HTTP context accessor to access the current user.</param>
-    public AspNetUser(IHttpContextAccessor accessor) => _accessor = accessor;
+    private readonly IHttpContextAccessor _accessor = accessor;
 
     /// <summary>
     /// Gets the current user's name.

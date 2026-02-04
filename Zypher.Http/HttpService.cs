@@ -1,7 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
-using Zypher.Extensions.Core;
+using System.Net.Http.Headers;
 using Zypher.Http.Exceptions;
 using Zypher.Http.Extensions;
 using Zypher.Logs.Extensions;
@@ -12,42 +13,57 @@ using Zypher.Responses;
 namespace Zypher.Http;
 
 /// <summary>
-/// Abstract base class for making HTTP requests with integrated logging, header injection, 
-/// response validation, and support for both synchronous and asynchronous execution of all major HTTP verbs.
+/// Provides a reusable base for executing HTTP requests with built-in:
+/// <list type="bullet">
+/// <item>Context-aware request logging</item>
+/// <item>Per-request header customization</item>
+/// <item>Response validation and error propagation</item>
+/// <item>Execution time measurement</item>
+/// </list>
 /// </summary>
+/// <remarks>
+/// This service is designed to be inherited by API clients and ensures that:
+/// <list type="bullet">
+/// <item>Headers are isolated per request (thread-safe)</item>
+/// <item>Request templates can be tracked for structured logging</item>
+/// <item>Failures are converted into domain notifications</item>
+/// </list>
+/// </remarks>
 public abstract class HttpService
 {
     /// <summary>
-    /// Stores the URI template used to identify the logical route in logs.
+    /// Stores the request template used for structured logging and route correlation.
     /// </summary>
-    private string _templateUri = string.Empty;
+    private static readonly HttpRequestOptionsKey<string> TemplateKey = new("__TEMPLATE_URI_KEY__");
     /// <summary>
-    /// Logger for logging request and response inf
+    /// Logger responsible for request lifecycle logging.
     /// </summary>
     protected ILogger _logger;
     /// <summary>
-    /// HTTP client instance used for sending requests.
+    /// Underlying HTTP client used to perform network calls.
     /// </summary>
     protected HttpClient _httpClient;
     /// <summary>
-    /// Stopwatch for measuring request duration.
-    /// </summary>
-    private Stopwatch _stopwatch;
-    /// <summary>
-    /// Indicates whether detailed request and response logging (headers and body) is enabled.
+    /// Enables detailed request and response logging including headers and payloads.
     /// </summary>
     private bool IsDetailedLoggingEnabled = false;
     /// <summary>
-    /// Notification handler for capturing validation or API errors.
+    /// Collects domain-level notifications produced from API responses.
     /// </summary>
     protected readonly INotificationHandler _notification;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="HttpService"/> class.
+    /// Creates a new HTTP service instance with logging and notification support.
     /// </summary>
-    /// <param name="httpClient">An <see cref="HttpClient"/> instance used to send HTTP requests.</param>
-    /// <param name="notification">An implementation of <see cref="INotificationHandler"/> for recording errors and issues.</param>
-    /// <param name="logger">An <see cref="ILogger"/> instance for writing logs related to requests and responses.</param>
+    /// <param name="httpClient">
+    /// Preconfigured <see cref="HttpClient"/> used to execute requests.
+    /// </param>
+    /// <param name="notification">
+    /// Handler responsible for collecting API validation and error notifications.
+    /// </param>
+    /// <param name="logger">
+    /// Logger used to record request lifecycle events.
+    /// </param>
     protected HttpService(HttpClient httpClient, INotificationHandler notification, ILogger logger)
     {
         ArgumentNullException.ThrowIfNull(httpClient, nameof(HttpClient));
@@ -60,300 +76,287 @@ public abstract class HttpService
 
     #region GET
     /// <summary>
-    /// Sends an asynchronous GET request to the specified URI and sets a template identifier for contextual logging.
+    /// Executes a GET request using a logical route template for structured logging.
     /// </summary>
-    /// <param name="uri">A tuple containing the template identifier and the request URI.</param>
-    /// <returns>The HTTP response message.</returns>
+    /// <param name="uri">
+    /// Tuple containing the route template identifier and the actual request URI.
+    /// </param>
+    /// <param name="configureHeaders">
+    /// Optional delegate for configuring request-specific headers.
+    /// </param>
+    /// <param name="completionOption">
+    /// Controls when the HTTP operation is considered complete.
+    /// </param>
+    /// <param name="cancellationToken">
+    /// Token used to cancel the request.
+    /// </param>
+    /// <returns>The HTTP response.</returns>
 
-    protected Task<HttpResponseMessage> GetAsync((string template, string uri) uri)
+    protected Task<HttpResponseMessage> GetAsync((string template, string uri) uri,
+        Action<HttpRequestHeaders>? configureHeaders = null,
+        HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
+        CancellationToken cancellationToken = default)
     {
-        _templateUri = uri.template;
-        _httpClient.AddHeaderRequestTemplate(uri.template);
+        var request = CreateRequestMessage(HttpMethod.Get, CreateUri(uri.uri));
 
-        return GetAsync(uri.uri);
+        request.Options.Set(TemplateKey, uri.template.TrimStart('/'));
+        request.AddHeaderRequestTemplate(_httpClient.BaseAddress + uri.template.TrimStart('/'));
+
+        return SendAsync(request, configureHeaders, completionOption, cancellationToken);
     }
 
     /// <summary>
-    /// Sends a GET request asynchronously to the specified URI.
+    /// Executes a GET request directly to the specified URI.
     /// </summary>
-    protected Task<HttpResponseMessage> GetAsync(string uri)
+    /// <param name="uri">Target request URI.</param>
+    /// <param name="configureHeaders">Optional header configuration.</param>
+    /// <param name="completionOption">Completion behavior.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The HTTP response.</returns>
+    protected Task<HttpResponseMessage> GetAsync([StringSyntax(StringSyntaxAttribute.Uri)] string uri,
+        Action<HttpRequestHeaders>? configureHeaders = null,
+        HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
+        CancellationToken cancellationToken = default)
     {
-        _httpClient.AddDefaultHeaders();
+        var request = CreateRequestMessage(HttpMethod.Get, CreateUri(uri));
 
-        LogRequest(HttpMethod.Get.Method, new Uri(_httpClient.BaseAddress! + uri));
+        return SendAsync(request, configureHeaders, completionOption, cancellationToken);
 
-        var response = _httpClient.GetAsync(uri);
-
-        LogResponse(response.Result);
-
-        return response;
-    }
-    /// <summary>
-    /// Sends a synchronous GET request to the specified URI and sets a template identifier for contextual logging.
-    /// </summary>
-
-    protected HttpResponseMessage Get((string template, string uri) uri)
-    {
-        _templateUri = uri.template;
-        _httpClient.AddHeaderRequestTemplate(uri.template);
-
-        return Get(uri.uri);
-    }
-
-    /// <summary>
-    /// Sends a GET request synchronously to the specified URI.
-    /// </summary>
-    protected HttpResponseMessage Get(string uri)
-    {
-        _httpClient.AddDefaultHeaders();
-
-        LogRequest(HttpMethod.Get.Method, new Uri(_httpClient.BaseAddress! + uri));
-
-        var response = _httpClient.GetAsync(uri).Result;
-
-        LogResponse(response);
-
-        return response;
     }
     #endregion
 
     #region POST
     /// <summary>
-    /// Sends an asynchronous POST request to the specified URI and sets a template identifier for contextual logging.
+    /// Executes a POST request using a logical route template for structured logging.
     /// </summary>
-    /// <param name="uri">A tuple containing the template identifier and the request URI.</param>
-    /// <returns>The HTTP response message.</returns>
-    protected Task<HttpResponseMessage> PostAsync((string template, string uri) uri, HttpContent content)
+    /// <param name="uri">Template and request URI.</param>
+    /// <param name="content">Request body.</param>
+    /// <param name="configureHeaders">Optional header configuration.</param>
+    /// <param name="completionOption">Completion behavior.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The HTTP response.</returns>
+    protected Task<HttpResponseMessage> PostAsync((string template, string uri) uri,
+        HttpContent content,
+        Action<HttpRequestHeaders>? configureHeaders = null,
+        HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
+        CancellationToken cancellationToken = default)
     {
-        _templateUri = uri.template;
-        _httpClient.AddHeaderRequestTemplate(uri.template);
+        var request = CreateRequestMessage(HttpMethod.Post, CreateUri(uri.uri));
+        request.Content = content;
 
-        return PostAsync(uri.uri, content);
+        request.Options.Set(TemplateKey, uri.template.TrimStart('/'));
+        request.AddHeaderRequestTemplate(_httpClient.BaseAddress + uri.template.TrimStart('/'));
+
+        return SendAsync(request, configureHeaders, completionOption, cancellationToken);
     }
 
     /// <summary>
-    /// Sends a POST request asynchronously to the specified URI with the provided content.
+    /// Executes a POST request to the specified URI.
     /// </summary>
-    protected Task<HttpResponseMessage> PostAsync(string uri, HttpContent content)
+    /// <param name="uri">Target request URI.</param>
+    /// <param name="content">Request body.</param>
+    /// <param name="configureHeaders">Optional header configuration.</param>
+    /// <param name="completionOption">Completion behavior.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The HTTP response.</returns>
+    protected Task<HttpResponseMessage> PostAsync([StringSyntax(StringSyntaxAttribute.Uri)] string uri,
+        HttpContent content,
+        Action<HttpRequestHeaders>? configureHeaders = null,
+        HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
+        CancellationToken cancellationToken = default)
     {
-        _httpClient.AddDefaultHeaders();
+        var request = CreateRequestMessage(HttpMethod.Post, CreateUri(uri));
+        request.Content = content;
 
-        LogRequest(HttpMethod.Post.Method, new Uri(_httpClient.BaseAddress! + uri), content);
-
-        var response = _httpClient.PostAsync(uri, content);
-
-        LogResponse(response.Result);
-
-        return response;
-    }
-    /// <summary>
-    /// Sends a synchronous POST request to the specified URI and sets a template identifier for contextual logging.
-    /// </summary>
-    protected HttpResponseMessage Post((string template, string uri) uri, HttpContent content)
-    {
-        _templateUri = uri.template;
-        _httpClient.AddHeaderRequestTemplate(uri.template);
-
-        return Post(uri.uri, content);
-    }
-    /// <summary>
-    /// Sends a POST request synchronously to the specified URI with the provided content.
-    /// </summary>
-    protected HttpResponseMessage Post(string uri, HttpContent content)
-    {
-        _httpClient.AddDefaultHeaders();
-
-        LogRequest(HttpMethod.Post.Method, new Uri(_httpClient.BaseAddress! + uri), content);
-
-        var response = _httpClient.PostAsync(uri, content).Result;
-
-        LogResponse(response);
-
-        return response;
+        return SendAsync(request, configureHeaders, completionOption, cancellationToken);
     }
     #endregion
 
     #region PUT
     /// <summary>
-    /// Sends an asynchronous PUT request to the specified URI and sets a template identifier for contextual logging.
+    /// Executes a PUT request using a logical route template for structured logging.
     /// </summary>
-    /// <param name="uri">A tuple containing the template identifier and the request URI.</param>
-    /// <returns>The HTTP response message.</returns>
-    protected Task<HttpResponseMessage> PutAsync((string template, string uri) uri, HttpContent content)
+    /// <param name="uri">Template and request URI.</param>
+    /// <param name="content">Request body.</param>
+    /// <param name="configureHeaders">Optional header configuration.</param>
+    /// <param name="completionOption">Completion behavior.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The HTTP response.</returns>
+    protected Task<HttpResponseMessage> PutAsync((string template, string uri) uri,
+        HttpContent content,
+        Action<HttpRequestHeaders>? configureHeaders = null,
+        HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
+        CancellationToken cancellationToken = default)
     {
-        _templateUri = uri.template;
-        _httpClient.AddHeaderRequestTemplate(uri.template);
+        var request = CreateRequestMessage(HttpMethod.Put, CreateUri(uri.uri));
+        request.Content = content;
 
-        return PutAsync(uri.uri, content);
+        request.Options.Set(TemplateKey, uri.template.TrimStart('/'));
+        request.AddHeaderRequestTemplate(_httpClient.BaseAddress + uri.template.TrimStart('/'));
+
+        return SendAsync(request, configureHeaders, completionOption, cancellationToken);
+
     }
 
     /// <summary>
-    /// Sends a PUT request asynchronously to the specified URI with the provided content.
+    /// Executes a PUT request to the specified URI.
     /// </summary>
-    protected Task<HttpResponseMessage> PutAsync(string uri, HttpContent content)
+    /// <param name="uri">Target request URI.</param>
+    /// <param name="content">Request body.</param>
+    /// <param name="configureHeaders">Optional header configuration.</param>
+    /// <param name="completionOption">Completion behavior.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The HTTP response.</returns>
+    protected Task<HttpResponseMessage> PutAsync([StringSyntax(StringSyntaxAttribute.Uri)] string uri,
+        HttpContent content,
+        Action<HttpRequestHeaders>? configureHeaders = null,
+        HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
+        CancellationToken cancellationToken = default)
     {
-        _httpClient.AddDefaultHeaders();
+        var request = CreateRequestMessage(HttpMethod.Put, CreateUri(uri));
+        request.Content = content;
 
-        LogRequest(HttpMethod.Put.Method, new Uri(_httpClient.BaseAddress! + uri));
+        return SendAsync(request, configureHeaders, completionOption, cancellationToken);
 
-        var response = _httpClient.PutAsync(uri, content);
-
-        LogResponse(response.Result);
-
-        return response;
     }
-    /// <summary>
-    /// Sends a synchronous PUT request to the specified URI and sets a template identifier for contextual logging.
-    /// </summary>
-    protected HttpResponseMessage Put((string template, string uri) uri, HttpContent content)
-    {
-        _templateUri = uri.template;
-        _httpClient.AddHeaderRequestTemplate(uri.template);
-
-        return Put(uri.uri, content);
-    }
-
-    /// <summary>
-    /// Sends a PUT request synchronously to the specified URI with the provided content.
-    /// </summary>
-    protected HttpResponseMessage Put(string uri, HttpContent content)
-    {
-        _httpClient.AddDefaultHeaders();
-
-        LogRequest(HttpMethod.Put.Method, new Uri(_httpClient.BaseAddress! + uri), content);
-
-        var response = _httpClient.PutAsync(uri, content).Result;
-
-        LogResponse(response);
-
-        return response;
-    }
-
     #endregion
 
     #region PATCH
     /// <summary>
-    /// Sends an asynchronous PATCH request to the specified URI and sets a template identifier for contextual logging.
+    /// Executes a PATCH request using a logical route template for structured logging.
     /// </summary>
-    /// <param name="uri">A tuple containing the template identifier and the request URI.</param>
-    /// <returns>The HTTP response message.</returns>
-    protected Task<HttpResponseMessage> PatchAsync((string template, string uri) uri, HttpContent content)
+    /// <param name="uri">Template and request URI.</param>
+    /// <param name="content">Request body.</param>
+    /// <param name="configureHeaders">Optional header configuration.</param>
+    /// <param name="completionOption">Completion behavior.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The HTTP response.</returns>
+    protected Task<HttpResponseMessage> PatchAsync((string template, string uri) uri,
+        HttpContent content,
+        Action<HttpRequestHeaders>? configureHeaders = null,
+        HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
+        CancellationToken cancellationToken = default)
     {
-        _templateUri = uri.template;
-        _httpClient.AddHeaderRequestTemplate(uri.template);
+        var request = CreateRequestMessage(HttpMethod.Patch, CreateUri(uri.uri));
+        request.Content = content;
 
-        return PatchAsync(uri.uri, content);
+        request.Options.Set(TemplateKey, uri.template.TrimStart('/'));
+        request.AddHeaderRequestTemplate(_httpClient.BaseAddress + uri.template.TrimStart('/'));
+
+        return SendAsync(request, configureHeaders, completionOption, cancellationToken);
+
     }
 
     /// <summary>
-    /// Sends a PATCH request asynchronously to the specified URI with the provided content.
+    /// Executes a PATCH request to the specified URI.
     /// </summary>
-    protected Task<HttpResponseMessage> PatchAsync(string uri, HttpContent content)
+    /// <param name="uri">Target request URI.</param>
+    /// <param name="content">Request body.</param>
+    /// <param name="configureHeaders">Optional header configuration.</param>
+    /// <param name="completionOption">Completion behavior.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The HTTP response.</returns>
+    protected Task<HttpResponseMessage> PatchAsync([StringSyntax(StringSyntaxAttribute.Uri)] string uri,
+        HttpContent content,
+        Action<HttpRequestHeaders>? configureHeaders = null,
+        HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
+        CancellationToken cancellationToken = default)
     {
-        _httpClient.AddDefaultHeaders();
+        var request = CreateRequestMessage(HttpMethod.Patch, CreateUri(uri));
+        request.Content = content;
 
-        LogRequest(HttpMethod.Patch.Method, new Uri(_httpClient.BaseAddress! + uri));
-
-        var response = _httpClient.PatchAsync(uri, content);
-
-        LogResponse(response.Result);
-
-        return response;
-    }
-    /// <summary>
-    /// Sends a synchronous PATCH request to the specified URI and sets a template identifier for contextual logging.
-    /// </summary>
-    protected HttpResponseMessage Patch((string template, string uri) uri, HttpContent content)
-    {
-        _templateUri = uri.template;
-        _httpClient.AddHeaderRequestTemplate(uri.template);
-
-        return Patch(uri.uri, content);
-    }
-    /// <summary>
-    /// Sends a PATCH request synchronously to the specified URI with the provided content.
-    /// </summary>
-    protected HttpResponseMessage Patch(string uri, HttpContent content)
-    {
-        _httpClient.AddDefaultHeaders();
-
-        LogRequest(HttpMethod.Patch.Method, new Uri(_httpClient.BaseAddress! + uri), content);
-
-        var response = _httpClient.PatchAsync(uri, content).Result;
-
-        LogResponse(response);
-
-        return response;
+        return SendAsync(request, configureHeaders, completionOption, cancellationToken);
     }
     #endregion
 
     #region DELETE
     /// <summary>
-    /// Sends an asynchronous DELETE request to the specified URI and sets a template identifier for contextual logging.
+    /// Executes a DELETE request using a logical route template for structured logging.
     /// </summary>
-    /// <param name="uri">A tuple containing the template identifier and the request URI.</param>
-    /// <returns>The HTTP response message.</returns>
-    protected Task<HttpResponseMessage> DeleteAsync((string template, string uri) uri)
+    /// <param name="uri">Template and request URI.</param>
+    /// <param name="configureHeaders">Optional header configuration.</param>
+    /// <param name="completionOption">Completion behavior.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The HTTP response.</returns>
+    protected Task<HttpResponseMessage> DeleteAsync((string template, string uri) uri,
+        Action<HttpRequestHeaders>? configureHeaders = null,
+        HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
+        CancellationToken cancellationToken = default)
     {
-        _templateUri = uri.template;
-        _httpClient.AddHeaderRequestTemplate(uri.template);
+        var request = CreateRequestMessage(HttpMethod.Delete, CreateUri(uri.uri));
 
-        return DeleteAsync(uri.uri);
+        request.Options.Set(TemplateKey, uri.template.TrimStart('/'));
+        request.AddHeaderRequestTemplate(_httpClient.BaseAddress + uri.template.TrimStart('/'));
+
+        return SendAsync(request, configureHeaders, completionOption, cancellationToken);
+
     }
 
     /// <summary>
-    /// Sends a DELETE request asynchronously to the specified URI.
+    /// Executes a DELETE request to the specified URI.
     /// </summary>
-    protected Task<HttpResponseMessage> DeleteAsync(string uri)
+    /// <param name="uri">Target request URI.</param>
+    /// <param name="configureHeaders">Optional header configuration.</param>
+    /// <param name="completionOption">Completion behavior.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The HTTP response.</returns>
+    protected Task<HttpResponseMessage> DeleteAsync([StringSyntax(StringSyntaxAttribute.Uri)] string uri,
+        Action<HttpRequestHeaders>? configureHeaders = null,
+        HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
+        CancellationToken cancellationToken = default)
     {
-        _httpClient.AddDefaultHeaders();
+        var request = CreateRequestMessage(HttpMethod.Delete, CreateUri(uri));
 
-        LogRequest(HttpMethod.Delete.Method, new Uri(_httpClient.BaseAddress! + uri));
-
-        var response = _httpClient.DeleteAsync(uri);
-
-        LogResponse(response.Result);
-
-        return response;
+        return SendAsync(request, configureHeaders, completionOption, cancellationToken);
     }
-    /// <summary>
-    /// Sends a synchronous DELETE request to the specified URI and sets a template identifier for contextual logging.
-    /// </summary>
-    protected HttpResponseMessage Delete((string template, string uri) uri)
-    {
-        _templateUri = uri.template;
-        _httpClient.AddHeaderRequestTemplate(uri.template);
-
-        return Delete(uri.uri);
-    }
-
-    /// <summary>
-    /// Sends a DELETE request synchronously to the specified URI.
-    /// </summary>
-    protected HttpResponseMessage Delete(string uri)
-    {
-        _httpClient.AddDefaultHeaders();
-
-        LogRequest(HttpMethod.Delete.Method, new Uri(_httpClient.BaseAddress! + uri));
-
-        var response = _httpClient.DeleteAsync(uri).Result;
-
-        LogResponse(response);
-
-        return response;
-    }
-
     #endregion
 
+    /// <summary>
+    /// Executes the HTTP request applying default headers, logging
+    /// and execution timing consistently across all HTTP verbs.
+    /// </summary>
+    /// <param name="request">Prepared request message.</param>
+    /// <param name="configureHeaders">Optional header configuration.</param>
+    /// <param name="completionOption">Completion behavior.</param>
+    /// <param name="cancellationToken">Cancellation token.</param>
+    /// <returns>The HTTP response.</returns>
+    private async Task<HttpResponseMessage> SendAsync(
+        HttpRequestMessage request,
+        Action<HttpRequestHeaders>? configureHeaders = null,
+        HttpCompletionOption completionOption = HttpCompletionOption.ResponseContentRead,
+        CancellationToken cancellationToken = default)
+    {
+        request.AddDefaultHeaders();
+        request.ConfigureHeaders(configureHeaders);
+
+        await LogRequestAsync(request);
+
+        var stopwatch = Stopwatch.StartNew();
+        var response = await _httpClient.SendAsync(request, completionOption, cancellationToken);
+
+        LogResponse(request, response, stopwatch);
+
+        return response;
+    }
+
+    private static Uri? CreateUri(string? uri) 
+        => string.IsNullOrEmpty(uri) ? null : new Uri(uri.TrimStart('/'), UriKind.RelativeOrAbsolute);
+
+    private HttpRequestMessage CreateRequestMessage(HttpMethod method, Uri? uri) =>
+        new(method, uri)
+        {
+            Version = HttpVersion.Version11,
+            VersionPolicy = HttpVersionPolicy.RequestVersionOrLower
+        };
     #region Validation
 
     /// <summary>
-    /// Validates the HTTP response and deserializes its content to a specified type if no critical errors are found.
+    /// Validates the HTTP response and propagates API issues as domain notifications.
     /// </summary>
-    /// <typeparam name="TResponse">The type to deserialize the HTTP response content into.</typeparam>
-    /// <param name="response">The HTTP response message to validate and process.</param>
-    /// <returns>The deserialized response object, or null if response is empty.</returns>
-    protected async Task<TResponse?> ValidateAndReturn<TResponse>(HttpResponseMessage response)
+    /// <typeparam name="TResponse">Expected response type.</typeparam>
+    /// <param name="response">HTTP response.</param>
+    /// <returns>Deserialized response or null.</returns>
+    protected virtual async Task<TResponse?> ValidateAndReturn<TResponse>(HttpResponseMessage response)
     {
         await ValidateResponse(response);
 
@@ -361,22 +364,27 @@ public abstract class HttpService
     }
 
     /// <summary>
-    /// Validates the HTTP response, notifies issues, and optionally throws exceptions for unexpected status codes.
+    /// Processes API errors, generating notifications or throwing exceptions when required.
     /// </summary>
-    /// <param name="response">The HTTP response message to validate.</param>
-    /// <param name="throwException">Determines whether to throw an exception on unexpected status codes.</param>
-    protected async Task ValidateResponse(HttpResponseMessage response, bool throwException = false)
+    /// <param name="response">HTTP response.</param>
+    /// <param name="throwException">
+    /// Indicates whether unexpected status codes should raise exceptions.
+    /// </param>
+    protected virtual async Task ValidateResponse(HttpResponseMessage response, bool throwException = false)
     {
         if (response.HasErrors(throwException))
         {
             var apiResponse = await response.ReadAsAsync<ApiResponse>();
 
-            foreach (var issue in apiResponse.Issues)
+            if (apiResponse is not null && apiResponse.Issues is not null && apiResponse.Issues.Any())
             {
-                if (issue.Details?.Any() != true) continue;
+                foreach (var issue in apiResponse.Issues)
+                {
+                    if (issue.Details?.Any() != true) continue;
 
-                foreach (var error in issue.Details)
-                    _notification.Notify(new Notification(error.LogLevel ?? LogLevel.None, error.Type, error.Key, error.Value, error.Detail));
+                    foreach (var error in issue.Details)
+                        _notification.Notify(new Notification(error.LogLevel ?? LogLevel.None, error.Type, error.Key, error.Value, error.Detail));
+                }
             }
 
             switch (response.StatusCode)
@@ -395,7 +403,7 @@ public abstract class HttpService
                 case HttpStatusCode.IMUsed:
                     break;
                 default:
-                    throw new CustomHttpRequestException($"{response.RequestMessage.Method} - {response.RequestMessage.RequestUri} - {(int)response.StatusCode} - {response.StatusCode}");
+                    throw new CustomHttpRequestException($"{response.RequestMessage?.Method} - {response.RequestMessage?.RequestUri} - {(int)response.StatusCode} - {response.StatusCode}");
             }
         }
     }
@@ -409,33 +417,34 @@ public abstract class HttpService
     #region Logs
 
     /// <summary>
-    /// Logs the start of an HTTP request including method, URI, headers, and optional content.
+    /// Logs the start of the HTTP request including optional headers and payload.
     /// </summary>
-    protected void LogRequest(string httpMehod, Uri uri, HttpContent? content = null)
+    protected virtual async Task LogRequestAsync(HttpRequestMessage request)
     {
-        _stopwatch = new();
-        _stopwatch.Start();
+        request.Options.TryGetValue(TemplateKey, out var template);
 
         var headersJson = string.Empty;
         var contentJson = string.Empty;
         if (IsDetailedLoggingEnabled)
         {
-            headersJson = $"|Headers:{_httpClient.GetHeadersJsonFormat()}";
+            headersJson = $"|Headers:{request.GetHeadersJsonFormat()}";
 
-            if (content is not null)
-                contentJson = $"|Content:{content.ReadAsStringAsync().Result}";
+            if (request?.Content is not null)
+                contentJson = $"|Content:{await request.Content.ReadAsStringAsync()}";
         }
-        _logger.LogInfo($"Start processing HTTP request {httpMehod} {(string.IsNullOrEmpty(_templateUri) ? uri : _httpClient.BaseAddress + _templateUri)}{headersJson}{contentJson}");
+        _logger.LogInfo($"Start processing HTTP request {request?.Method.Method} {(string.IsNullOrEmpty(template) ? _httpClient.BaseAddress + request?.RequestUri!.OriginalString : _httpClient.BaseAddress + template)}{headersJson}{contentJson}");
     }
 
     /// <summary>
-    /// Logs the end of an HTTP request including method, URI, elapsed time and response status.
+    /// Logs the end of the HTTP request including duration and status classification.
     /// </summary>
-    protected void LogResponse(HttpResponseMessage response)
+    protected virtual void LogResponse(HttpRequestMessage request, HttpResponseMessage response, Stopwatch stopwatch)
     {
-        _stopwatch.Stop();
+        stopwatch.Stop();
 
-        string message = $"End processing HTTP request {response?.RequestMessage?.Method} {(string.IsNullOrEmpty(_templateUri) ? response?.RequestMessage?.RequestUri : _httpClient.BaseAddress + _templateUri)} after {_stopwatch.GetFormattedTime()} - {(int)response.StatusCode}-{response.StatusCode}";
+        request.Options.TryGetValue(TemplateKey, out var template);
+
+        string message = $"End processing HTTP request {response?.RequestMessage?.Method} {(string.IsNullOrEmpty(template) ? response?.RequestMessage?.RequestUri : _httpClient.BaseAddress + template)} after {stopwatch.GetFormattedTime()} - {(int)response.StatusCode} - {response.StatusCode}";
 
         switch (response.StatusCode)
         {

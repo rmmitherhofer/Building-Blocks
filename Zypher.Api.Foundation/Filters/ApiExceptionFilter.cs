@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net;
-using Zypher.Domain.Exceptions;
+using Zypher.Domain.Core.Exceptions;
 using Zypher.Http.Exceptions;
 
 namespace Zypher.Api.Foundation.Filters;

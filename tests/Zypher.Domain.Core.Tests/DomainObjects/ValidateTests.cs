@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using FluentAssertions;
 using Xunit;
 using Zypher.Domain.Core.DomainObjects;
-using Zypher.Domain.Exceptions;
+using Zypher.Domain.Core.Exceptions;
 
 namespace Zypher.Domain.Core.Tests.DomainObjects;
 

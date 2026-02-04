@@ -54,8 +54,7 @@ public static class HttpResponseMessageExtensions
 
         try
         {
-            response.EnsureSuccessStatusCode();
-            return false;
+            return !response.IsSuccessStatusCode;
         }
         catch
         {

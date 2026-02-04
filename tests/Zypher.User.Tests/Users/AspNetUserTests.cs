@@ -1,12 +1,11 @@
-using System.Linq;
-using System.Security.Claims;
 using FluentAssertions;
 using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 using Xunit;
-using Zypher.Domain.Core.Users;
 using Zypher.User.Extensions;
+using Zypher.User.Users;
 
-namespace Zypher.Domain.Core.Tests.Users;
+namespace Zypher.User.Tests.Users;
 
 public class AspNetUserTests
 {

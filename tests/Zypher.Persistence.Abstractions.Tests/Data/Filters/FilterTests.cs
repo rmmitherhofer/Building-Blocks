@@ -1,7 +1,7 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using Xunit;
-using Zypher.Persistence.Abstractions.Data.Filters;
+using Zypher.Domain.Core.Data.Filters;
 
 namespace Zypher.Persistence.Abstractions.Tests.Data.Filters;
 

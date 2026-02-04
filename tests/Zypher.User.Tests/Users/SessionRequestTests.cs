@@ -1,9 +1,8 @@
-using System.Threading.Tasks;
 using FluentAssertions;
 using Xunit;
-using Zypher.Domain.Core.Users;
+using Zypher.User.Users;
 
-namespace Zypher.Domain.Core.Tests.Users;
+namespace Zypher.User.Tests.Users;
 
 public class SessionRequestTests
 {

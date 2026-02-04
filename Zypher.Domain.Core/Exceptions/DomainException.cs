@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace Zypher.Domain.Exceptions;
+namespace Zypher.Domain.Core.Exceptions;
 
 /// <summary>
 /// Represents errors that occur within the domain logic of the application.

@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using Xunit;
+using Zypher.Domain.Core.Data;
 using Zypher.Domain.Core.Enums;
-using Zypher.Persistence.Abstractions.Data;
 
 namespace Zypher.Persistence.Abstractions.Tests.Data;
 

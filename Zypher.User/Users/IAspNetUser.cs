@@ -1,6 +1,6 @@
 ﻿using System.Security.Claims;
 
-namespace Zypher.Domain.Core.Users;
+namespace Zypher.User.Users;
 
 /// <summary>
 /// Interface to provide information about the current ASP.NET user.

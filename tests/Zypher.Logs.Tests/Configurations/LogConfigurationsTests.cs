@@ -22,7 +22,7 @@ public class LogConfigurationsTests
         var services = new ServiceCollection();
 
         //When
-        services.AddConsoleLogExtensionConfig();
+        services.AddZypherLog();
         var provider = services.BuildServiceProvider();
 
         //Then
@@ -41,7 +41,7 @@ public class LogConfigurationsTests
         IServiceCollection? services = null;
 
         //When
-        Action action = () => services!.AddConsoleLogExtensionConfig();
+        Action action = () => services!.AddZypherLog();
 
         //Then
         action.Should().Throw<ArgumentNullException>();
@@ -60,7 +60,7 @@ public class LogConfigurationsTests
         var app = new ApplicationBuilder(provider);
 
         //When
-        Action action = () => app.UseConsoleLogExtensionConfig();
+        Action action = () => app.UseZypherLog();
 
         //Then
         action.Should().Throw<InvalidOperationException>();
@@ -78,7 +78,7 @@ public class LogConfigurationsTests
         IApplicationBuilder? app = null;
 
         //When
-        Action action = () => app!.UseConsoleLogExtensionConfig();
+        Action action = () => app!.UseZypherLog();
 
         //Then
         action.Should().Throw<ArgumentNullException>();
@@ -94,12 +94,12 @@ public class LogConfigurationsTests
     {
         //Given
         var services = new ServiceCollection();
-        services.AddConsoleLogExtensionConfig();
+        services.AddZypherLog();
         var provider = services.BuildServiceProvider();
         var app = new ApplicationBuilder(provider);
 
         //When
-        app.UseConsoleLogExtensionConfig();
+        app.UseZypherLog();
         var logger = new Microsoft.Extensions.Logging.LoggerFactory().CreateLogger("test");
 
         //Then
@@ -117,11 +117,11 @@ public class LogConfigurationsTests
         //Given
         var provider = new ServiceCollection().BuildServiceProvider();
         var app = new ApplicationBuilder(provider);
-        var key = typeof(Zypher.Logs.Middlewares.LogDecoratorMiddleware).FullName!;
+        var key = typeof(Logs.Middlewares.LogDecoratorMiddleware).FullName!;
 
         //When
-        app.UseLogDecoratorConfig();
-        app.UseLogDecoratorConfig();
+        app.UseZypherLogDecorator();
+        app.UseZypherLogDecorator();
 
         //Then
         app.Properties.ContainsKey(key).Should().BeTrue();
@@ -140,7 +140,7 @@ public class LogConfigurationsTests
         IApplicationBuilder? app = null;
 
         //When
-        Action action = () => app!.UseLogDecoratorConfig();
+        Action action = () => app!.UseZypherLogDecorator();
 
         //Then
         action.Should().Throw<ArgumentNullException>();

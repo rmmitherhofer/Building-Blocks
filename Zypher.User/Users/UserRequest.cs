@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
-using Zypher.Extensions.Core;
 using Zypher.User.Extensions;
 
-namespace Zypher.Domain.Core.Users;
+namespace Zypher.User.Users;
 
 /// <summary>
 /// Represents information about the user making the current HTTP request.

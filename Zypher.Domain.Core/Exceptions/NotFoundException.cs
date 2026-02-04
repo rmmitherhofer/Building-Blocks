@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace Zypher.Domain.Exceptions;
+namespace Zypher.Domain.Core.Exceptions;
 
 /// <summary>
 /// Represents an exception thrown when a requested resource is not found.

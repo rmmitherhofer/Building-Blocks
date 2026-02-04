@@ -1,4 +1,4 @@
-﻿namespace Zypher.Domain.Core.Users;
+﻿namespace Zypher.User.Users;
 
 /// <summary>
 /// Represents information about an HTTP session request.
