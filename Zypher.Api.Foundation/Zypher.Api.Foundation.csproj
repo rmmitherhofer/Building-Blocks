@@ -6,7 +6,7 @@
 		<Nullable>enable</Nullable>
 
 		<PackageId>Zypher.Api.Foundation</PackageId>
-		<Version>2.0.0</Version>
+		<Version>2.0.1</Version>
 		<Authors>Renato Mitherhofer</Authors>
 		<Title>Zypher API Foundation</Title>
 		<Description>Core API building blocks and configuration utilities for Zypher-based APIs.</Description>
@@ -30,11 +30,11 @@
 
 	<ItemGroup>
 		<PackageReference Include="FluentValidation" Version="12.1.1" />
-		<PackageReference Include="NedMonitor" Version="2.0.4" />
+		<PackageReference Include="NedMonitor" Version="2.0.6" />
 		<PackageReference Include="SwaggleBox" Version="2.0.0" />
 		<PackageReference Include="Zypher.Domain.Core" Version="2.0.0" />
 		<PackageReference Include="Zypher.Extensions.Core" Version="2.0.0" />
-		<PackageReference Include="Zypher.Http" Version="2.0.1" />
+		<PackageReference Include="Zypher.Http" Version="2.0.2" />
 		<PackageReference Include="Zypher.Requests" Version="2.0.0" />
 		<PackageReference Include="Zypher.User" Version="2.0.0" />
 	</ItemGroup>
