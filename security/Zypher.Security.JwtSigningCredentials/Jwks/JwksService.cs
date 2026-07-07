@@ -81,6 +81,12 @@ public class JwksService : IJsonWebKeySetService
     {
         options ??= _options.Value;
 
+        if (currentKey is null)
+        {
+            Generate(options);
+            return false;
+        }
+
         if (currentKey.Algorithm == options.Algorithm) return true;
 
         Generate(options);

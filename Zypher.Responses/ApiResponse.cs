@@ -6,7 +6,7 @@ namespace Zypher.Responses;
 /// <summary>
 /// Represents a standard API response structure used for error, validation, and not found results.
 /// </summary>
-public class ApiResponse : Response
+public class ApiResponse
 {
     /// <summary>
     /// Gets the HTTP status code associated with the response.

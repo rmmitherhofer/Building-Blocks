@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Net.Http.Headers;
 using System.Reflection;
-using Zypher.Extensions.Core;
 using Zypher.Http.Attributes;
 
 namespace Zypher.Http.Extensions;
@@ -62,6 +61,12 @@ public static class MultipartFormDataExtensions
             {
                 AddObjectToContent(content, item, $"{prefix}[{i++}]");
             }
+            return;
+        }
+
+        if (IsSimpleType(type))
+        {
+            content.Add(new StringContent(obj.ToString() ?? ""), prefix);
             return;
         }
 

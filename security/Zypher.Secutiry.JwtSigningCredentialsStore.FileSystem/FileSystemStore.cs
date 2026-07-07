@@ -56,6 +56,9 @@ public class FileSystemStore : IJsonWebKeyStore
             var cacheEntryOptions = new MemoryCacheEntryOptions()
                 .SetSlidingExpiration(_options.Value.CacheTime);
 
+            if (File.Exists(currentFile))
+                keyMaterial = GetKey(currentFile);
+
             if (keyMaterial is not null)
                 _memoryCache.Set(JwkConstants.CurrentJwkCache, keyMaterial, cacheEntryOptions);
         }
@@ -77,7 +80,9 @@ public class FileSystemStore : IJsonWebKeyStore
                 .SetSlidingExpiration(_options.Value.CacheTime);
 
             if (files.Count != 0)
-                _memoryCache.Set(JwkConstants.JwksCache, keys, cacheEntryOptions);
+                _memoryCache.Set(JwkConstants.JwksCache, files, cacheEntryOptions);
+
+            keys = files;
         }
         return Task.FromResult(keys?.ToList().AsReadOnly());
     }

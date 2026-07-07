@@ -32,10 +32,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Zypher.Domain.Core" Version="1.0.5" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<None Include="assets/icon.png" Pack="true" PackagePath="assets/" />
 	</ItemGroup>
 
