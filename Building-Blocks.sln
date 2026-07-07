@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 17
-VisualStudioVersion = 17.9.34902.65
+# Visual Studio Version 18
+VisualStudioVersion = 18.5.11723.231
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Zypher.Persistence.Abstractions", "Zypher.Persistence.Abstractions\Zypher.Persistence.Abstractions.csproj", "{CCAABBCB-878E-489C-8E5C-61307FEFBD47}"
 EndProject
@@ -44,6 +44,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zypher.Security.JwtSigningCredentials", "security\Zypher.Security.JwtSigningCredentials\Zypher.Security.JwtSigningCredentials.csproj", "{7D00FB34-001C-198F-8F8C-A494D19E33DA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zypher.Secutiry.JwtSigningCredentials.Store.FileSystem", "security\Zypher.Secutiry.JwtSigningCredentialsStore.FileSystem\Zypher.Secutiry.JwtSigningCredentials.Store.FileSystem.csproj", "{31186BFA-D4BC-A77C-9FB6-CE539F5E40B0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zypher.Comparison", "Zypher.Comparison\Zypher.Comparison.csproj", "{6ECBA80E-3A8F-10F0-E34F-674DB6CF1854}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zypher.Sequences", "Zypher.Sequences\Zypher.Sequences.csproj", "{6BF2505A-4E24-1379-2F87-5704069BFC93}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -131,6 +135,14 @@ Global
 		{31186BFA-D4BC-A77C-9FB6-CE539F5E40B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{31186BFA-D4BC-A77C-9FB6-CE539F5E40B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{31186BFA-D4BC-A77C-9FB6-CE539F5E40B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6ECBA80E-3A8F-10F0-E34F-674DB6CF1854}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6ECBA80E-3A8F-10F0-E34F-674DB6CF1854}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6ECBA80E-3A8F-10F0-E34F-674DB6CF1854}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6ECBA80E-3A8F-10F0-E34F-674DB6CF1854}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BF2505A-4E24-1379-2F87-5704069BFC93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BF2505A-4E24-1379-2F87-5704069BFC93}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BF2505A-4E24-1379-2F87-5704069BFC93}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BF2505A-4E24-1379-2F87-5704069BFC93}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

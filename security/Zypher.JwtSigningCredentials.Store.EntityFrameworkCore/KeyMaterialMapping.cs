@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Zypher.Security.Jwt.Core.Models;
 
-namespace Zypher.JwtSigningCredentials.Store.EntityFrameworkCore;
+namespace Zypher.Security.JwtSigningCredentials.Store.EntityFrameworkCore;
 
 public class KeyMaterialMapping : IEntityTypeConfiguration<KeyMaterial>
 {

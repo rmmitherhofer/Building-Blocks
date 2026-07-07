@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Zypher.Security.Jwt.Core.Models;
 
-namespace Zypher.JwtSigningCredentials.Store.EntityFrameworkCore;
+namespace Zypher.Security.JwtSigningCredentials.Store.EntityFrameworkCore;
 
 public interface ISecurityKeyContext
 {

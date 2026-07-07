@@ -2,7 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Zypher.Security.Jwt.Core.Interfaces;
 
-namespace Zypher.JwtSigningCredentials.Store.EntityFrameworkCore;
+namespace Zypher.Security.JwtSigningCredentials.Store.EntityFrameworkCore;
 
 public static class EFCoreServiceExtensions
 {

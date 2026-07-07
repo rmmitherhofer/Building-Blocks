@@ -1,0 +1,39 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFrameworks>net8.0;net9.0;net10.0</TargetFrameworks>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
+
+		<!-- Versão do pacote -->
+		<Version>1.0.0</Version>
+		<PackageId>Zypher.Comparison</PackageId>
+		<Title>Zypher Comparison</Title>
+		<Authors>Renato Mitherhofer</Authors>
+		<Company>Zypher</Company>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
+		<!-- Metadados para o NuGet -->
+		<Description>Base classes and extensions to simplify comparison operations and activity tracking.</Description>
+		<PackageTags>zypher;comparison;activity;tracking;attributes;helpers</PackageTags>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<Copyright>© 2026 Renato Mitherhofer</Copyright>
+
+		<PackageIcon>assets/icon.png</PackageIcon>
+		<IncludePackageIcon>true</IncludePackageIcon>
+		<!-- Geração de XML para documentação -->
+		<GenerateDocumentationFile>true</GenerateDocumentationFile>
+		<NoWarn>$(NoWarn);1591</NoWarn>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\net10.0" />
+		<None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\net9.0" />
+		<None Include="$(OutputPath)\$(AssemblyName).xml" Pack="true" PackagePath="lib\net8.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="assets/icon.png" Pack="true" PackagePath="assets/" />
+	</ItemGroup>
+
+</Project>

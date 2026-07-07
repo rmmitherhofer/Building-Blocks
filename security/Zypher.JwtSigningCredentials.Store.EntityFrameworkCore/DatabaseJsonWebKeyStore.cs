@@ -7,7 +7,7 @@ using Zypher.Security.Jwt.Core;
 using Zypher.Security.Jwt.Core.Interfaces;
 using Zypher.Security.Jwt.Core.Models;
 
-namespace Zypher.JwtSigningCredentials.Store.EntityFrameworkCore;
+namespace Zypher.Security.JwtSigningCredentials.Store.EntityFrameworkCore;
 
 public class DatabaseJsonWebKeyStore<TDbContext> : IJsonWebKeyStore where TDbContext : DbContext, ISecurityKeyContext
 {

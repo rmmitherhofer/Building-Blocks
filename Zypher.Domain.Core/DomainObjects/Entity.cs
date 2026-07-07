@@ -13,13 +13,17 @@ public abstract class Entity
     /// <summary>
     /// Gets the date and time the entity was registered/created.
     /// </summary>
-    public DateTime RegistrationDate { get; protected set; }
+    public DateTime CreatedAt { get; protected set; }
 
     /// <summary>
     /// Gets the date and time the entity was last changed, if any.
     /// </summary>
-    public DateTime? DateChanged { get; protected set; }
+    public DateTime? ChangedAt { get; protected set; }
 
+    public Guid CreatedBy { get; protected set; }
+    public string CreatedByUserName { get; protected set; }
+    public Guid? ChangedBy { get; protected set; }
+    public string? ChangedByUserName { get; protected set; }
     /// <summary>
     /// Initializes a new instance of the <see cref="Entity"/> class
     /// with a new unique identifier.
