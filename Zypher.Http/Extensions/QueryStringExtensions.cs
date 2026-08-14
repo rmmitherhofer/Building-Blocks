@@ -36,9 +36,13 @@ public static class QueryStringExtensions
             var attr = prop.GetCustomAttribute<QueryStringPropertyAttribute>();
             var name = attr?.Name ?? prop.Name;
 
+            var formatted = value is DateTime dt
+                ? dt.ToString("yyyy-MM-ddTHH:mm:ss")
+                : value.ToString();
+
             keyValuePairs.Add(new KeyValuePair<string, string>(
                 HttpUtility.UrlEncode(ToCamelCase(name)),
-                HttpUtility.UrlEncode(value.ToString())
+                HttpUtility.UrlEncode(formatted)
             ));
         }
 
@@ -63,8 +67,12 @@ public static class QueryStringExtensions
         var query = dict
             .Where(kv => kv.Value != null)
             .Select(kv =>
-                $"{HttpUtility.UrlEncode(ToCamelCase(kv.Key))}={HttpUtility.UrlEncode(kv.Value!.ToString())}"
-            );
+            {
+                var formatted = kv.Value is DateTime dt
+                    ? dt.ToString("yyyy-MM-ddTHH:mm:ss")
+                    : kv.Value!.ToString();
+                return $"{HttpUtility.UrlEncode(ToCamelCase(kv.Key))}={HttpUtility.UrlEncode(formatted)}";
+            });
 
         sb.Append(string.Join("&", query));
         return sb.ToString();

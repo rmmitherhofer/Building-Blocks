@@ -2,7 +2,6 @@ using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Xunit;
-using Zypher.JwtSigningCredentials.Store.EntityFrameworkCore;
 using Zypher.Security.Jwt.Core.Interfaces;
 
 namespace Zypher.Security.JwtSigningCredentials.Store.EntityFrameworkCore.Tests.Extensions;

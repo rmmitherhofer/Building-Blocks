@@ -1,8 +1,6 @@
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Xunit;
-using Zypher.JwtSigningCredentials.Store.EntityFrameworkCore;
 using Zypher.Security.Jwt.Core.Models;
 
 namespace Zypher.Security.JwtSigningCredentials.Store.EntityFrameworkCore.Tests.Mapping;

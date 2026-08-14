@@ -1,12 +1,9 @@
-using System;
-using System.Collections.ObjectModel;
 using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using System.Collections.ObjectModel;
 using Xunit;
-using Zypher.JwtSigningCredentials.Store.EntityFrameworkCore;
 using Zypher.Security.Jwt.Core;
 using Zypher.Security.Jwt.Core.Jwa;
 using Zypher.Security.Jwt.Core.Models;
